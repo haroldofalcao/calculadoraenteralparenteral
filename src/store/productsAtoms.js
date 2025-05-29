@@ -67,7 +67,8 @@ const defaultProductsList = [
         { nome: "Peptisorb", kcal_ml: 1.00, cho_g_l: 180.0, lip_g_l: 17, ptn_g_l: 40.00, ep_ratio: 25.000000 },
         { nome: "Perative", kcal_ml: 1.30, cho_g_l: 175.0, lip_g_l: 36, ptn_g_l: 65.00, ep_ratio: 20.000000 },
         { nome: "Reconvan", kcal_ml: 1.00, cho_g_l: 120.0, lip_g_l: 33, ptn_g_l: 55.00, ep_ratio: 18.181818 },
-        { nome: "Survimed OPD", kcal_ml: 1.00, cho_g_l: 143.0, lip_g_l: 28, ptn_g_l: 45.00, ep_ratio: 22.222222 }
+        { nome: "Survimed OPD", kcal_ml: 1.00, cho_g_l: 143.0, lip_g_l: 28, ptn_g_l: 45.00, ep_ratio: 22.222222 },
+        { nome: "Survimed OPD joao", kcal_ml: 1.00, cho_g_l: 143.0, lip_g_l: 28, ptn_g_l: 45.00, ep_ratio: 22.222222 }
     ];
 
 export const defaultProductsAtom = atom(defaultProductsList);
