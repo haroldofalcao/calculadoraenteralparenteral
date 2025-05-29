@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Table, Modal, Alert } from 'react-bootstrap';
+import { allProductsAtom,  userProductsAtom } from '../store/productsAtoms';
+import { useAtom } from 'jotai';
 
 const ProductManager = () => {
-  const [products, setProducts] = useState([]);
+  const [userProducts, setUserProducts] = useAtom(userProductsAtom);
+  const [allProducts] = useAtom(allProductsAtom);
+  
   const [newProduct, setNewProduct] = useState({
     nome: '',
     kcal_ml: '',
@@ -16,47 +20,6 @@ const ProductManager = () => {
   const [productToDelete, setProductToDelete] = useState(null);
   const [alert, setAlert] = useState({ show: false, variant: '', message: '' });
 
-  // Carregar produtos do localStorage ao iniciar
-  useEffect(() => {
-    const storedProducts = localStorage.getItem('nutritionalProducts');
-    if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
-    } else {
-      // Produtos originais do Excel
-      const defaultProducts = [
-        { nome: "Ensure", kcal_ml: 1.0, cho_g_l: 138, lip_g_l: 35, ptn_g_l: 37, ep_ratio: 1.7 },
-        { nome: "Ensure Plus", kcal_ml: 1.5, cho_g_l: 200, lip_g_l: 53, ptn_g_l: 55, ep_ratio: 1.7 },
-        { nome: "Glucerna", kcal_ml: 1.0, cho_g_l: 96, lip_g_l: 54, ptn_g_l: 42, ep_ratio: 1.7 },
-        { nome: "Glucerna 1.5", kcal_ml: 1.5, cho_g_l: 144, lip_g_l: 81, ptn_g_l: 63, ep_ratio: 1.7 },
-        { nome: "Nepro", kcal_ml: 2.0, cho_g_l: 215, lip_g_l: 96, ptn_g_l: 70, ep_ratio: 1.8 },
-        { nome: "Novasource GC", kcal_ml: 1.5, cho_g_l: 170, lip_g_l: 58, ptn_g_l: 75, ep_ratio: 1.7 },
-        { nome: "Novasource Renal", kcal_ml: 2.0, cho_g_l: 200, lip_g_l: 100, ptn_g_l: 70, ep_ratio: 1.8 },
-        { nome: "Nutren 1.0", kcal_ml: 1.0, cho_g_l: 111, lip_g_l: 39, ptn_g_l: 40, ep_ratio: 1.8 },
-        { nome: "Nutren 1.5", kcal_ml: 1.5, cho_g_l: 170, lip_g_l: 58, ptn_g_l: 60, ep_ratio: 1.7 },
-        { nome: "Nutren 2.0", kcal_ml: 2.0, cho_g_l: 215, lip_g_l: 79, ptn_g_l: 80, ep_ratio: 1.8 },
-        { nome: "Nutrison Energy", kcal_ml: 1.5, cho_g_l: 183, lip_g_l: 58, ptn_g_l: 60, ep_ratio: 1.5 },
-        { nome: "Nutrison Multi Fiber", kcal_ml: 1.0, cho_g_l: 123, lip_g_l: 39, ptn_g_l: 40, ep_ratio: 1.5 },
-        { nome: "Nutrison Protein Plus", kcal_ml: 1.25, cho_g_l: 141, lip_g_l: 47, ptn_g_l: 63, ep_ratio: 1.5 },
-        { nome: "Nutrison Protein Plus MF", kcal_ml: 1.25, cho_g_l: 129, lip_g_l: 47, ptn_g_l: 63, ep_ratio: 1.5 },
-        { nome: "Nutrison Soya", kcal_ml: 1.0, cho_g_l: 123, lip_g_l: 39, ptn_g_l: 40, ep_ratio: 1.5 },
-        { nome: "Nutrison Soya MF", kcal_ml: 1.0, cho_g_l: 110, lip_g_l: 39, ptn_g_l: 40, ep_ratio: 1.5 },
-        { nome: "Osmolite", kcal_ml: 1.0, cho_g_l: 135, lip_g_l: 39, ptn_g_l: 37, ep_ratio: 1.7 },
-        { nome: "Peptamen", kcal_ml: 1.0, cho_g_l: 127, lip_g_l: 39, ptn_g_l: 40, ep_ratio: 1.5 },
-        { nome: "Peptamen Intense", kcal_ml: 1.0, cho_g_l: 100, lip_g_l: 38, ptn_g_l: 64, ep_ratio: 1.5 },
-        { nome: "Peptamen 1.5", kcal_ml: 1.5, cho_g_l: 190, lip_g_l: 56, ptn_g_l: 68, ep_ratio: 1.5 },
-        { nome: "Trophic Basic", kcal_ml: 1.0, cho_g_l: 111, lip_g_l: 39, ptn_g_l: 40, ep_ratio: 1.5 },
-        { nome: "Trophic Fiber", kcal_ml: 1.0, cho_g_l: 111, lip_g_l: 39, ptn_g_l: 40, ep_ratio: 1.5 }
-      ];
-      setProducts(defaultProducts);
-      localStorage.setItem('nutritionalProducts', JSON.stringify(defaultProducts));
-    }
-  }, []);
-
-  // Atualizar localStorage quando produtos mudam
-  useEffect(() => {
-    localStorage.setItem('nutritionalProducts', JSON.stringify(products));
-  }, [products]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewProduct({
@@ -68,8 +31,8 @@ const ProductManager = () => {
   const handleAddProduct = (e) => {
     e.preventDefault();
     
-    // Validar se o nome do produto já existe
-    if (products.some(p => p.nome.toLowerCase() === newProduct.nome.toLowerCase())) {
+    // Verificar se o produto já existe em qualquer um dos conjuntos
+    if (allProducts.some(p => p.nome.toLowerCase() === newProduct.nome.toLowerCase())) {
       showAlertMessage('danger', 'Já existe um produto com este nome.');
       return;
     }
@@ -86,9 +49,8 @@ const ProductManager = () => {
       return;
     }
 
-    // Adicionar novo produto
-    const updatedProducts = [...products, newProduct];
-    setProducts(updatedProducts);
+    // Adicionar novo produto à lista de produtos do usuário
+    setUserProducts([...userProducts, newProduct]);
     
     // Limpar formulário
     setNewProduct({
@@ -110,8 +72,8 @@ const ProductManager = () => {
 
   const confirmDelete = () => {
     if (productToDelete) {
-      const updatedProducts = products.filter(p => p.nome !== productToDelete.nome);
-      setProducts(updatedProducts);
+      const updatedProducts = userProducts.filter(p => p.nome !== productToDelete.nome);
+      setUserProducts(updatedProducts);
       setShowDeleteModal(false);
       setProductToDelete(null);
       showAlertMessage('success', `Produto "${productToDelete.nome}" excluído com sucesso!`);
@@ -126,9 +88,10 @@ const ProductManager = () => {
   };
 
   // Filtrar produtos com base na busca
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = allProducts.filter(product =>
     product.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
 
   return (
     <Container>
@@ -254,24 +217,32 @@ const ProductManager = () => {
                 </thead>
                 <tbody>
                   {filteredProducts.length > 0 ? (
-                    filteredProducts.map((product, index) => (
-                      <tr key={index}>
-                        <td>{product.nome}</td>
-                        <td>{product.kcal_ml.toFixed(1)}</td>
-                        <td>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={() => handleDeleteClick(product)}
-                          >
-                            Excluir
-                          </Button>
-                        </td>
-                      </tr>
-                    ))
+                    filteredProducts.map((product, index) => {
+                      // Verificar se é um produto personalizado
+                      const isUserProduct = userProducts.some(p => p.nome === product.nome);
+                      
+                      return (
+                        <tr key={index}>
+                          <td>{product.nome}</td>
+                          <td>{product.kcal_ml.toFixed(1)}</td>
+                          <td>{isUserProduct ? 'Personalizado' : 'Padrão'}</td>
+                          <td>
+                            {isUserProduct && (
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => handleDeleteClick(product)}
+                              >
+                                Excluir
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
                   ) : (
                     <tr>
-                      <td colSpan="3" className="text-center">
+                      <td colSpan="4" className="text-center">
                         Nenhum produto encontrado
                       </td>
                     </tr>
