@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
 import { calculateResults } from '../utils/calculationUtils';
 import { allProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
@@ -55,7 +55,10 @@ const Calculator = () => {
   return (
     <Container>
       <h1 className="mb-4 text-center">Calculadora de Terapia Nutricional v.4</h1>
-
+      <Alert variant="info" className="mb-4">
+        <i className="bi bi-info-circle-fill me-2"></i>
+        <strong>Atenção:</strong> Esta calculadora é específica para uso em adultos. Não utilize para cálculos nutricionais em pacientes pediátricos.
+      </Alert>
       <Form onSubmit={handleSubmit} className="mb-5 p-4 shadow-sm rounded bg-light">
         <h2 className="fs-5 mb-3 border-bottom pb-2">Dados do Paciente</h2>
         <Row className="mb-3">
