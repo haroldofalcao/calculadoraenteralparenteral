@@ -20,7 +20,7 @@ function App() {
         <div className="d-flex flex-column min-vh-100">
         <Navbar bg="primary" variant="dark" expand="lg">
           <Container>
-              <Navbar.Brand as={Link} to="/">
+              <Navbar.Brand as={Link} to="/" className="text-wrap" style={{ textWrap: 'wrap' }}>
               Calculadora Nutricional para Adultos v.4 <small className="text-light">CC BY-NC-ND 4.0</small>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
