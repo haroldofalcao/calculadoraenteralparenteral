@@ -4,7 +4,7 @@ import { calculateResults } from '../utils/calculationUtils';
 import { allProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
 import SEO from './SEO.jsx';
-import { InFeedAd, ResponsiveBanner, ResultsAd } from './AdSense.jsx';
+import { InFeedAd, ResponsiveBanner } from './AdSense.jsx';
 
 const Calculator = () => {
    const [allProducts] = useAtom(allProductsAtom);

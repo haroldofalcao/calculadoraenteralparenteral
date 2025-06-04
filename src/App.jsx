@@ -9,6 +9,9 @@ import SEO from './components/SEO.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+// Importar teste do AdSense para depuração
+import './utils/adSenseTest.js';
+
 function App() {
   return (
     <HelmetProvider>

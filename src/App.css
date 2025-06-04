@@ -73,3 +73,42 @@ footer {
 .signature {
   font-weight: 500;
 }
+
+/* Estilos responsivos para AdSense */
+.adsbygoogle {
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Container responsivo para anúncios */
+.ad-container {
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Media queries para mobile */
+@media (max-width: 768px) {
+  .adsbygoogle {
+    min-height: 50px !important;
+    height: auto !important;
+  }
+  
+  .ad-container {
+    padding: 10px;
+    margin: 10px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .adsbygoogle {
+    min-height: 50px !important;
+  }
+  
+  .ad-container {
+    padding: 5px;
+    margin: 5px 0;
+  }
+}

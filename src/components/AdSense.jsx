@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { adSenseManager } from '../utils/adSenseManager.js';
 
 // Placeholder para desenvolvimento
 const AdPlaceholder = ({ adStyle, adFormat, children }) => {
@@ -20,13 +21,16 @@ const AdPlaceholder = ({ adStyle, adFormat, children }) => {
       textAlign: 'center',
       padding: '20px',
       boxSizing: 'border-box',
+      maxWidth: '100%',
+      width: '100%',
       ...adStyle
     };
 
     // Ajustar altura baseado no formato do anúncio
     if (adFormat === 'rectangle') {
       baseStyle.minHeight = '250px';
-      baseStyle.width = '300px';
+      baseStyle.maxWidth = '300px';
+      baseStyle.margin = '0 auto';
     } else if (adStyle?.height) {
       baseStyle.minHeight = adStyle.height;
     } else {
@@ -55,18 +59,24 @@ const AdSense = ({
   fullWidthResponsive = true,
   className = "adsbygoogle"
 }) => {
+  const adRef = useRef(null);
+
   useEffect(() => {
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+    // Só carregar em produção
+    if (import.meta.env.DEV) return;
+    
+    const timer = setTimeout(() => {
+      if (adRef.current && adSlot) {
+        adSenseManager.loadAd(adRef.current, adSlot);
       }
-    } catch (err) {
-      console.error('AdSense error:', err);
-    }
-  }, []);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [adSlot]);
 
   const adElement = (
     <ins
+      ref={adRef}
       className={className}
       style={adStyle}
       data-ad-client={adClient}
@@ -85,12 +95,17 @@ const AdSense = ({
 
 // Componente para banner responsivo
 export const ResponsiveBanner = ({ adSlot, style = {} }) => (
-  <div style={{ textAlign: 'center', margin: '20px 0', ...style }}>
+  <div className="ad-container" style={{ 
+    textAlign: 'center', 
+    margin: '20px 0', 
+    ...style 
+  }}>
     <AdSense
       adSlot={adSlot}
       adStyle={{
         display: 'block',
         width: '100%',
+        maxWidth: '100%',
         height: 'auto',
         minHeight: '90px'
       }}
@@ -100,13 +115,14 @@ export const ResponsiveBanner = ({ adSlot, style = {} }) => (
 
 // Componente para anúncio lateral
 export const SidebarAd = ({ adSlot, style = {} }) => (
-  <div style={{ margin: '20px 0', ...style }}>
+  <div className="ad-container" style={{ margin: '20px 0', ...style }}>
     <AdSense
       adSlot={adSlot}
       adStyle={{
         display: 'block',
-        width: '300px',
-        height: '250px'
+        maxWidth: '100%',
+        width: '100%',
+        minHeight: '250px'
       }}
       adFormat="rectangle"
     />
@@ -118,9 +134,11 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
   const getContainerStyle = () => {
     const baseStyle = {
       margin: '40px auto', 
-      maxWidth: '728px', 
+      maxWidth: '100%',
+      width: '100%',
       textAlign: 'center',
       position: 'relative',
+      boxSizing: 'border-box',
       ...style
     };
 
@@ -160,7 +178,7 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
   };
 
   return (
-    <div style={getContainerStyle()}>
+    <div style={getContainerStyle()} className="ad-container">
       {/* Label de compliance */}
       {showLabel && (
         <div style={{
@@ -179,7 +197,8 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
         adStyle={{
           display: 'block',
           minHeight: '120px',
-          width: '100%'
+          width: '100%',
+          maxWidth: '100%'
         }}
         adFormat="fluid"
       />
