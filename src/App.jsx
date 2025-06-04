@@ -1,16 +1,21 @@
 import React from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Calculator from './components/Calculator';
-import ProductManager from './components/ProductManager';
-import Footer from './components/Footer';
+import { HelmetProvider } from 'react-helmet-async';
+import Calculator from './components/Calculator.jsx';
+import ProductManager from './components/ProductManager.jsx';
+import Footer from './components/Footer.jsx';
+import SEO from './components/SEO.jsx';
+import { ResponsiveBanner, InFeedAd } from './components/AdSense.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="d-flex flex-column min-vh-100">
+    <HelmetProvider>
+      <Router>
+        <SEO />
+        <div className="d-flex flex-column min-vh-100">
         <Navbar bg="primary" variant="dark" expand="lg">
           <Container>
               <Navbar.Brand as={Link} to="/">
@@ -27,15 +32,26 @@ function App() {
         </Navbar>
 
         <main className="flex-grow-1 py-4">
+          <Container>
+            {/* Banner superior */}
+            <ResponsiveBanner adSlot="1234567890" />
+          </Container>
+          
           <Routes>
             <Route path="/" element={<Calculator />} />
             <Route path="/gerenciar-produtos" element={<ProductManager />} />
           </Routes>
+          
+          <Container>
+            {/* Anúncio in-feed */}
+            <InFeedAd adSlot="0987654321" />
+          </Container>
         </main>
 
         <Footer />
       </div>
     </Router>
+    </HelmetProvider>
   );
 }
 

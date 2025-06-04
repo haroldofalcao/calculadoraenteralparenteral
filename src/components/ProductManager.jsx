@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Table, Modal, Alert } from 'react-bootstrap';
 import { allProductsAtom,  userProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
+import SEO from './SEO.jsx';
+import { ResponsiveBanner } from './AdSense.jsx';
 
 const ProductManager = () => {
   const [userProducts, setUserProducts] = useAtom(userProductsAtom);
@@ -95,7 +97,16 @@ const ProductManager = () => {
 
   return (
     <Container>
-      <h1 className="mb-4 text-center">Gerenciar Produtos</h1>
+      <SEO 
+        title="Gerenciar Produtos Nutricionais - Calculadora Nutricional" 
+        description="Gerencie e adicione produtos nutricionais personalizados para seus cálculos. Ferramenta para personalizar sua base de dados nutricional."
+        canonical="/gerenciar-produtos"
+        keywords="gerenciar produtos, produtos nutricionais, base de dados nutricional, personalizar produtos"
+      />
+      
+      <ResponsiveBanner adSlot="SEU_AD_SLOT_PRODUTOS" />
+
+      <h1 className="mb-4 text-center">Gerenciar Produtos Nutricionais</h1>
 
       {alert.show && (
         <Alert variant={alert.variant} onClose={() => setAlert({ show: false })} dismissible>

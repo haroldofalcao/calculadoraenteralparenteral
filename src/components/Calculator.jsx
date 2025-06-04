@@ -3,6 +3,8 @@ import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap'
 import { calculateResults } from '../utils/calculationUtils';
 import { allProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
+import SEO from './SEO.jsx';
+import { ResponsiveBanner, InFeedAd } from './AdSense.jsx';
 
 const Calculator = () => {
    const [allProducts] = useAtom(allProductsAtom);
@@ -54,6 +56,23 @@ const Calculator = () => {
 
   return (
     <Container>
+      <SEO 
+        title="Calculadora de Terapia Nutricional - Enteral e Parenteral" 
+        description="Calcule a terapia nutricional ideal com nossa calculadora especializada. Ferramenta profissional para nutricionistas e profissionais da saúde."
+        canonical="/"
+        keywords="calculadora nutricional, terapia nutricional, nutrição enteral, nutrição parenteral, cálculo nutricional, nutricionista"
+        structuredDataType="MedicalWebPage"
+        structuredData={{
+          audience: {
+            "@type": "MedicalAudience",
+            "audienceType": "healthcare professionals"
+          }
+        }}
+      />
+      
+      {/* Banner de topo */}
+      <ResponsiveBanner adSlot="SEU_AD_SLOT_BANNER_TOPO" />
+      
       <h1 className="mb-4 text-center">Calculadora de Terapia Nutricional v.4</h1>
       <Alert variant="info" className="mb-4">
         <i className="bi bi-info-circle-fill me-2"></i>
@@ -310,7 +329,12 @@ const Calculator = () => {
             </Col>
           </Row>
         </div>
+      )}      
+      {/* Anúncio após os resultados */}
+      {results && (
+        <InFeedAd adSlot="SEU_AD_SLOT_FEED" style={{ marginTop: '30px' }} />
       )}
+      
     </Container>
   );
 };
