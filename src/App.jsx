@@ -6,7 +6,6 @@ import Calculator from './components/Calculator.jsx';
 import ProductManager from './components/ProductManager.jsx';
 import Footer from './components/Footer.jsx';
 import SEO from './components/SEO.jsx';
-import { ResponsiveBanner, InFeedAd } from './components/AdSense.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -32,20 +31,10 @@ function App() {
         </Navbar>
 
         <main className="flex-grow-1 py-4">
-          <Container>
-            {/* Banner superior */}
-            <ResponsiveBanner adSlot="1234567890" />
-          </Container>
-          
           <Routes>
             <Route path="/" element={<Calculator />} />
             <Route path="/gerenciar-produtos" element={<ProductManager />} />
           </Routes>
-          
-          <Container>
-            {/* Anúncio in-feed */}
-            <InFeedAd adSlot="0987654321" />
-          </Container>
         </main>
 
         <Footer />

@@ -114,17 +114,90 @@ export const SidebarAd = ({ adSlot, style = {} }) => (
 );
 
 // Componente para anúncio in-feed
-export const InFeedAd = ({ adSlot, style = {} }) => (
-  <div style={{ margin: '20px auto', maxWidth: '728px', ...style }}>
-    <AdSense
-      adSlot={adSlot}
-      adStyle={{
-        display: 'block',
-        minHeight: '100px'
-      }}
-      adFormat="fluid"
-    />
-  </div>
+export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'default' }) => {
+  const getContainerStyle = () => {
+    const baseStyle = {
+      margin: '40px auto', 
+      maxWidth: '728px', 
+      textAlign: 'center',
+      position: 'relative',
+      ...style
+    };
+
+    switch (variant) {
+      case 'minimal':
+        return {
+          ...baseStyle,
+          padding: '15px',
+          backgroundColor: 'transparent'
+        };
+      case 'bordered':
+        return {
+          ...baseStyle,
+          padding: '20px',
+          backgroundColor: '#ffffff',
+          borderRadius: '12px',
+          border: '2px solid #dee2e6',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        };
+      case 'seamless':
+        return {
+          ...baseStyle,
+          padding: '30px 20px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          border: '1px solid #e9ecef'
+        };
+      default:
+        return {
+          ...baseStyle,
+          padding: '20px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          border: '1px solid #e9ecef'
+        };
+    }
+  };
+
+  return (
+    <div style={getContainerStyle()}>
+      {/* Label de compliance */}
+      {showLabel && (
+        <div style={{
+          fontSize: '12px',
+          color: '#6c757d',
+          marginBottom: '10px',
+          fontFamily: 'Arial, sans-serif',
+          opacity: 0.8
+        }}>
+          Publicidade
+        </div>
+      )}
+      
+      <AdSense
+        adSlot={adSlot}
+        adStyle={{
+          display: 'block',
+          minHeight: '120px',
+          width: '100%'
+        }}
+        adFormat="fluid"
+      />
+    </div>
+  );
+};
+
+// Componente especializado para anúncio após resultados
+export const ResultsAd = ({ adSlot, style = {} }) => (
+  <InFeedAd 
+    adSlot={adSlot} 
+    variant="bordered"
+    style={{
+      marginTop: '50px',
+      marginBottom: '30px',
+      ...style
+    }}
+  />
 );
 
 export default AdSense;

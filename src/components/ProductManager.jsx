@@ -104,7 +104,7 @@ const ProductManager = () => {
         keywords="gerenciar produtos, produtos nutricionais, base de dados nutricional, personalizar produtos"
       />
       
-      <ResponsiveBanner adSlot="SEU_AD_SLOT_PRODUTOS" />
+      <ResponsiveBanner adSlot="9004267172" />
 
       <h1 className="mb-4 text-center">Gerenciar Produtos Nutricionais</h1>
 

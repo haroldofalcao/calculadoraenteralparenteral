@@ -4,7 +4,7 @@ import { calculateResults } from '../utils/calculationUtils';
 import { allProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
 import SEO from './SEO.jsx';
-import { ResponsiveBanner, InFeedAd } from './AdSense.jsx';
+import { InFeedAd, ResponsiveBanner, ResultsAd } from './AdSense.jsx';
 
 const Calculator = () => {
    const [allProducts] = useAtom(allProductsAtom);
@@ -71,7 +71,7 @@ const Calculator = () => {
       />
       
       {/* Banner de topo */}
-      <ResponsiveBanner adSlot="SEU_AD_SLOT_BANNER_TOPO" />
+      <ResponsiveBanner adSlot="5804222918" />
       
       <h1 className="mb-4 text-center">Calculadora de Terapia Nutricional v.4</h1>
       <Alert variant="info" className="mb-4">
@@ -332,7 +332,7 @@ const Calculator = () => {
       )}      
       {/* Anúncio após os resultados */}
       {results && (
-        <InFeedAd adSlot="SEU_AD_SLOT_FEED" style={{ marginTop: '30px' }} />
+        <InFeedAd adSlot="1864977909" />
       )}
       
     </Container>
