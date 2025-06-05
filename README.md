@@ -1,8 +1,8 @@
-# Calculadora Nutricional v.4 - Manual do Usuário
+# Calculadora Nutricional v.5 - Manual do Usuário
 
 ## Introdução
 
-A Calculadora Nutricional v.4 é uma aplicação web desenvolvida em React que permite realizar cálculos de terapia nutricional, mantendo todas as funcionalidades da versão original em Excel e adicionando a capacidade de atualizar o banco de dados de produtos nutricionais de forma simples e intuitiva.
+A Calculadora Nutricional v.5 é uma aplicação web desenvolvida em React que permite realizar cálculos de terapia nutricional, mantendo todas as funcionalidades da versão original em Excel e adicionando a capacidade de atualizar o banco de dados de produtos nutricionais de forma simples e intuitiva.
 
 Esta versão utiliza localStorage para armazenar os dados dos produtos diretamente no navegador do usuário, eliminando a necessidade de um servidor backend.
 
@@ -122,7 +122,7 @@ Todos os produtos adicionados ou excluídos são armazenados no localStorage do 
 
 ## Licença e Autoria
 
-Calculadora Nutricional v.4 (CC BY-NC-ND 4.0)
+Calculadora Nutricional v.5 (CC BY-NC-ND 4.0)
 Desenvolvido por Haroldo Falcão Ramos da Cunha
 
 ## Requisitos Técnicos
