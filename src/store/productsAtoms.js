@@ -52,10 +52,18 @@ export const defaultProductsAtom = atom(defaultProductsList);
 
 export const userProductsAtom = atomWithStorage('userProducts', []);
 
+export const hiddenDefaultProductsAtom = atomWithStorage('hiddenDefaultProducts', []);
+
 export const allProductsAtom = atom(
   (get) => {
     const defaultProducts = get(defaultProductsAtom);
     const userProducts = get(userProductsAtom);
-    return [...defaultProducts, ...userProducts];
+    const hiddenProducts = get(hiddenDefaultProductsAtom);
+    
+    const visibleDefaultProducts = defaultProducts.filter(
+      product => !hiddenProducts.includes(product.nome)
+    );
+    
+    return [...visibleDefaultProducts, ...userProducts];
   }
 );

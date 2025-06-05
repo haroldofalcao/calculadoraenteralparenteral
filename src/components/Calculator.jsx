@@ -81,7 +81,7 @@ const Calculator = () => {
       {/* Banner de topo */}
       <ResponsiveBanner adSlot="5804222918" />
       
-      <h1 className="mb-4 text-center">Calculadora de Terapia Nutricional v.4</h1>
+      <h1 className="mb-4 text-center">Calculadora de Terapia Nutricional v.5</h1>
       <Alert variant="info" className="mb-4">
         <i className="bi bi-info-circle-fill me-2"></i>
         <strong>Atenção:</strong> Esta calculadora é específica para uso em adultos. Não utilize para cálculos nutricionais em pacientes pediátricos.

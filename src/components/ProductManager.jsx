@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Table, Modal, Alert } from 'react-bootstrap';
-import { allProductsAtom,  userProductsAtom } from '../store/productsAtoms';
+import { allProductsAtom,  userProductsAtom, hiddenDefaultProductsAtom, defaultProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
 import SEO from './SEO.jsx';
 import { ResponsiveBanner } from './AdSense.jsx';
@@ -8,6 +8,8 @@ import { ResponsiveBanner } from './AdSense.jsx';
 const ProductManager = () => {
   const [userProducts, setUserProducts] = useAtom(userProductsAtom);
   const [allProducts] = useAtom(allProductsAtom);
+  const [hiddenDefaultProducts, setHiddenDefaultProducts] = useAtom(hiddenDefaultProductsAtom);
+  const [defaultProducts] = useAtom(defaultProductsAtom);
   
   const [newProduct, setNewProduct] = useState({
     nome: '',
@@ -74,12 +76,31 @@ const ProductManager = () => {
 
   const confirmDelete = () => {
     if (productToDelete) {
-      const updatedProducts = userProducts.filter(p => p.nome !== productToDelete.nome);
-      setUserProducts(updatedProducts);
+      // Verificar se é um produto personalizado ou padrão
+      const isUserProduct = userProducts.some(p => p.nome === productToDelete.nome);
+      const isDefaultProduct = defaultProducts.some(p => p.nome === productToDelete.nome);
+      
+      if (isUserProduct) {
+        // Remover produto personalizado
+        const updatedProducts = userProducts.filter(p => p.nome !== productToDelete.nome);
+        setUserProducts(updatedProducts);
+        showAlertMessage('success', 'Produto personalizado excluído com sucesso!');
+      } else if (isDefaultProduct) {
+        // Ocultar produto padrão
+        const updatedHiddenProducts = [...hiddenDefaultProducts, productToDelete.nome];
+        setHiddenDefaultProducts(updatedHiddenProducts);
+        showAlertMessage('success', 'Produto padrão ocultado com sucesso!');
+      }
+      
       setShowDeleteModal(false);
       setProductToDelete(null);
-      showAlertMessage('success', `Produto "${productToDelete.nome}" excluído com sucesso!`);
     }
+  };
+
+  const handleRestoreProduct = (productName) => {
+    const updatedHiddenProducts = hiddenDefaultProducts.filter(name => name !== productName);
+    setHiddenDefaultProducts(updatedHiddenProducts);
+    showAlertMessage('success', `Produto "${productName}" restaurado com sucesso!`);
   };
 
   const showAlertMessage = (variant, message) => {
@@ -223,6 +244,7 @@ const ProductManager = () => {
                   <tr>
                     <th>Nome</th>
                     <th>Kcal/mL</th>
+                    <th>Tipo</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
@@ -238,15 +260,13 @@ const ProductManager = () => {
                           <td>{product.kcal_ml.toFixed(1)}</td>
                           <td>{isUserProduct ? 'Personalizado' : 'Padrão'}</td>
                           <td>
-                            {isUserProduct && (
-                              <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() => handleDeleteClick(product)}
-                              >
-                                Excluir
-                              </Button>
-                            )}
+                            <Button
+                              variant={isUserProduct ? "danger" : "warning"}
+                              size="sm"
+                              onClick={() => handleDeleteClick(product)}
+                            >
+                              {isUserProduct ? 'Excluir' : 'Ocultar'}
+                            </Button>
                           </td>
                         </tr>
                       );
@@ -265,21 +285,69 @@ const ProductManager = () => {
         </Col>
       </Row>
 
+      {/* Seção de produtos ocultos */}
+      {hiddenDefaultProducts.length > 0 && (
+        <Row className="mb-4">
+          <Col>
+            <div className="p-4 shadow-sm rounded bg-light">
+              <h2 className="fs-5 mb-3 border-bottom pb-2">Produtos Padrão Ocultos</h2>
+              <p className="text-muted mb-3">
+                Estes produtos foram ocultados por você. Clique em "Restaurar" para torná-los visíveis novamente.
+              </p>
+              
+              <div className="d-flex flex-wrap gap-2">
+                {hiddenDefaultProducts.map((productName, index) => {
+                  const product = defaultProducts.find(p => p.nome === productName);
+                  return (
+                    <div key={index} className="border rounded p-2 bg-white d-flex align-items-center gap-2">
+                      <span>{productName}</span>
+                      <Button
+                        variant="success"
+                        size="sm"
+                        onClick={() => handleRestoreProduct(productName)}
+                      >
+                        Restaurar
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </Col>
+        </Row>
+      )}
+
       {/* Modal de confirmação de exclusão */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmar Exclusão</Modal.Title>
+          <Modal.Title>
+            {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) 
+              ? 'Confirmar Exclusão' 
+              : 'Confirmar Ocultação'}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Tem certeza que deseja excluir o produto <strong>{productToDelete?.nome}</strong>?</p>
-          <p className="text-danger">Esta ação não pode ser desfeita.</p>
+          {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? (
+            <>
+              <p>Tem certeza que deseja excluir o produto <strong>{productToDelete?.nome}</strong>?</p>
+              <p className="text-danger">Esta ação não pode ser desfeita.</p>
+            </>
+          ) : (
+            <>
+              <p>Tem certeza que deseja ocultar o produto <strong>{productToDelete?.nome}</strong>?</p>
+              <p className="text-warning">O produto será ocultado da lista, mas poderá ser restaurado posteriormente.</p>
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={confirmDelete}>
-            Excluir
+          <Button 
+            variant={productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? "danger" : "warning"} 
+            onClick={confirmDelete}
+          >
+            {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? 'Excluir' : 'Ocultar'}
           </Button>
         </Modal.Footer>
       </Modal>
