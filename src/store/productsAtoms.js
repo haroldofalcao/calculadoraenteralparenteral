@@ -1,0 +1,61 @@
+import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
+
+const defaultProductsList = [
+  { nome: "Cubison", kcal_ml: 1.0, cho_g_l: 130.0, lip_g_l: 33.0, ptn_g_l: 55.0, ep_ratio: 18.181818 },
+{ nome: "Diason", kcal_ml: 1.0, cho_g_l: 110.0, lip_g_l: 42.0, ptn_g_l: 43.0, ep_ratio: 23.255814 },
+{ nome: "Diason Energy HP", kcal_ml: 1.5, cho_g_l: 120.0, lip_g_l: 77.0, ptn_g_l: 77.0, ep_ratio: 19.480519 },
+{ nome: "Diben", kcal_ml: 1.0, cho_g_l: 92.5, lip_g_l: 46.0, ptn_g_l: 46.0, ep_ratio: 21.73913 },
+{ nome: "Diben 1,5", kcal_ml: 1.5, cho_g_l: 131.0, lip_g_l: 70.0, ptn_g_l: 75.0, ep_ratio: 20.0 },
+{ nome: "Fresubin 1.2 HP Fibre", kcal_ml: 1.20, cho_g_l: 140.0, lip_g_l: 44.4, ptn_g_l: 60.0, ep_ratio: 20.0 },
+{ nome: "Fresubin 2 kcal", kcal_ml: 2.0, cho_g_l: 168.0, lip_g_l: 100.0, ptn_g_l: 100.0, ep_ratio: 20.0 },
+{ nome: "Fresubin Energy", kcal_ml: 1.5, cho_g_l: 188.0, lip_g_l: 58.0, ptn_g_l: 56.0, ep_ratio: 26.785714 },
+{ nome: "Fresubin Energy Fibre", kcal_ml: 1.5, cho_g_l: 180.0, lip_g_l: 58.0, ptn_g_l: 56.0, ep_ratio: 26.785714 },
+{ nome: "Fresubin Hepa", kcal_ml: 1.3, cho_g_l: 170.0, lip_g_l: 47.0, ptn_g_l: 40.0, ep_ratio: 20.0 },
+{ nome: "Fresubin Original", kcal_ml: 1.0, cho_g_l: 138.0, lip_g_l: 34.0, ptn_g_l: 38.0, ep_ratio: 26.315789 },
+{ nome: "Fresubin Original Fibre", kcal_ml: 1.0, cho_g_l: 130.0, lip_g_l: 34.0, ptn_g_l: 38.0, ep_ratio: 26.315789 },
+{ nome: "Fresubin Soya Fibre", kcal_ml: 1.0, cho_g_l: 121.0, lip_g_l: 36.0, ptn_g_l: 38.0, ep_ratio: 26.315789 },
+{ nome: "Impact", kcal_ml: 1.5, cho_g_l: 139.0, lip_g_l: 63.0, ptn_g_l: 94.0, ep_ratio: 15.957447 },
+{ nome: "Isosource 1,5", kcal_ml: 1.5, cho_g_l: 150.0, lip_g_l: 68.0, ptn_g_l: 63.0, ep_ratio: 23.809524 },
+{ nome: "Kabiven", kcal_ml: 0.87719, cho_g_l: 268.0, lip_g_l: 39.0, ptn_g_l: 33.14, ep_ratio: 23.529412 },
+{ nome: "Kabiven Peripheral", kcal_ml: 0.69444, cho_g_l: 74.3, lip_g_l: 35.4, ptn_g_l: 23.61, ep_ratio: 26.470588 },
+{ nome: "Novasource GC HP", kcal_ml: 1.0, cho_g_l: 105.0, lip_g_l: 40.0, ptn_g_l: 55.0, ep_ratio: 18.181818 },
+{ nome: "Novasource GI Control", kcal_ml: 1.5, cho_g_l: 180.0, lip_g_l: 60.0, ptn_g_l: 60.0, ep_ratio: 25.0 },
+{ nome: "Novasource Renal", kcal_ml: 2.0, cho_g_l: 200.0, lip_g_l: 100.0, ptn_g_l: 75.0, ep_ratio: 26.666667 },
+{ nome: "Numeta", kcal_ml: 0.91, cho_g_l: 146.7, lip_g_l: 25.0, ptn_g_l: 31.33, ep_ratio: 25.0 },
+{ nome: "Nutriflex Lipid Peri", kcal_ml: 0.764, cho_g_l: 64.0, lip_g_l: 40.0, ptn_g_l: 32.0, ep_ratio: 19.875 },
+{ nome: "Nutriflex Lipid Plus", kcal_ml: 1.012, cho_g_l: 132.0, lip_g_l: 40.0, ptn_g_l: 38.4, ep_ratio: 22.354167 },
+{ nome: "Nutriflex Lipid Special", kcal_ml: 1.184, cho_g_l: 144.0, lip_g_l: 40.0, ptn_g_l: 57.44, ep_ratio: 16.601671 },
+{ nome: "Nutriflex Plus", kcal_ml: 0.792, cho_g_l: 165.0, lip_g_l: 0.0, ptn_g_l: 48.1, ep_ratio: 12.474012 },
+{ nome: "Nutrison Energy", kcal_ml: 1.50, cho_g_l: 180.0, lip_g_l: 58, ptn_g_l: 60.00, ep_ratio: 25.000000 },
+{ nome: "Nutrison Energy MF", kcal_ml: 1.50, cho_g_l: 180.0, lip_g_l: 58, ptn_g_l: 60.00, ep_ratio: 25.000000 },
+{ nome: "Nutrison Multi Fiber", kcal_ml: 1.00, cho_g_l: 120.0, lip_g_l: 39, ptn_g_l: 40.00, ep_ratio: 25.000000 },
+{ nome: "Nutrison Protein Plus Energy", kcal_ml: 1.50, cho_g_l: 170.0, lip_g_l: 58, ptn_g_l: 75.00, ep_ratio: 20.000000 },
+{ nome: "Olimel N12", kcal_ml: 0.95385, cho_g_l: 73.8, lip_g_l: 34.6, ptn_g_l: 76.0, ep_ratio: 8.502024 },
+{ nome: "Olimel N4", kcal_ml: 0.7, cho_g_l: 75.0, lip_g_l: 30.0, ptn_g_l: 23.5, ep_ratio: 25.531915 },
+{ nome: "Olimel N5", kcal_ml: 0.99333, cho_g_l: 115.3, lip_g_l: 40.0, ptn_g_l: 32.93, ep_ratio: 26.11336 },
+{ nome: "Olimel N7", kcal_ml: 1.14, cho_g_l: 140.0, lip_g_l: 40.0, ptn_g_l: 44.3, ep_ratio: 21.670429 },
+{ nome: "Olimel N9", kcal_ml: 1.07, cho_g_l: 110.0, lip_g_l: 40.0, ptn_g_l: 56.9, ep_ratio: 14.762742 },
+{ nome: "Peptamen HN", kcal_ml: 1.30, cho_g_l: 160.0, lip_g_l: 49, ptn_g_l: 66.00, ep_ratio: 19.696970 },
+{ nome: "Peptamen 1,5", kcal_ml: 1.50, cho_g_l: 184.0, lip_g_l: 55, ptn_g_l: 68.00, ep_ratio: 22.058824 },
+{ nome: "Peptamen Intense", kcal_ml: 1.00, cho_g_l: 72.0, lip_g_l: 38, ptn_g_l: 93.00, ep_ratio: 10.752688 },
+{ nome: "Reconvan", kcal_ml: 1.00, cho_g_l: 120.0, lip_g_l: 33, ptn_g_l: 55.00, ep_ratio: 18.181818 },
+{ nome: "SmofKabiven", kcal_ml: 1.11562, cho_g_l: 128.8, lip_g_l: 38.0, ptn_g_l: 50.99, ep_ratio: 17.899761 },
+{ nome: "SmofKabiven HN", kcal_ml: 0.88933, cho_g_l: 92.9, lip_g_l: 28.9, ptn_g_l: 65.47, ep_ratio: 9.583459 },
+{ nome: "Smofkabiven Peripheral", kcal_ml: 0.66335, cho_g_l: 77.9, lip_g_l: 28.0, ptn_g_l: 32.0, ep_ratio: 18.139414 },
+{ nome: "Supportan", kcal_ml: 1.5, cho_g_l: 120.0, lip_g_l: 67.0, ptn_g_l: 100.0, ep_ratio: 15.0 },
+{ nome: "Survimed OPD", kcal_ml: 1.00, cho_g_l: 143.0, lip_g_l: 28, ptn_g_l: 45.00, ep_ratio: 22.222222 },
+{ nome: "Survimed OPD HN", kcal_ml: 1.33, cho_g_l: 180.0, lip_g_l: 37.0, ptn_g_l: 67.00, ep_ratio: 19.850000 }
+];
+
+export const defaultProductsAtom = atom(defaultProductsList);
+
+export const userProductsAtom = atomWithStorage('userProducts', []);
+
+export const allProductsAtom = atom(
+  (get) => {
+    const defaultProducts = get(defaultProductsAtom);
+    const userProducts = get(userProductsAtom);
+    return [...defaultProducts, ...userProducts];
+  }
+);
