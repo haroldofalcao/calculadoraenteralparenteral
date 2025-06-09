@@ -3,16 +3,16 @@ import { Helmet } from 'react-helmet-async';
 import StructuredData from './StructuredData.jsx';
 
 const SEO = ({ 
-  title = "Calculadora Nutricional - Enteral e Parenteral",
-  description = "Calculadora especializada para cálculos nutricionais enterais e parenterais. Ferramenta profissional para nutricionistas e profissionais da saúde.",
-  keywords = "calculadora nutricional, nutrição enteral, nutrição parenteral, nutricionista, profissionais saúde, cálculos nutricionais",
+  title = "NutriCalc - Calculadora Nutricional Profissional | Enteral e Parenteral",
+  description = "NutriCalc - Calculadora especializada para cálculos nutricionais enterais e parenterais. Ferramenta profissional para nutricionistas e profissionais da saúde.",
+  keywords = "nutricalc, calculadora nutricional, nutrição enteral, nutrição parenteral, nutricionista, profissionais saúde, cálculos nutricionais",
   canonical = "",
   image = "/logo512.png",
   type = "website",
   structuredDataType = "WebApplication",
   structuredData = {}
 }) => {
-  const baseUrl = "https://www.nenpt.online"; // Substitua pela sua URL real
+  const baseUrl = "https://www.nutricalc.online";
   const fullCanonical = canonical ? `${baseUrl}${canonical}` : baseUrl;
   const fullImage = image.startsWith('http') ? image : `${baseUrl}${image}`;
 
@@ -33,7 +33,7 @@ const SEO = ({
         <meta property="og:image" content={fullImage} />
         <meta property="og:url" content={fullCanonical} />
         <meta property="og:type" content={type} />
-        <meta property="og:site_name" content="Calculadora Nutricional" />
+        <meta property="og:site_name" content="NutriCalc" />
         <meta property="og:locale" content="pt_BR" />
         
         {/* Twitter Cards */}
@@ -44,7 +44,7 @@ const SEO = ({
         
         {/* Meta tags adicionais para SEO */}
         <meta name="robots" content="index, follow" />
-        <meta name="author" content="Calculadora Nutricional" />
+        <meta name="author" content="NutriCalc" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         
         {/* Meta tags específicas para saúde */}

@@ -59,6 +59,28 @@
   ],
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "nenpt.online"
+        }
+      ],
+      "destination": "https://www.nutricalc.online/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.nenpt.online"
+        }
+      ],
+      "destination": "https://www.nutricalc.online/:path*",
+      "permanent": true
+    },
+    {
       "source": "/home",
       "destination": "/",
       "permanent": true

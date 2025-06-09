@@ -1,0 +1,188 @@
+# cypress-ci.yml
+# Configuração para execução dos testes Cypress em CI/CD
+
+name: Cypress E2E Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Executa testes diariamente às 2:00 UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+        
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Build application
+      run: pnpm run build
+
+    - name: Start application
+      run: pnpm run preview &
+      
+    - name: Wait for application
+      run: pnpm exec wait-on http://localhost:4173
+
+    - name: Run Cypress smoke tests
+      if: github.event_name == 'pull_request'
+      run: pnpm run test:e2e:smoke
+      env:
+        CYPRESS_baseUrl: http://localhost:4173
+
+    - name: Run full Cypress tests
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: pnpm run test:e2e:full
+      env:
+        CYPRESS_baseUrl: http://localhost:4173
+
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-screenshots-${{ matrix.browser }}
+        path: cypress/screenshots
+
+    - name: Upload videos
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos-${{ matrix.browser }}
+        path: cypress/videos
+
+  accessibility-tests:
+    runs-on: ubuntu-22.04
+    needs: cypress-run
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Build application
+      run: pnpm run build
+
+    - name: Start application
+      run: pnpm run preview &
+      
+    - name: Wait for application
+      run: pnpm exec wait-on http://localhost:4173
+
+    - name: Run accessibility tests
+      run: pnpm run test:e2e:accessibility
+      env:
+        CYPRESS_baseUrl: http://localhost:4173
+
+  performance-tests:
+    runs-on: ubuntu-22.04
+    needs: cypress-run
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Build application
+      run: pnpm run build
+
+    - name: Start application
+      run: pnpm run preview &
+      
+    - name: Wait for application
+      run: pnpm exec wait-on http://localhost:4173
+
+    - name: Run Lighthouse CI
+      run: |
+        pnpm add -g @lhci/cli@0.12.x
+        lhci autorun
+      env:
+        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+

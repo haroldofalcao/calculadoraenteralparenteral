@@ -112,3 +112,140 @@ footer {
     margin: 5px 0;
   }
 }
+
+/* Estilos para o formulário GIDS */
+.gids-form .form-check {
+  padding-left: 1.5rem !important;
+  margin-bottom: 0.5rem;
+}
+
+.gids-form .form-check-input {
+  margin-left: -1.5rem !important;
+  margin-top: 0.25rem;
+}
+
+.gids-form .form-check-label {
+  padding-left: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Estilos para as seções de sintomas */
+.gids-symptoms-section {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.gids-symptoms-section .form-check {
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.gids-symptoms-section .form-check:hover {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.gids-symptoms-section .form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.gids-symptoms-section .form-check-input:checked ~ .form-check-label {
+  font-weight: 500;
+  color: #0d6efd;
+}
+
+/* Estilos específicos para diferentes tipos de sintomas */
+.gids-basic-symptoms .form-check-input:checked {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.gids-basic-symptoms .form-check-input:checked ~ .form-check-label {
+  color: #17a2b8;
+}
+
+.gids-severe-symptoms .form-check-input:checked {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.gids-severe-symptoms .form-check-input:checked ~ .form-check-label {
+  color: #856404;
+}
+
+.gids-life-threatening .form-check-input:checked {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.gids-life-threatening .form-check-input:checked ~ .form-check-label {
+  color: #dc3545;
+}
+
+/* Classe bg-orange para GIDS score 2 */
+.bg-orange {
+  background-color: #fd7e14 !important;
+}
+
+/* Estilos aprimorados para o display do score GIDS */
+.gids-score-display {
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.gids-score-display h4 {
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Responsividade para dispositivos móveis - GIDS */
+@media (max-width: 768px) {
+  .gids-form .form-check {
+    padding-left: 1.25rem !important;
+  }
+  
+  .gids-form .form-check-input {
+    margin-left: -1.25rem !important;
+  }
+  
+  .gids-symptoms-section .form-check {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .gids-score-display {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gids-form .form-check {
+    padding-left: 1rem !important;
+  }
+  
+  .gids-form .form-check-input {
+    margin-left: -1rem !important;
+  }
+  
+  .gids-symptoms-section {
+    padding: 0.75rem;
+  }
+  
+  .gids-symptoms-section .form-check {
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+}

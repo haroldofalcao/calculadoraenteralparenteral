@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Table, Modal, Alert } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { allProductsAtom,  userProductsAtom, hiddenDefaultProductsAtom, defaultProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
 import SEO from './SEO.jsx';
 import { ResponsiveBanner } from './AdSense.jsx';
 
 const ProductManager = () => {
+  const { t } = useTranslation();
   const [userProducts, setUserProducts] = useAtom(userProductsAtom);
   const [allProducts] = useAtom(allProductsAtom);
   const [hiddenDefaultProducts, setHiddenDefaultProducts] = useAtom(hiddenDefaultProductsAtom);
@@ -34,10 +36,9 @@ const ProductManager = () => {
 
   const handleAddProduct = (e) => {
     e.preventDefault();
-    
-    // Verificar se o produto já existe em qualquer um dos conjuntos
+     // Verificar se o produto já existe em qualquer um dos conjuntos
     if (allProducts.some(p => p.nome.toLowerCase() === newProduct.nome.toLowerCase())) {
-      showAlertMessage('danger', 'Já existe um produto com este nome.');
+      showAlertMessage('danger', t('productManager.validation.nameExists'));
       return;
     }
     
@@ -46,10 +47,10 @@ const ProductManager = () => {
       newProduct.kcal_ml <= 0 || 
       newProduct.cho_g_l < 0 || 
       newProduct.lip_g_l < 0 || 
-      newProduct.ptn_g_l < 0 || 
+      newProduct.ptn_g_l < 0 ||
       newProduct.ep_ratio < 0
     ) {
-      showAlertMessage('danger', 'Todos os valores numéricos devem ser positivos.');
+      showAlertMessage('danger', t('productManager.validation.invalidValues'));
       return;
     }
 
@@ -66,7 +67,7 @@ const ProductManager = () => {
       ep_ratio: ''
     });
     
-    showAlertMessage('success', 'Produto adicionado com sucesso!');
+    showAlertMessage('success', t('productManager.validation.productAdded'));
   };
 
   const handleDeleteClick = (product) => {
@@ -84,12 +85,12 @@ const ProductManager = () => {
         // Remover produto personalizado
         const updatedProducts = userProducts.filter(p => p.nome !== productToDelete.nome);
         setUserProducts(updatedProducts);
-        showAlertMessage('success', 'Produto personalizado excluído com sucesso!');
+        showAlertMessage('success', t('productManager.validation.productDeleted'));
       } else if (isDefaultProduct) {
         // Ocultar produto padrão
         const updatedHiddenProducts = [...hiddenDefaultProducts, productToDelete.nome];
         setHiddenDefaultProducts(updatedHiddenProducts);
-        showAlertMessage('success', 'Produto padrão ocultado com sucesso!');
+        showAlertMessage('success', t('productManager.validation.productDeleted'));
       }
       
       setShowDeleteModal(false);
@@ -100,7 +101,7 @@ const ProductManager = () => {
   const handleRestoreProduct = (productName) => {
     const updatedHiddenProducts = hiddenDefaultProducts.filter(name => name !== productName);
     setHiddenDefaultProducts(updatedHiddenProducts);
-    showAlertMessage('success', `Produto "${productName}" restaurado com sucesso!`);
+    showAlertMessage('success', t('productManager.validation.productDeleted'));
   };
 
   const showAlertMessage = (variant, message) => {
@@ -119,15 +120,15 @@ const ProductManager = () => {
   return (
     <Container>
       <SEO 
-        title="Gerenciar Produtos Nutricionais - Calculadora Nutricional" 
-        description="Gerencie e adicione produtos nutricionais personalizados para seus cálculos. Ferramenta para personalizar sua base de dados nutricional."
+        title={t('productManager.title')} 
+        description={t('productManager.title')}
         canonical="/gerenciar-produtos"
         keywords="gerenciar produtos, produtos nutricionais, base de dados nutricional, personalizar produtos"
       />
       
       <ResponsiveBanner adSlot="9004267172" />
 
-      <h1 className="mb-4 text-center">Gerenciar Produtos Nutricionais</h1>
+      <h1 className="mb-4 text-center">{t('productManager.title')}</h1>
 
       {alert.show && (
         <Alert variant={alert.variant} onClose={() => setAlert({ show: false })} dismissible>
@@ -138,10 +139,10 @@ const ProductManager = () => {
       <Row className="mb-5">
         <Col md={6}>
           <div className="p-4 shadow-sm rounded bg-light">
-            <h2 className="fs-5 mb-3 border-bottom pb-2">Adicionar Novo Produto</h2>
+            <h2 className="fs-5 mb-3 border-bottom pb-2">{t('productManager.addProduct')}</h2>
             <Form onSubmit={handleAddProduct}>
               <Form.Group className="mb-3">
-                <Form.Label>Nome do Produto</Form.Label>
+                <Form.Label>{t('productManager.productName')}</Form.Label>
                 <Form.Control
                   type="text"
                   name="nome"
@@ -152,7 +153,7 @@ const ProductManager = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Kcal/mL</Form.Label>
+                <Form.Label>{t('productManager.kcalMl')}</Form.Label>
                 <Form.Control
                   type="number"
                   name="kcal_ml"
@@ -165,7 +166,7 @@ const ProductManager = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>CHO (g/L)</Form.Label>
+                <Form.Label>{t('productManager.cho')}</Form.Label>
                 <Form.Control
                   type="number"
                   name="cho_g_l"
@@ -178,7 +179,7 @@ const ProductManager = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>LIP (g/L)</Form.Label>
+                <Form.Label>{t('productManager.lip')}</Form.Label>
                 <Form.Control
                   type="number"
                   name="lip_g_l"
@@ -191,7 +192,7 @@ const ProductManager = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>PTN (g/L)</Form.Label>
+                <Form.Label>{t('productManager.ptn')}</Form.Label>
                 <Form.Control
                   type="number"
                   name="ptn_g_l"
@@ -204,7 +205,7 @@ const ProductManager = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>EP Ratio</Form.Label>
+                <Form.Label>{t('productManager.epRatio')}</Form.Label>
                 <Form.Control
                   type="number"
                   name="ep_ratio"
@@ -218,7 +219,7 @@ const ProductManager = () => {
 
               <div className="d-grid">
                 <Button variant="primary" type="submit">
-                  Adicionar Produto
+                  {t('productManager.addProductButton')}
                 </Button>
               </div>
             </Form>
@@ -227,12 +228,12 @@ const ProductManager = () => {
 
         <Col md={6}>
           <div className="p-4 shadow-sm rounded bg-light">
-            <h2 className="fs-5 mb-3 border-bottom pb-2">Produtos Cadastrados</h2>
+            <h2 className="fs-5 mb-3 border-bottom pb-2">{t('productManager.registeredProducts')}</h2>
             
             <Form.Group className="mb-3">
               <Form.Control
                 type="text"
-                placeholder="Buscar produto..."
+                placeholder={t('productManager.searchProduct')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -242,10 +243,10 @@ const ProductManager = () => {
               <Table striped hover>
                 <thead>
                   <tr>
-                    <th>Nome</th>
-                    <th>Kcal/mL</th>
-                    <th>Tipo</th>
-                    <th>Ações</th>
+                    <th>{t('productManager.name')}</th>
+                    <th>{t('productManager.kcalMl')}</th>
+                    <th>{t('productManager.type')}</th>
+                    <th>{t('productManager.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -258,14 +259,14 @@ const ProductManager = () => {
                         <tr key={index}>
                           <td>{product.nome}</td>
                           <td>{product.kcal_ml.toFixed(1)}</td>
-                          <td>{isUserProduct ? 'Personalizado' : 'Padrão'}</td>
+                          <td>{isUserProduct ? t('common.custom') : t('productManager.standard')}</td>
                           <td>
                             <Button
                               variant={isUserProduct ? "danger" : "warning"}
                               size="sm"
                               onClick={() => handleDeleteClick(product)}
                             >
-                              {isUserProduct ? 'Excluir' : 'Ocultar'}
+                              {isUserProduct ? t('productManager.delete') : t('productManager.hide')}
                             </Button>
                           </td>
                         </tr>
@@ -274,7 +275,7 @@ const ProductManager = () => {
                   ) : (
                     <tr>
                       <td colSpan="4" className="text-center">
-                        Nenhum produto encontrado
+                        {t('common.noResults')}
                       </td>
                     </tr>
                   )}
@@ -290,9 +291,9 @@ const ProductManager = () => {
         <Row className="mb-4">
           <Col>
             <div className="p-4 shadow-sm rounded bg-light">
-              <h2 className="fs-5 mb-3 border-bottom pb-2">Produtos Padrão Ocultos</h2>
+              <h2 className="fs-5 mb-3 border-bottom pb-2">{t('productManager.hiddenProducts')}</h2>
               <p className="text-muted mb-3">
-                Estes produtos foram ocultados por você. Clique em "Restaurar" para torná-los visíveis novamente.
+                {t('productManager.hiddenProductsDescription')}
               </p>
               
               <div className="d-flex flex-wrap gap-2">
@@ -306,7 +307,7 @@ const ProductManager = () => {
                         size="sm"
                         onClick={() => handleRestoreProduct(productName)}
                       >
-                        Restaurar
+                        {t('productManager.show')}
                       </Button>
                     </div>
                   );
@@ -322,32 +323,32 @@ const ProductManager = () => {
         <Modal.Header closeButton>
           <Modal.Title>
             {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) 
-              ? 'Confirmar Exclusão' 
-              : 'Confirmar Ocultação'}
+              ? t('productManager.confirmDelete') 
+              : t('productManager.confirmHide')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? (
             <>
-              <p>Tem certeza que deseja excluir o produto <strong>{productToDelete?.nome}</strong>?</p>
-              <p className="text-danger">Esta ação não pode ser desfeita.</p>
+              <p>{t('productManager.deleteConfirmation').replace('{{productName}}', productToDelete?.nome)}</p>
+              <p className="text-danger">{t('productManager.deleteWarning')}</p>
             </>
           ) : (
             <>
-              <p>Tem certeza que deseja ocultar o produto <strong>{productToDelete?.nome}</strong>?</p>
-              <p className="text-warning">O produto será ocultado da lista, mas poderá ser restaurado posteriormente.</p>
+              <p>{t('productManager.hideConfirmation').replace('{{productName}}', productToDelete?.nome)}</p>
+              <p className="text-warning">{t('productManager.hideWarning')}</p>
             </>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button 
             variant={productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? "danger" : "warning"} 
             onClick={confirmDelete}
           >
-            {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? 'Excluir' : 'Ocultar'}
+            {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? t('productManager.delete') : t('productManager.hide')}
           </Button>
         </Modal.Footer>
       </Modal>

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { calculatorSchema } from '../schemas/calculatorSchema';
 import { calculateResults } from '../utils/calculationUtils';
 import { allProductsAtom } from '../store/productsAtoms';
@@ -10,6 +11,7 @@ import SEO from './SEO.jsx';
 import { InFeedAd, ResponsiveBanner } from './AdSense.jsx';
 
 const Calculator = () => {
+  const { t } = useTranslation();
   const [allProducts] = useAtom(allProductsAtom);
   const [results, setResults] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
@@ -46,7 +48,7 @@ const Calculator = () => {
     const selectedProduct = allProducts.find(p => p.nome === data.product);
     
     if (!selectedProduct) {
-      alert('Por favor, selecione um produto válido.');
+      alert(t('nenpt.validation.invalidProduct'));
       setLoading(false);
       return;
     }
@@ -81,17 +83,17 @@ const Calculator = () => {
       {/* Banner de topo */}
       <ResponsiveBanner adSlot="5804222918" />
       
-      <h1 className="mb-4 text-center">Calculadora de Terapia Nutricional v.5</h1>
+      <h1 className="mb-4 text-center">{t('nenpt.title')}</h1>
       <Alert variant="info" className="mb-4">
         <i className="bi bi-info-circle-fill me-2"></i>
-        <strong>Atenção:</strong> Esta calculadora é específica para uso em adultos. Não utilize para cálculos nutricionais em pacientes pediátricos.
+        <strong>{t('common.warning')}:</strong> {t('nenpt.warning')}
       </Alert>
       <Form onSubmit={handleSubmit(onSubmit)} className="mb-5 p-4 shadow-sm rounded bg-light">
-        <h2 className="fs-5 mb-3 border-bottom pb-2">Dados do Paciente</h2>
+        <h2 className="fs-5 mb-3 border-bottom pb-2">{t('nenpt.patientData')}</h2>
         <Row className="mb-3">
           <Col md={3}>
             <Form.Group>
-              <Form.Label>Peso (kg)</Form.Label>
+              <Form.Label>{t('nenpt.weight')}</Form.Label>
               <Controller
                 name="weight"
                 control={control}
@@ -114,7 +116,7 @@ const Calculator = () => {
           </Col>
           <Col md={3}>
             <Form.Group>
-              <Form.Label>Altura (cm)</Form.Label>
+              <Form.Label>{t('nenpt.height')}</Form.Label>
               <Controller
                 name="height"
                 control={control}
@@ -136,7 +138,7 @@ const Calculator = () => {
           </Col>
           <Col md={3}>
             <Form.Group>
-              <Form.Label>Idade (anos)</Form.Label>
+              <Form.Label>{t('nenpt.age')}</Form.Label>
               <Controller
                 name="age"
                 control={control}
@@ -158,7 +160,7 @@ const Calculator = () => {
           </Col>
           <Col md={3}>
             <Form.Group>
-              <Form.Label>Sexo</Form.Label>
+              <Form.Label>{t('nenpt.sex')}</Form.Label>
               <Controller
                 name="gender"
                 control={control}
@@ -167,8 +169,8 @@ const Calculator = () => {
                     isInvalid={!!errors.gender}
                     {...field}
                   >
-                    <option value="masculino">Masculino</option>
-                    <option value="feminino">Feminino</option>
+                    <option value="masculino">{t('nenpt.male')}</option>
+                    <option value="feminino">{t('nenpt.female')}</option>
                   </Form.Select>
                 )}
               />
@@ -181,11 +183,11 @@ const Calculator = () => {
           </Col>
         </Row>
 
-        <h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">Método de Cálculo</h2>
+        <h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">{t('nenpt.calculationMethod')}</h2>
         <Row className="mb-3">
           <Col md={6}>
             <Form.Group>
-              <Form.Label>Método para Meta Calórica</Form.Label>
+              <Form.Label>{t('nenpt.caloricMethod')}</Form.Label>
               <Controller
                 name="calculationMethod"
                 control={control}
@@ -194,8 +196,8 @@ const Calculator = () => {
                     isInvalid={!!errors.calculationMethod}
                     {...field}
                   >
-                    <option value="harris-benedict">Equação de Harris-Benedict</option>
-                    <option value="pocket-formula">Fórmula de Bolso (kcal/kg/d)</option>
+                    <option value="harris-benedict">{t('nenpt.harrisBenedict')}</option>
+                    <option value="pocket-formula">{t('nenpt.pocketFormula')}</option>
                   </Form.Select>
                 )}
               />
@@ -209,7 +211,7 @@ const Calculator = () => {
           <Col md={6}>
             {calculationMethod === 'pocket-formula' && (
               <Form.Group>
-                <Form.Label>kcal/kg/dia</Form.Label>
+                <Form.Label>{t('nenpt.kcalPerKgDay')}</Form.Label>
                 <Controller
                   name="kcalPerKg"
                   control={control}
@@ -233,11 +235,11 @@ const Calculator = () => {
           </Col>
         </Row>
 
-        <h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">Dados da Fórmula</h2>
+        <h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">{t('nenpt.formulaData')}</h2>
         <Row className="mb-3">
           <Col md={6}>
             <Form.Group>
-              <Form.Label>Fórmula/Produto</Form.Label>
+              <Form.Label>{t('nenpt.formulaProduct')}</Form.Label>
               <Controller
                 name="product"
                 control={control}
@@ -246,7 +248,7 @@ const Calculator = () => {
                     isInvalid={!!errors.product}
                     {...field}
                   >
-                    <option value="">Selecione um produto</option>
+                    <option value="">{t('nenpt.selectProduct')}</option>
                     {allProducts.map((product, index) => (
                       <option key={index} value={product.nome}>
                         {product.nome}
@@ -264,7 +266,7 @@ const Calculator = () => {
           </Col>
           <Col md={6}>
             <Form.Group>
-              <Form.Label>Volume Prescrito (mL)</Form.Label>
+              <Form.Label>{t('nenpt.prescribedVolume')}</Form.Label>
               <Controller
                 name="volume"
                 control={control}
@@ -286,11 +288,11 @@ const Calculator = () => {
           </Col>
         </Row>
 
-        <h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">Dados Opcionais</h2>
+        <h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">{t('nenpt.optionalData')}</h2>
         <Row className="mb-3">
           <Col md={4}>
             <Form.Group>
-              <Form.Label>Tempo de Infusão (h)</Form.Label>
+              <Form.Label>{t('nenpt.infusionTime')}</Form.Label>
               <Controller
                 name="infusionTime"
                 control={control}
@@ -312,7 +314,7 @@ const Calculator = () => {
           </Col>
           <Col md={4}>
             <Form.Group>
-              <Form.Label>Módulo de Proteína (g)</Form.Label>
+              <Form.Label>{t('nenpt.proteinModule')}</Form.Label>
               <Controller
                 name="proteinModule"
                 control={control}
@@ -334,7 +336,7 @@ const Calculator = () => {
           </Col>
           <Col md={4}>
             <Form.Group>
-              <Form.Label>Outro Módulo (Kcal)</Form.Label>
+              <Form.Label>{t('nenpt.otherModule')}</Form.Label>
               <Controller
                 name="otherModule"
                 control={control}
@@ -358,20 +360,19 @@ const Calculator = () => {
 
         <div className="d-grid gap-2 col-6 mx-auto mt-4">
           <Button variant="primary" type="submit" disabled={loading}>
-            {loading ? 'Calculando...' : 'Calcular'}
+            {loading ? t('common.loading') : t('nenpt.calculateButton')}
           </Button>
         </div>
       </Form>
 
       {results && (
         <div className="results-section mb-5">
-          <h2 className="fs-4 mb-3">Resultados</h2>
+          <h2 className="fs-4 mb-3">{t('nenpt.results.title')}</h2>
           <Row>
             {watch('weight') && watch('height') && (
               <Col md={4} className="mb-3">
                 <Card>
-                  <Card.Body>
-                    <Card.Title className="text-muted fs-6">IMC</Card.Title>
+                  <Card.Body>                      <Card.Title className="text-muted fs-6">{t('nenpt.results.bmi')}</Card.Title>
                     <Card.Text className="fs-4 text-primary">{results.imc.toFixed(1)} kg/m²</Card.Text>
                   </Card.Body>
                 </Card>
@@ -380,11 +381,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">
-                    Gasto Energético Basal {calculationMethod === 'harris-benedict' 
-                      ? '(Harris-Benedict)' 
-                      : `(Fórmula de bolso ${watch('kcalPerKg')} kcal/kg)`}
-                  </Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.caloricGoal')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.geb.toFixed(1)} kcal</Card.Text>
                 </Card.Body>
               </Card>
@@ -392,7 +389,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Calorias Totais</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.caloriesProvided')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.totalCalories.toFixed(1)} kcal</Card.Text>
                 </Card.Body>
               </Card>
@@ -402,7 +399,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Proteína Total</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.proteinProvided')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.totalProtein.toFixed(1)} g</Card.Text>
                 </Card.Body>
               </Card>
@@ -410,7 +407,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Carboidrato Total</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.carbsProvided')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.totalCarbs.toFixed(1)} g</Card.Text>
                 </Card.Body>
               </Card>
@@ -418,7 +415,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Lipídio Total</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.lipidsProvided')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.totalLipids.toFixed(1)} g</Card.Text>
                 </Card.Body>
               </Card>
@@ -430,7 +427,7 @@ const Calculator = () => {
                 <Col md={4} className="mb-3">
                   <Card>
                     <Card.Body>
-                      <Card.Title className="text-muted fs-6">Proteína (g/kg)</Card.Title>
+                      <Card.Title className="text-muted fs-6">{t('nenpt.results.proteinPerKg')}</Card.Title>
                       <Card.Text className="fs-4 text-primary">{results.proteinPerKg.toFixed(2)} g/kg</Card.Text>
                     </Card.Body>
                   </Card>
@@ -438,7 +435,7 @@ const Calculator = () => {
                 <Col md={4} className="mb-3">
                   <Card>
                     <Card.Body>
-                      <Card.Title className="text-muted fs-6">Calorias (kcal/kg)</Card.Title>
+                      <Card.Title className="text-muted fs-6">{t('nenpt.results.caloriesPerKg')}</Card.Title>
                       <Card.Text className="fs-4 text-primary">{results.caloriesPerKg.toFixed(1)} kcal/kg</Card.Text>
                     </Card.Body>
                   </Card>
@@ -448,7 +445,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Volume/hora</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.volumePerHour')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">
                     {results.volumePerHour ? `${results.volumePerHour.toFixed(1)} mL/h` : 'N/A'}
                   </Card.Text>
@@ -460,7 +457,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Distribuição CHO</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.carbsDistribution')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.carbsPercentage.toFixed(1)}%</Card.Text>
                 </Card.Body>
               </Card>
@@ -468,7 +465,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Distribuição LIP</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.lipidsDistribution')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.lipidsPercentage.toFixed(1)}%</Card.Text>
                 </Card.Body>
               </Card>
@@ -476,7 +473,7 @@ const Calculator = () => {
             <Col md={4} className="mb-3">
               <Card>
                 <Card.Body>
-                  <Card.Title className="text-muted fs-6">Distribuição PTN</Card.Title>
+                  <Card.Title className="text-muted fs-6">{t('nenpt.results.proteinDistribution')}</Card.Title>
                   <Card.Text className="fs-4 text-primary">{results.proteinPercentage.toFixed(1)}%</Card.Text>
                 </Card.Body>
               </Card>

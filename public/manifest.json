@@ -1,7 +1,7 @@
 {
-  "short_name": "Calc Nutricional",
-  "name": "Calculadora Nutricional - Enteral e Parenteral",
-  "description": "Calculadora especializada para cálculos nutricionais enterais e parenterais para profissionais da saúde",
+  "short_name": "NutriCalc",
+  "name": "NutriCalc - Calculadora Nutricional Profissional",
+  "description": "Calculadora especializada para cálculos nutricionais enterais e parenterais para profissionais da saúde - www.nutricalc.online",
   "icons": [
     {
       "src": "favicon.ico",

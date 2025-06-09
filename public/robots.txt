@@ -7,7 +7,7 @@ Disallow: /api/
 Disallow: /admin/
 
 # Sitemap
-Sitemap: https://www.nenpt.online/sitemap.xml
+Sitemap: https://www.nutricalc.online/sitemap.xml
 
 # Crawl delay
 Crawl-delay: 1

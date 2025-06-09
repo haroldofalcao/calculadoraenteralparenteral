@@ -1,0 +1,218 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "clear": "Limpar",
+    "calculate": "Calcular",
+    "back": "Voltar",
+    "next": "Próximo",
+    "home": "Início",
+    "error": "Erro",
+    "warning": "Atenção",
+    "success": "Sucesso",
+    "custom": "Personalizado",
+    "noResults": "Nenhum resultado encontrado"
+  },
+  "navigation": {
+    "home": "Home",
+    "nenpt": "Calculadora NENPT",
+    "manageProducts": "Gerenciar Produtos",
+    "gids": "Calculadora GIDS",
+    "brand": "Calculadora Nutricional para Adultos v.5"
+  },
+  "home": {
+    "title": "Calculadoras Nutricionais",
+    "subtitle": "Ferramentas especializadas para cálculos nutricionais em pacientes adultos",
+    "nenpt": {
+      "title": "Calculadora NENPT",
+      "description": "Calculadora para Necessidades Energéticas e Nutricionais em Pacientes com Terapia Nutricional. Inclui cálculos de necessidades calóricas, proteicas e gerenciamento de produtos.",
+      "accessCalculator": "Acessar Calculadora",
+      "manageProducts": "Gerenciar Produtos"
+    },
+    "gids": {
+      "title": "Calculadora GIDS",
+      "description": "Gastrointestinal Dysfunction Score - Ferramenta para avaliação da disfunção gastrointestinal em pacientes críticos. Medida única para análise clínica.",
+      "access": "Acessar GIDS"
+    },
+    "about": {
+      "title": "Sobre as Calculadoras",
+      "description": "Estas ferramentas foram desenvolvidas para auxiliar profissionais de saúde no cálculo de necessidades nutricionais e avaliação de disfunções gastrointestinais. Todas as calculadoras seguem protocolos clínicos estabelecidos e devem ser utilizadas por profissionais qualificados.",
+      "license": "Licença: CC BY-NC-ND 4.0 - Uso não comercial permitido com atribuição"
+    }
+  },
+  "nenpt": {
+    "title": "Calculadora de Terapia Nutricional v.5",
+    "warning": "Esta calculadora é específica para uso em adultos. Não utilize para cálculos nutricionais em pacientes pediátricos.",
+    "patientData": "Dados do Paciente",
+    "weight": "Peso (kg)",
+    "height": "Altura (cm)",
+    "age": "Idade (anos)",
+    "sex": "Sexo",
+    "male": "Masculino",
+    "female": "Feminino",
+    "calculationMethod": "Método de Cálculo",
+    "caloricMethod": "Método para Meta Calórica",
+    "harrisBenedict": "Equação de Harris-Benedict",
+    "pocketFormula": "Fórmula de Bolso (kcal/kg/d)",
+    "kcalPerKgDay": "kcal/kg/dia",
+    "formulaData": "Dados da Fórmula",
+    "formulaProduct": "Fórmula/Produto",
+    "selectProduct": "Selecione um produto",
+    "prescribedVolume": "Volume Prescrito (mL)",
+    "optionalData": "Dados Opcionais",
+    "infusionTime": "Tempo de Infusão (h)",
+    "proteinModule": "Módulo de Proteína (g)",
+    "otherModule": "Outro Módulo (Kcal)",
+    "calculateButton": "Calcular Terapia Nutricional",
+    "clearButton": "Limpar Campos",
+    "results": {
+      "title": "Resultados da Terapia Nutricional",
+      "caloricGoal": "Meta Calórica",
+      "proteinGoal": "Meta Proteica",
+      "caloriesProvided": "Calorias Fornecidas",
+      "proteinProvided": "Proteína Fornecida",
+      "carbsProvided": "CHO Fornecido",
+      "lipidsProvided": "LIP Fornecido",
+      "volumePerHour": "Volume/hora",
+      "carbsDistribution": "Distribuição CHO",
+      "lipidsDistribution": "Distribuição LIP",
+      "proteinDistribution": "Distribuição PTN",
+      "bmi": "IMC",
+      "proteinPerKg": "Proteína (g/kg)",
+      "caloriesPerKg": "Calorias (kcal/kg)"
+    },
+    "validation": {
+      "selectProduct": "Selecione um produto",
+      "volumeRequired": "Volume é obrigatório",
+      "kcalKgRequired": "Valor de kcal/kg é obrigatório para o método de fórmula de bolso",
+      "invalidProduct": "Por favor, selecione um produto válido."
+    }
+  },
+  "productManager": {
+    "title": "Gerenciar Produtos Nutricionais",
+    "addProduct": "Adicionar Novo Produto",
+    "registeredProducts": "Produtos Cadastrados",
+    "productName": "Nome do Produto",
+    "kcalMl": "Kcal/mL",
+    "cho": "CHO (g/L)",
+    "lip": "LIP (g/L)",
+    "ptn": "PTN (g/L)",
+    "epRatio": "EP Ratio",
+    "addProductButton": "Adicionar Produto",
+    "searchProduct": "Buscar produto...",
+    "name": "Nome",
+    "type": "Tipo",
+    "actions": "Ações",
+    "standard": "Padrão",
+    "hide": "Ocultar",
+    "show": "Restaurar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "hiddenProducts": "Produtos Padrão Ocultos",
+    "hiddenProductsDescription": "Estes produtos foram ocultados por você. Clique em \"Restaurar\" para torná-los visíveis novamente.",
+    "confirmDelete": "Confirmar Exclusão",
+    "confirmHide": "Confirmar Ocultação",
+    "deleteConfirmation": "Tem certeza que deseja excluir o produto {{productName}}?",
+    "hideConfirmation": "Tem certeza que deseja ocultar o produto {{productName}}?",
+    "deleteWarning": "Esta ação não pode ser desfeita.",
+    "hideWarning": "O produto será ocultado da lista, mas poderá ser restaurado posteriormente.",
+    "validation": {
+      "nameExists": "Já existe um produto com este nome.",
+      "invalidValues": "Todos os valores numéricos devem ser positivos.",
+      "allFieldsRequired": "Todos os campos são obrigatórios.",
+      "productAdded": "Produto adicionado com sucesso!",
+      "confirmDelete": "Tem certeza que deseja excluir este produto?",
+      "productDeleted": "Produto processado com sucesso!"
+    }
+  },
+  "gids": {
+    "title": "Calculadora GIDS",
+    "subtitle": "Gastrointestinal Dysfunction Score - Medida Única",
+    "patientData": "Dados do Paciente",
+    "patientName": "Nome",
+    "patientId": "Registro",
+    "patientAge": "Idade",
+    "measurementDate": "Data da Medida",
+    "basicSymptoms": "Sintomas Básicos",
+    "severeSymptoms": "Sintomas Graves",
+    "lifeThreatening": "Condições Ameaçadoras",
+    "symptoms": {
+      "bowelSounds": "Ausência de ruídos intestinais",
+      "vomiting": "Vômitos",
+      "grv": "Volume residual gástrico >200mL",
+      "ileus": "Íleo paralítico/dinâmico",
+      "distension": "Distensão abdominal",
+      "mildDiarrhea": "Diarreia (não grave)",
+      "bleedingNo": "Sangramento GI sem transfusão",
+      "iap_12_20": "Pressão intra-abdominal 12 a 20mmHg",
+      "noOral": "Sem ingestão oral",
+      "severeDiarrhea": "Diarreia grave",
+      "bleedingYes": "Sangramento GI com transfusão",
+      "prokinetics": "Uso de procinéticos",
+      "iap_gt_20": "Pressão intra-abdominal >20mmHg",
+      "shock": "Sangramento GI com choque hemorrágico",
+      "ischemia": "Isquemia mesentérica",
+      "compartment": "Síndrome compartimental abdominal"
+    },
+    "score": "Score GIDS",
+    "classifications": {
+      "0": "Sem risco",
+      "1": "Risco aumentado",
+      "2": "Disfunção GI",
+      "3": "Falência GI",
+      "4": "Risco de vida"
+    },
+    "clearMeasurement": "Limpar Medida",
+    "saveMeasurement": "Salvar Medida",
+    "measurementSaved": "Medida Salva ✓",
+    "currentMeasurement": "Medida Atual",
+    "summary": "Resumo",
+    "clinicalAnalysis": "Análise Clínica",
+    "exportReport": "Exportar Relatório",
+    "summaryTable": {
+      "measure": "Medida",
+      "score": "Score", 
+      "classification": "Classificação",
+      "singleMeasurement": "Medida Única"
+    },
+    "analysis": {
+      "title": "Análise do Score GIDS:",
+      "scoreDisplay": "Score GIDS: {{score}} - {{classification}}",
+      "highRiskRecommendation": "Considerando o score GIDS atual ({{score}} - {{classification}}), recomenda-se reavaliação da terapia nutricional e investigação de causas subjacentes para a disfunção/falência gastrointestinal.",
+      "lowRiskRecommendation": "O score GIDS atual ({{score}} - {{classification}}) indica baixo risco de disfunção gastrointestinal. Continue monitorando a evolução clínica.",
+      "noDataMessage": "Preencha os dados para gerar uma análise clínica."
+    },
+    "export": {
+      "unknownPatient": "Paciente Desconhecido",
+      "filename": "Relatorio_GIDS"
+    },
+    "debug": {
+      "selectedSymptoms": "Sintomas selecionados:",
+      "basicSymptoms": "Sintomas básicos:",
+      "dysfunctionSymptoms": "Sintomas de disfunção:",
+      "failureTotal": "Total para falência GI:",
+      "lifeThreatening": "Ameaça à vida:",
+      "calculation": "Cálculo:",
+      "gids4": "GIDS 4: {{count}} sintoma(s) ameaça à vida",
+      "gids3": "GIDS 3: {{count}} sintomas de falência GI (≥3)",
+      "gids2Dysfunction": "GIDS 2: {{count}} sintoma(s) de disfunção GI",
+      "gids2Basic": "GIDS 2: {{count}} sintomas básicos (≥3)",
+      "gids1Basic": "GIDS 1: {{count}} sintomas básicos (≥2)",
+      "gids1NoOral": "GIDS 1: Apenas \"não via oral\"",
+      "gids0": "GIDS 0: {{count}} sintoma(s) - sem risco"
+    }
+  },
+  "routeError": {
+    "title": "Oops! Erro de Rota",
+    "message": "Desculpe, um erro inesperado ocorreu ao navegar para esta página.",
+    "unknownError": "Erro desconhecido",
+    "goBack": "Voltar"
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "message": "A página que você está procurando não existe ou foi movida.",
+    "backHome": "Voltar ao Início"
+  }
+}
+

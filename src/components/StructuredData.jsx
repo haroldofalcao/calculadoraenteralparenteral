@@ -2,14 +2,14 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const StructuredData = ({ type = "WebApplication", data = {} }) => {
-  const baseUrl = "https://www.nenpt.online";
+  const baseUrl = "https://www.nutricalc.online";
   
   const schemas = {
     WebApplication: {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": data.name || "Calculadora Nutricional",
-      "description": data.description || "Calculadora especializada para cálculos nutricionais enterais e parenterais",
+      "name": data.name || "NutriCalc - Calculadora Nutricional",
+      "description": data.description || "NutriCalc - Calculadora especializada para cálculos nutricionais enterais e parenterais",
       "url": data.url || baseUrl,
       "applicationCategory": "HealthApplication",
       "operatingSystem": "Web Browser",
@@ -20,7 +20,7 @@ const StructuredData = ({ type = "WebApplication", data = {} }) => {
       },
       "author": {
         "@type": "Organization",
-        "name": "Calculadora Nutricional"
+        "name": "NutriCalc"
       },
       "aggregateRating": {
         "@type": "AggregateRating",
@@ -52,7 +52,7 @@ const StructuredData = ({ type = "WebApplication", data = {} }) => {
     Organization: {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Calculadora Nutricional",
+      "name": "NutriCalc",
       "url": baseUrl,
       "logo": `${baseUrl}/logo512.png`,
       "description": "Plataforma especializada em ferramentas para cálculos nutricionais profissionais",
@@ -78,7 +78,7 @@ const StructuredData = ({ type = "WebApplication", data = {} }) => {
     SoftwareApplication: {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Calculadora Nutricional",
+      "name": "NutriCalc",
       "operatingSystem": "Web Browser",
       "applicationCategory": "HealthApplication",
       "description": data.description || "Aplicação web para cálculos nutricionais profissionais",
@@ -90,7 +90,7 @@ const StructuredData = ({ type = "WebApplication", data = {} }) => {
       },
       "creator": {
         "@type": "Organization",
-        "name": "Calculadora Nutricional"
+        "name": "NutriCalc"
       }
     }
   };

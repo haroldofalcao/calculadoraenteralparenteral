@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import i18n from '../i18n/index.js';
+
+const t = i18n.t;
 
 export const calculatorSchema = z.object({
   // Campos opcionais conforme solicitado
@@ -12,8 +15,8 @@ export const calculatorSchema = z.object({
   kcalPerKg: z.string().optional(),
   
   // Campos obrigatórios
-  product: z.string().min(1, "Selecione um produto"),
-  volume: z.string().min(1, "Volume é obrigatório"),
+  product: z.string().min(1, () => t('nenpt.validation.selectProduct')),
+  volume: z.string().min(1, () => t('nenpt.validation.volumeRequired')),
   
   // Campos opcionais
   infusionTime: z.string().optional(),
@@ -24,7 +27,7 @@ export const calculatorSchema = z.object({
   if (data.calculationMethod === 'pocket-formula' && !data.kcalPerKg) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "Valor de kcal/kg é obrigatório para o método de fórmula de bolso",
+      message: t('nenpt.validation.kcalKgRequired'),
       path: ['kcalPerKg']
     });
   }

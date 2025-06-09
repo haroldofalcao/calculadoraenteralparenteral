@@ -1,132 +1,198 @@
-# Calculadora Nutricional v.5 - Manual do Usuário
+# Calculadora Nutricional - Enteral e Parenteral v5.0
 
-## Introdução
+Uma aplicação web moderna para cálculos nutricionais, incluindo calculadoras NENPT (Necessidades Energéticas Nutricionais Parenterais e Enterais) e GIDS (Gastrointestinal Dysfunction Score).
 
-A Calculadora Nutricional v.5 é uma aplicação web desenvolvida em React que permite realizar cálculos de terapia nutricional, mantendo todas as funcionalidades da versão original em Excel e adicionando a capacidade de atualizar o banco de dados de produtos nutricionais de forma simples e intuitiva.
+## 🚀 Funcionalidades
 
-Esta versão utiliza localStorage para armazenar os dados dos produtos diretamente no navegador do usuário, eliminando a necessidade de um servidor backend.
+### ✨ Calculadora NENPT
+- Cálculo de necessidades energéticas baseado em parâmetros antropométricos
+- Gerenciamento de produtos nutricionais
+- Persistência de dados no localStorage
+- Interface responsiva e intuitiva
 
-## Funcionalidades
+### 🆕 Calculadora GIDS
+- Avaliação de disfunção gastrointestinal
+- Sistema de pontuação automático
+- Classificação de risco baseada no score
+- Geração de relatórios em texto
+- Persistência de medidas e histórico
 
-1. **Calculadora Nutricional**
-   - Cálculo de necessidades nutricionais baseado em peso, altura, idade e sexo
-   - Seleção de produtos/fórmulas do banco de dados local
-   - Cálculo de distribuição de macronutrientes
-   - Resultados detalhados por kg de peso corporal
+### 🌐 Internacionalização
+- Suporte completo para Português e Inglês
+- Troca de idioma em tempo real
+- Persistência da preferência de idioma
 
-2. **Gerenciamento de Produtos**
-   - Visualização de todos os produtos disponíveis
-   - Adição de novos produtos ao banco de dados local
-   - Exclusão de produtos/fórmulas descontinuados
-   - Busca de produtos por nome
+## 🏗️ Arquitetura Moderna
 
-## Como Usar
+### React Router v6.4+
+- `createBrowserRouter` para roteamento moderno
+- Lazy loading com `React.lazy()` e `Suspense`
+- Layout modular com `Outlet`
+- Skeletons personalizados para cada página
 
-### Calculadora Nutricional
+### Estrutura de Pastas
+```
+src/
+├── components/          # Componentes reutilizáveis
+├── layouts/            # Layouts da aplicação
+│   └── AppLayout.tsx   # Layout principal com Outlet
+├── pages/              # Páginas da aplicação
+│   ├── Home/           # Página inicial
+│   ├── Nenpt/          # Calculadora NENPT
+│   ├── Gids/           # Calculadora GIDS
+│   └── NotFound/       # Página 404
+├── router/             # Configuração de rotas
+├── i18n/               # Internacionalização
+│   └── locales/        # Arquivos de tradução
+└── App.jsx             # Componente raiz
+```
 
-1. Na página inicial, preencha os dados do paciente:
-   - Peso (kg)
-   - Altura (cm)
-   - Idade (anos)
-   - Sexo (masculino/feminino)
+### Tecnologias Utilizadas
+- **React 18** - Framework principal
+- **React Router v6.4+** - Roteamento moderno
+- **React Hook Form + Zod** - Formulários e validação
+- **Jotai** - Gerenciamento de estado
+- **Bootstrap 5.3** - Estilização
+- **React i18next** - Internacionalização
+- **Vite** - Build tool moderna
 
-2. Selecione a fórmula/produto desejado no menu suspenso
+## 🧪 Testes E2E
 
-3. Informe o volume prescrito (mL)
+### Cypress
+Testes end-to-end completos cobrindo:
+- Navegação entre páginas
+- Funcionalidades das calculadoras
+- Mudança de idioma
+- Persistência de dados
+- Responsividade
 
-4. Opcionalmente, informe:
-   - Tempo de infusão (h) - para calcular mL/hora
-   - Módulo de proteína (g) - para adicionar proteína extra
-   - Outro módulo (Kcal) - para adicionar calorias extras
+### Comandos de Teste
+```bash
+# Executar testes em modo headless
+npm run test:e2e
 
-5. Clique no botão "Calcular"
+# Abrir interface do Cypress
+npm run test:e2e:open
+```
 
-6. Os resultados serão exibidos abaixo, organizados em seções:
-   - Dados Antropométricos (IMC)
-   - Gasto Energético (GEB)
-   - Informações do Produto
-   - Prescrição
-   - Cálculos Nutricionais
-   - Distribuição Calórica
-   - Outros Indicadores
+## 🔄 CI/CD com GitHub Actions
 
-### Adição de Novos Produtos
+### Workflows Configurados
 
-1. Clique em "Gerenciar Produtos" no menu superior
+#### 1. E2E Tests (`e2e.yml`)
+- Executa em Node.js 18.x e 20.x
+- Testes automatizados em Chrome
+- Upload de screenshots/vídeos em caso de falha
 
-2. Preencha todos os campos do formulário:
-   - Nome do Produto
-   - Kcal/mL
-   - CHO (g/L)
-   - LIP (g/L)
-   - PTN (g/L)
-   - EP Ratio
+#### 2. Build and Deploy (`deploy.yml`)
+- Build automático na branch main
+- Deploy para GitHub Pages
+- Execução de testes antes do deploy
 
-3. Clique em "Adicionar Produto"
+#### 3. Quality Checks (`quality.yml`)
+- Verificação de linting (ESLint)
+- Auditoria de segurança
+- Verificação de tamanho do bundle
 
-4. Uma mensagem de confirmação será exibida se o produto for adicionado com sucesso
+## 🚀 Como Executar
 
-5. O novo produto estará imediatamente disponível para seleção na calculadora
+### Pré-requisitos
+- Node.js 18+ 
+- npm ou yarn
 
-### Exclusão de Produtos
+### Instalação
+```bash
+# Clonar o repositório
+git clone https://github.com/haroldofalcao/calculadoraenteralparenteral.git
 
-1. Clique em "Gerenciar Produtos" no menu superior
+# Instalar dependências
+cd calculadoraenteralparenteral
+npm install
 
-2. Localize o produto que deseja excluir na tabela (use a caixa de busca para filtrar produtos)
+# Executar em desenvolvimento
+npm run dev
 
-3. Clique no botão "Excluir" ao lado do produto desejado
+# Build para produção
+npm run build
 
-4. Confirme a exclusão na janela de diálogo que aparecerá
+# Preview da build
+npm run preview
+```
 
-5. Uma mensagem de confirmação será exibida se o produto for excluído com sucesso
+### Scripts Disponíveis
+```bash
+npm run dev          # Servidor de desenvolvimento
+npm run build        # Build para produção
+npm run preview      # Preview da build
+npm run lint         # Verificação de código
+npm run test:e2e     # Testes E2E (headless)
+npm run test:e2e:open # Interface do Cypress
+```
 
-## Instalação e Execução
+## 📱 Responsividade
 
-### Método 1: Executar localmente (sem servidor)
+A aplicação é totalmente responsiva e funciona perfeitamente em:
+- 📱 Dispositivos móveis (320px+)
+- 📱 Tablets (768px+)
+- 💻 Desktops (1024px+)
+- 🖥️ Telas grandes (1440px+)
 
-1. Descompacte o arquivo ZIP em qualquer pasta do seu computador
+## 🌟 Melhorias Implementadas
 
-2. Abra o arquivo `index.html` na pasta `build` diretamente no seu navegador
+### v5.0 - Refatoração Completa
+- ✅ Migração para React Router v6.4+ com createBrowserRouter
+- ✅ Implementação de lazy loading e Suspense
+- ✅ Sistema de internacionalização completo (PT/EN)
+- ✅ Nova calculadora GIDS totalmente funcional
+- ✅ Testes E2E abrangentes com Cypress
+- ✅ CI/CD automatizado com GitHub Actions
+- ✅ Layout modular e componentes reutilizáveis
+- ✅ Skeletons personalizados para melhor UX
+- ✅ Persistência de dados aprimorada
 
-3. A aplicação funcionará imediatamente, sem necessidade de servidor web
+### Calculadora GIDS
+- ✅ Interface moderna e intuitiva
+- ✅ Cálculo automático do score
+- ✅ Sistema de classificação de risco
+- ✅ Persistência de medidas
+- ✅ Geração de relatórios
+- ✅ Totalmente integrada com i18n
 
-### Método 2: Executar com servidor web simples
+## 🤝 Contribuição
 
-1. Descompacte o arquivo ZIP em qualquer pasta do seu computador
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-2. Se você tem Node.js instalado, pode usar o pacote `serve`:
-   ```
-   npx serve -s build
-   ```
+## 📄 Licença
 
-3. Ou use qualquer servidor web de sua preferência apontando para a pasta `build`
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-### Método 3: Hospedar online
+## 👨‍💻 Autor
 
-1. Faça upload da pasta `build` completa para qualquer serviço de hospedagem web:
-   - GitHub Pages
-   - Netlify
-   - Vercel
-   - Amazon S3
-   - Ou qualquer outro serviço de hospedagem estática
+**Haroldo Falcão Ramos da Cunha**
+- GitHub: [@haroldofalcao](https://github.com/haroldofalcao)
 
-2. A aplicação funcionará sem necessidade de configuração adicional
+---
 
-## Persistência de Dados
+## 📋 Changelog
 
-Todos os produtos adicionados ou excluídos são armazenados no localStorage do navegador. Isso significa que:
+### v5.0.0 (2025-06-09)
+- **BREAKING CHANGES**: Refatoração completa da arquitetura
+- **NEW**: Calculadora GIDS implementada
+- **NEW**: Sistema de internacionalização (PT/EN)
+- **NEW**: Testes E2E com Cypress
+- **NEW**: CI/CD com GitHub Actions
+- **IMPROVED**: React Router v6.4+ com lazy loading
+- **IMPROVED**: Layout modular e responsivo
+- **IMPROVED**: Performance e UX geral
 
-- Os dados persistem mesmo após fechar e reabrir o navegador
-- Os dados são específicos para cada navegador e dispositivo
-- Limpar os dados de navegação do navegador também apagará os produtos cadastrados
+### v4.x
+- Versões anteriores com arquitetura legada
 
-## Licença e Autoria
+---
 
-Calculadora Nutricional v.5 (CC BY-NC-ND 4.0)
-Desenvolvido por Haroldo Falcão Ramos da Cunha
+*Desenvolvido com ❤️ para profissionais da saúde*
 
-## Requisitos Técnicos
-
-- Navegador web moderno (Chrome, Firefox, Safari, Edge)
-- JavaScript habilitado
-- Não requer conexão com internet após o carregamento inicial
