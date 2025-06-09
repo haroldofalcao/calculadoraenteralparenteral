@@ -3,7 +3,7 @@ import { Container, Row, Col, Placeholder, Card, Table } from 'react-bootstrap';
 
 function GerenciarProdutosSkeleton() {
   return (
-    <Container>
+    <Container className="content-skeleton">
       <Row>
         <Col>
           <Card>

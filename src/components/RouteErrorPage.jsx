@@ -7,7 +7,7 @@ function RouteErrorPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" data-no-ads="true">
       <div className="alert alert-danger" role="alert">
         <h4 className="alert-heading">{t('routeError.title')}</h4>
         <p>

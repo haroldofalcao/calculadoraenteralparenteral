@@ -80,8 +80,8 @@ const Calculator = () => {
         }}
       />
       
-      {/* Banner de topo */}
-      <ResponsiveBanner adSlot="5804222918" />
+      {/* Banner de topo - só exibe após o conteúdo estar carregado */}
+      <ResponsiveBanner adSlot="5804222918" requireContent={true} />
       
       <h1 className="mb-4 text-center">{t('nenpt.title')}</h1>
       <Alert variant="info" className="mb-4">
@@ -481,9 +481,9 @@ const Calculator = () => {
           </Row>
         </div>
       )}      
-      {/* Anúncio após os resultados */}
+      {/* Anúncio após os resultados - só quando há resultados válidos */}
       {results && (
-        <InFeedAd adSlot="1864977909" />
+        <ResultsAd adSlot="1864977909" />
       )}
       
     </Container>

@@ -3,7 +3,7 @@ import { Container, Row, Col, Placeholder, Card } from 'react-bootstrap';
 
 function HomeSkeleton() {
   return (
-    <Container>
+    <Container className="content-skeleton">
       <Row className="justify-content-center">
         <Col md={10} lg={8}>
           <div className="text-center mb-5">

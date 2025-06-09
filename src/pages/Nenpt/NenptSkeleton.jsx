@@ -3,7 +3,7 @@ import { Container, Row, Col, Placeholder, Card } from 'react-bootstrap';
 
 function NenptSkeleton() {
   return (
-    <Container>
+    <Container className="content-skeleton">
       <Row>
         <Col>
           <Card>

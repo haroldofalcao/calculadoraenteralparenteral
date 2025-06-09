@@ -56,6 +56,32 @@ class AdSenseManager {
   loadAd(adElement, adSlot) {
     if (typeof window === 'undefined' || !window.adsbygoogle) return;
     
+    // Verificar se a página está marcada como sem anúncios
+    const noAdsElement = document.querySelector('[data-no-ads="true"]');
+    if (noAdsElement) {
+      console.log(`Skipping ad load due to no-ads marker: ${adSlot}`);
+      return;
+    }
+    
+    // Verificar se há conteúdo skeleton/placeholder ativo
+    const hasSkeletons = document.querySelectorAll('.placeholder, .spinner-border, .content-skeleton').length > 0;
+    if (hasSkeletons) {
+      console.log(`Skipping ad load due to skeleton content: ${adSlot}`);
+      return;
+    }
+    
+    // Verificar se a página tem conteúdo suficiente
+    const mainContent = document.querySelector('main');
+    if (mainContent) {
+      const textContent = mainContent.innerText || '';
+      const contentLength = textContent.replace(/\s+/g, ' ').trim().length;
+      
+      if (contentLength < 300) {
+        console.log(`Skipping ad load due to insufficient content (${contentLength} chars): ${adSlot}`);
+        return;
+      }
+    }
+    
     // Criar ID único para o anúncio
     const adId = `${adSlot}-${adElement?.getAttribute?.('data-ad-slot') || Math.random()}`;
     

@@ -7,7 +7,7 @@ function NotFound() {
   const { t } = useTranslation();
 
   return (
-    <Container>
+    <Container data-no-ads="true">
       <Row className="justify-content-center text-center">
         <Col md={6}>
           <div className="py-5">
