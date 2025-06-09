@@ -29,10 +29,10 @@ function AppLayout() {
               
               <Dropdown align="end">
                 <Dropdown.Toggle variant="outline-light" size="sm" className="ms-2">
-                  {i18n.language === 'pt' ? '🇧🇷 PT' : '🇺🇸 EN'}
+                  {i18n.language === 'pt-BR' ? '🇧🇷 PT' : '🇺🇸 EN'}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => changeLanguage('pt')}>
+                  <Dropdown.Item onClick={() => changeLanguage('pt-BR')}>
                     🇧🇷 Português
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => changeLanguage('en')}>
