@@ -22,14 +22,18 @@ Cypress.Commands.add('waitForPageLoad', () => {
 // Comando para aguardar carregamento específico de formulários
 Cypress.Commands.add('waitForFormReady', () => {
   cy.get('form').should('be.visible')
-  cy.get('button[type="submit"], button').contains(/salvar|calcular|enviar/i).should('be.enabled')
+  // Aguarda pelo menos um campo de input estar disponível
+  cy.get('input, select').first().should('be.visible').should('not.be.disabled')
+  // Aguarda botão de submit estar disponível
+  cy.get('button[type="submit"], button').contains(/salvar|calcular|enviar|adicionar/i).should('be.visible').should('not.be.disabled')
 })
 
 // Comando para preenchimento seguro de campos
 Cypress.Commands.add('fillField', (selector, value) => {
   cy.get(selector)
     .should('be.visible')
-    .should('be.enabled')
+    .should('not.be.disabled')
+    .wait(100) // Pequena pausa para estabilizar
     .clear()
     .type(value)
     .should('have.value', value)

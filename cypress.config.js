@@ -1,18 +1,19 @@
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
+  projectId: 'esvdj5',
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://localhost:4173',
     supportFile: 'cypress/support/e2e.js',
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     video: false,
-    screenshotOnRunFailure: true,
+    screenshotOnRunFailure: false,
     viewportWidth: 1280,
     viewportHeight: 720,
-    defaultCommandTimeout: 10000,
-    requestTimeout: 10000,
-    responseTimeout: 10000,
-    pageLoadTimeout: 30000,
+    defaultCommandTimeout: 4000,
+    requestTimeout: 4000,
+    responseTimeout: 4000,
+    pageLoadTimeout: 10000,
     watchForFileChanges: false,
     experimentalStudio: true,
     retries: {

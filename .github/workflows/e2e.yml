@@ -6,6 +6,17 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  # Cache versioning
+  CACHE_VERSION: v2
+  # Cypress cache
+  CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+  # PNPM settings
+  PNPM_VERSION: 8
+  # CI specific settings
+  CI: true
+  NODE_ENV: test
+
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
@@ -13,51 +24,94 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
+        test-suite: ['home', 'full']
+      fail-fast: false
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: ${{ env.PNPM_VERSION }}
+        
     - name: Setup Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        cache: 'pnpm'
+        cache-dependency-path: pnpm-lock.yaml
+        
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+        
+    - name: Setup pnpm cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ env.CACHE_VERSION }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-${{ env.CACHE_VERSION }}-
+          
+    - name: Setup Cypress cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.CYPRESS_CACHE_FOLDER }}
+        key: ${{ runner.os }}-cypress-${{ env.CACHE_VERSION }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-cypress-${{ env.CACHE_VERSION }}-
         
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile --prefer-offline
       
-    - name: Build application
-      run: npm run build
+    - name: Verify Cypress installation
+      run: pnpm cypress verify
       
-    - name: Start application
-      run: npm run preview &
-      env:
-        CI: true
-        
-    - name: Wait for application to be ready
-      run: npx wait-on http://localhost:4173 --timeout 60000
-      
-    - name: Run Cypress E2E tests
-      uses: cypress-io/github-action@v6
+    - name: Cache build output
+      uses: actions/cache@v4
       with:
-        start: npm run preview
-        wait-on: 'http://localhost:4173'
-        wait-on-timeout: 120
-        browser: chrome
-        record: false
+        path: dist
+        key: ${{ runner.os }}-build-${{ env.CACHE_VERSION }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.CACHE_VERSION }}-
+        
+    - name: Run E2E tests based on matrix
+      run: |
+        if [ "${{ matrix.test-suite }}" = "home" ]; then
+          pnpm test:e2e:ci:home
+        else
+          pnpm test:e2e:ci:chrome
+        fi
+      env:
+        CYPRESS_baseUrl: http://localhost:4173
+        CI: true
         
     - name: Upload Cypress screenshots
       uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-screenshots-${{ matrix.node-version }}
+        name: cypress-screenshots-node-${{ matrix.node-version }}-${{ github.run_id }}
         path: cypress/screenshots
+        retention-days: 7
         
     - name: Upload Cypress videos
       uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: cypress-videos-${{ matrix.node-version }}
+        name: cypress-videos-node-${{ matrix.node-version }}-${{ github.run_id }}
         path: cypress/videos
+        retention-days: 7
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: cypress-results-node-${{ matrix.node-version }}-${{ github.run_id }}
+        path: |
+          cypress/results
+          cypress/reports
+        retention-days: 7
 

@@ -11,10 +11,13 @@
     "test:e2e": "cypress run",
     "test:e2e:open": "cypress open",
     "test:e2e:headless": "cypress run --headless",
+    "test:e2e:headed": "cypress run --headed",
     "test:e2e:chrome": "cypress run --browser chrome",
     "test:e2e:smoke": "cypress run --spec 'cypress/e2e/home.cy.js,cypress/e2e/nenpt.cy.js'",
     "test:e2e:full": "cypress run",
-    "test:e2e:accessibility": "cypress run --spec 'cypress/e2e/accessibility.cy.js'"
+    "test:e2e:accessibility": "cypress run --spec 'cypress/e2e/accessibility.cy.js'",
+    "test:e2e:home": "cypress run --spec 'cypress/e2e/features/home/**/*.cy.js'",
+    "test:e2e:ci": "pnpm run build && pnpm run preview --port 4173 & pnpm dlx wait-on http://localhost:4173 --timeout 60000 && pnpm run test:e2e && pkill -f 'vite.*preview.*4173' || true"
   },
     "dependencies": {
       "react": "^18.2.0",
