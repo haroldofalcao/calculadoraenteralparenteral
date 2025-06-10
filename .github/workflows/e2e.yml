@@ -12,7 +12,7 @@ env:
   # Cypress cache
   CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
   # PNPM settings
-  PNPM_VERSION: 8
+  PNPM_VERSION: 10
   # CI specific settings
   CI: true
   NODE_ENV: test
@@ -79,12 +79,8 @@ jobs:
           ${{ runner.os }}-build-${{ env.CACHE_VERSION }}-
         
     - name: Run E2E tests based on matrix
-      run: |
-        if [ "${{ matrix.test-suite }}" = "home" ]; then
-          pnpm test:e2e:ci:home
-        else
-          pnpm test:e2e:ci:chrome
-        fi
+      run: pnpm test:e2e:ci
+       
       env:
         CYPRESS_baseUrl: http://localhost:4173
         CI: true
