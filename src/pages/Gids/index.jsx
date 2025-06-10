@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
+import AdSenseCompliantPage from '../../components/AdSenseCompliantPage.jsx';
+import { ResponsiveBanner, InFeedAd, ResultsAd } from '../../components/AdSense.jsx';
 
 // Schema de validação
 const gidsSchema = z.object({
@@ -267,15 +269,30 @@ function Gids() {
   };
 
   return (
-    <Container>
-      <Row className="justify-content-center">
-        <Col md={10} lg={8}>
-          {/* Header */}
-          <Card className="mb-4">
-            <Card.Header className="bg-primary text-white text-center">
-              <h1 className="mb-0">{t('gids.title')} - {t('gids.subtitle')}</h1>
-            </Card.Header>
-          </Card>
+    <main>
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={10} lg={8}>
+            {/* Header */}
+            <Card className="mb-4">
+              <Card.Header className="bg-primary text-white text-center">
+                <h1 className="mb-0">{t('gids.title')} - {t('gids.subtitle')}</h1>
+              </Card.Header>
+              <Card.Body>
+                <p className="mb-0 text-muted">
+                  {t('gids.description', 'Avaliação da síndrome de disfunção gastrointestinal em pacientes críticos. Esta ferramenta auxilia na classificação da gravidade dos sintomas gastrointestinais e no direcionamento do manejo clínico apropriado.')}
+                </p>
+              </Card.Body>
+            </Card>
+
+            {/* Anúncio superior - só carrega se página estiver em compliance */}
+            <AdSenseCompliantPage minContentLength={800}>
+              <ResponsiveBanner 
+                adSlot="gids-top-banner"
+                requireContent={true}
+                style={{ marginBottom: '30px' }}
+              />
+            </AdSenseCompliantPage>
 
           {/* Tabs */}
           <Tabs
@@ -469,6 +486,16 @@ function Gids() {
                   </Card.Body>
                 </Card>
 
+                {/* Anúncio após resultado - só aparece quando há cálculo válido */}
+                {currentScore > 0 && (
+                  <AdSenseCompliantPage minContentLength={1000}>
+                    <ResultsAd 
+                      adSlot="gids-results-ad"
+                      style={{ margin: '30px 0' }}
+                    />
+                  </AdSenseCompliantPage>
+                )}
+
                 {/* Botões */}
                 <div className="d-flex justify-content-between">
                   <Button variant="secondary" onClick={clearMeasurement}>
@@ -553,6 +580,7 @@ function Gids() {
         </Col>
       </Row>
     </Container>
+  </main>
   );
 }
 

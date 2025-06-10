@@ -4,6 +4,7 @@ import { Link, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer.jsx';
 import ErrorBoundary from '../components/ErrorBoundary.jsx';
+import { AdSenseComplianceIndicator } from '../components/AdSenseCompliantPage.jsx';
 
 function AppLayout() {
   const { t, i18n } = useTranslation();
@@ -60,6 +61,7 @@ function AppLayout() {
       </main>
 
       <Footer />
+      <AdSenseComplianceIndicator />
     </div>
   );
 }

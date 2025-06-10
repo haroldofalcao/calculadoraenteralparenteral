@@ -9,6 +9,7 @@ import { allProductsAtom } from '../store/productsAtoms';
 import { useAtom } from 'jotai';
 import SEO from './SEO.jsx';
 import { InFeedAd, ResponsiveBanner, ResultsAd } from './AdSense.jsx';
+import AdSenseCompliantPage from './AdSenseCompliantPage.jsx';
 
 const Calculator = () => {
   const { t } = useTranslation();
@@ -61,23 +62,30 @@ const Calculator = () => {
   };
 
   return (
-    <Container>
-      <SEO 
-        title="Calculadora de Terapia Nutricional - Enteral e Parenteral" 
-        description="Calcule a terapia nutricional ideal com nossa calculadora especializada. Ferramenta profissional para nutricionistas e profissionais da saúde."
-        canonical="/"
-        keywords="calculadora nutricional, terapia nutricional, nutrição enteral, nutrição parenteral, cálculo nutricional, nutricionista"
-        structuredDataType="MedicalWebPage"
-        structuredData={{
-          audience: {
-            "@type": "MedicalAudience",
-            "audienceType": "healthcare professionals"
-          }
-        }}
-      />
-      
-      {/* Banner de topo - só exibe após o conteúdo estar carregado */}
-      <ResponsiveBanner adSlot="5804222918" requireContent={true} />
+    <main>
+      <Container>
+        <SEO 
+          title="Calculadora de Terapia Nutricional - Enteral e Parenteral" 
+          description="Calcule a terapia nutricional ideal com nossa calculadora especializada. Ferramenta profissional para nutricionistas e profissionais da saúde."
+          canonical="/"
+          keywords="calculadora nutricional, terapia nutricional, nutrição enteral, nutrição parenteral, cálculo nutricional, nutricionista"
+          structuredDataType="MedicalWebPage"
+          structuredData={{
+            audience: {
+              "@type": "MedicalAudience",
+              "audienceType": "healthcare professionals"
+            }
+          }}
+        />
+        
+        {/* Banner de topo - só exibe após o conteúdo estar carregado */}
+        <AdSenseCompliantPage minContentLength={800}>
+          <ResponsiveBanner 
+            adSlot="5804222918" 
+            requireContent={true}
+            style={{ marginBottom: '30px' }}
+          />
+        </AdSenseCompliantPage>
       
       <h1 className="mb-4 text-center">{t('nenpt.title')}</h1>
       <Alert variant="info" className="mb-4">
@@ -230,6 +238,17 @@ const Calculator = () => {
             )}
           </Col>
         </Row>
+
+        {/* Anúncio no meio do formulário - discreto */}
+        <AdSenseCompliantPage minContentLength={600}>
+          <InFeedAd 
+            adSlot="nenpt-form-ad"
+            requireContent={true}
+            showLabel={true}
+            variant="subtle"
+            style={{ margin: '30px 0' }}
+          />
+        </AdSenseCompliantPage>
 
         <h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">{t('nenpt.formulaData')}</h2>
         <Row className="mb-3">
@@ -479,10 +498,13 @@ const Calculator = () => {
       )}      
       {/* Anúncio após os resultados - só quando há resultados válidos */}
       {results && (
-        <ResultsAd adSlot="1864977909" />
+        <AdSenseCompliantPage minContentLength={1200}>
+          <ResultsAd adSlot="1864977909" />
+        </AdSenseCompliantPage>
       )}
       
     </Container>
+  </main>
   );
 };
 

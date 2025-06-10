@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { adSenseManager } from '../utils/adSenseManager.js';
+import { policyGuard } from '../utils/adSensePolicyGuard.js';
 
 // Função para verificar se a página tem conteúdo suficiente
 const hasValidContent = () => {
@@ -13,25 +14,51 @@ const hasValidContent = () => {
   if (noAdsElement) return false;
   
   // Verificar se há placeholders ou skeletons ativos
-  const hasSkeletons = document.querySelectorAll('.placeholder, .spinner-border, .content-skeleton').length > 0;
+  const hasSkeletons = document.querySelectorAll('.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton').length > 0;
   if (hasSkeletons) return false;
+
+  // Verificar páginas "em construção" ou "coming soon"
+  const pageTitle = document.title.toLowerCase();
+  const constructionKeywords = ['construção', 'desenvolvimento', 'coming soon', 'em breve', 'maintenance', 'manutenção'];
+  if (constructionKeywords.some(keyword => pageTitle.includes(keyword))) return false;
+
+  // Verificar se há alertas/modais visíveis que possam interferir
+  const alertElements = document.querySelectorAll('.alert:not(.d-none), .modal.show, .overlay:not([style*="none"])');
+  if (alertElements.length > 0) return false;
   
-  // Verificar se há texto suficiente (mínimo de 300 caracteres de conteúdo real)
+  // Verificar se há texto suficiente (mínimo de 500 caracteres de conteúdo real)
   const textContent = mainContent.innerText || '';
   const contentLength = textContent.replace(/\s+/g, ' ').trim().length;
   
-  return contentLength >= 300;
+  if (contentLength < 500) return false;
+
+  // Verificar se não é conteúdo de baixo valor
+  const lowValueKeywords = ['lorem ipsum', 'texto de exemplo', 'placeholder', 'exemplo de texto', 'content here'];
+  if (lowValueKeywords.some(keyword => textContent.toLowerCase().includes(keyword))) return false;
+
+  // Verificar se há elementos vazios dominando a página
+  const emptyStateElements = document.querySelectorAll('.empty-state, .no-results, .not-found');
+  if (emptyStateElements.length > 0) {
+    // Se há estados vazios, verificar se ainda há conteúdo suficiente
+    const visibleEmptyStates = Array.from(emptyStateElements).filter(el => 
+      el.style.display !== 'none' && !el.classList.contains('d-none')
+    );
+    if (visibleEmptyStates.length > 0 && contentLength < 800) return false;
+  }
+  
+  return true;
 };
 
 // Verificar se a URL atual é adequada para anúncios
 const isValidPageForAds = (pathname) => {
   const invalidPages = [
-    '/404',
-    '/error',
-    '/skeleton'
+    '/404', '/error', '/skeleton', '/loading', '/maintenance',
+    '/coming-soon', '/under-construction', '/redirect', '/exit',
+    '/thank-you', '/thanks', '/confirmation', '/confirm',
+    '/navigation', '/sitemap'
   ];
   
-  return !invalidPages.some(page => pathname.includes(page));
+  return !invalidPages.some(page => pathname.toLowerCase().includes(page.toLowerCase()));
 };
 
 // Placeholder para desenvolvimento
@@ -96,6 +123,7 @@ const AdSense = ({
   const adRef = useRef(null);
   const location = useLocation();
   const [contentReady, setContentReady] = useState(false);
+  const [policyCompliant, setPolicyCompliant] = useState(false);
 
   // Verificar se a página é válida para anúncios
   const pageValidForAds = isValidPageForAds(location.pathname);
@@ -104,42 +132,76 @@ const AdSense = ({
     // Só carregar em produção e em páginas válidas
     if (import.meta.env.DEV || !pageValidForAds) return;
 
+    // Integrar com o policy guard
+    const handlePolicyChange = (validation) => {
+      setPolicyCompliant(validation.isValid);
+      if (!validation.isValid) {
+        console.log('🚫 Anúncio bloqueado por violação de política:', validation.issues);
+      }
+    };
+
+    // Registrar callback
+    policyGuard.onViolation(handlePolicyChange);
+
+    // Verificar status atual
+    const currentStatus = policyGuard.getStatus();
+    if (currentStatus.lastValidation) {
+      setPolicyCompliant(currentStatus.lastValidation.isValid);
+    }
+
     if (requireContent) {
       // Aguardar o conteúdo estar pronto
       const checkContent = () => {
-        if (hasValidContent()) {
+        const hasContent = hasValidContent();
+        const policyCheck = policyGuard.forceValidation();
+        
+        if (hasContent && policyCheck.isValid) {
           setContentReady(true);
+          setPolicyCompliant(true);
         } else {
           // Verificar novamente após um tempo
-          setTimeout(checkContent, 1000);
+          setTimeout(checkContent, 2000);
         }
       };
 
       // Aguardar um pouco antes de começar a verificar
-      const initialDelay = setTimeout(checkContent, 2000);
-      
+      const initialDelay = setTimeout(checkContent, 3000);
       return () => clearTimeout(initialDelay);
     } else {
-      // Se não requer verificação de conteúdo, marcar como pronto imediatamente
+      // Se não requer verificação de conteúdo, ainda verificar políticas
+      const policyCheck = policyGuard.forceValidation();
       setContentReady(true);
+      setPolicyCompliant(policyCheck.isValid);
     }
   }, [location.pathname, requireContent, pageValidForAds]);
 
   useEffect(() => {
-    // Só carregar anúncio quando estiver pronto e em produção
-    if (import.meta.env.DEV || !pageValidForAds || !contentReady) return;
+    // Só carregar anúncio quando estiver pronto, em compliance e em produção
+    if (import.meta.env.DEV || !pageValidForAds || !contentReady || !policyCompliant) return;
+
+    // Verificar se a página está bloqueada
+    if (document.body.hasAttribute('data-ads-blocked')) {
+      console.log('🚫 Anúncios bloqueados pela política');
+      return;
+    }
 
     const timer = setTimeout(() => {
       if (adRef.current && adSlot) {
-        adSenseManager.loadAd(adRef.current, adSlot);
+        // Verificação final antes de carregar
+        const finalCheck = policyGuard.forceValidation();
+        if (finalCheck.isValid) {
+          adSenseManager.loadAd(adRef.current, adSlot);
+        } else {
+          console.log('🚫 Verificação final falhou:', finalCheck.issues);
+        }
       }
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, [adSlot, contentReady, pageValidForAds]);
+  }, [adSlot, contentReady, policyCompliant, pageValidForAds]);
 
-  // Não renderizar se não for uma página válida para anúncios
-  if (!pageValidForAds) {
+  // Não renderizar se não for uma página válida para anúncios ou não estiver em compliance
+  if (!pageValidForAds || (import.meta.env.PROD && !policyCompliant)) {
     return null;
   }
 

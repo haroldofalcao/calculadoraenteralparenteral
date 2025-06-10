@@ -17,47 +17,120 @@ export const adSensePolicyValidator = {
       results.issues.push('Página marcada como data-no-ads="true"');
     }
 
-    // 2. Verificar conteúdo skeleton
-    const skeletonElements = document.querySelectorAll('.placeholder, .spinner-border, .content-skeleton');
+    // 2. Verificar conteúdo skeleton/loading
+    const skeletonElements = document.querySelectorAll('.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton');
     if (skeletonElements.length > 0) {
       results.isValid = false;
-      results.issues.push(`${skeletonElements.length} elementos skeleton/loading encontrados`);
+      results.issues.push(`${skeletonElements.length} elementos skeleton/loading encontrados - página em carregamento`);
     }
 
-    // 3. Verificar quantidade de conteúdo
+    // 3. Verificar páginas "em construção"
+    const constructionKeywords = ['construção', 'desenvolvimento', 'coming soon', 'em breve', 'maintenance', 'manutenção'];
+    const pageTitle = document.title.toLowerCase();
+    const hasConstructionKeywords = constructionKeywords.some(keyword => pageTitle.includes(keyword));
+    
+    if (hasConstructionKeywords) {
+      results.isValid = false;
+      results.issues.push('Página parece estar em construção baseada no título');
+    }
+
+    // 4. Verificar elementos de alerta/modal/overlay
+    const alertElements = document.querySelectorAll('.alert, .modal, .overlay, .popup, [role="alert"], .notification');
+    const visibleAlerts = Array.from(alertElements).filter(el => 
+      el.style.display !== 'none' && 
+      !el.classList.contains('d-none') && 
+      el.offsetWidth > 0 && 
+      el.offsetHeight > 0
+    );
+    
+    if (visibleAlerts.length > 0) {
+      results.warnings.push(`${visibleAlerts.length} elementos de alerta/modal visíveis - podem interferir com anúncios`);
+    }
+
+    // 5. Verificar quantidade de conteúdo
     const mainContent = document.querySelector('main');
     if (mainContent) {
       const textContent = mainContent.innerText || '';
       const contentLength = textContent.replace(/\s+/g, ' ').trim().length;
       
-      if (contentLength < 300) {
+      // Verificar conteúdo mínimo mais rigoroso
+      if (contentLength < 500) {
         results.isValid = false;
-        results.issues.push(`Conteúdo insuficiente: ${contentLength} caracteres (mínimo: 300)`);
+        results.issues.push(`Conteúdo insuficiente: ${contentLength} caracteres (mínimo recomendado: 500)`);
+      } else if (contentLength < 1000) {
+        results.warnings.push(`Conteúdo adequado mas limitado: ${contentLength} caracteres (ideal: 1000+)`);
       } else {
         results.info.push(`Conteúdo adequado: ${contentLength} caracteres`);
       }
+
+      // Verificar se o conteúdo é substancial (não apenas texto de preenchimento)
+      const lowValueKeywords = ['lorem ipsum', 'texto de exemplo', 'placeholder', 'exemplo de texto', 'content here'];
+      const hasLowValueContent = lowValueKeywords.some(keyword => 
+        textContent.toLowerCase().includes(keyword)
+      );
+      
+      if (hasLowValueContent) {
+        results.isValid = false;
+        results.issues.push('Conteúdo de baixo valor detectado (texto placeholder/exemplo)');
+      }
+
     } else {
       results.isValid = false;
-      results.issues.push('Elemento <main> não encontrado');
+      results.issues.push('Elemento <main> não encontrado - estrutura inadequada');
     }
 
-    // 4. Verificar URL
-    const pathname = window.location.pathname;
-    const invalidPaths = ['/404', '/error', '/skeleton'];
-    const hasInvalidPath = invalidPaths.some(path => pathname.includes(path));
+    // 6. Verificar URL inadequadas
+    const pathname = window.location.pathname.toLowerCase();
+    const invalidPaths = [
+      '/404', '/error', '/skeleton', '/loading', '/maintenance', 
+      '/coming-soon', '/under-construction', '/redirect', '/exit',
+      '/thank-you', '/thanks', '/confirmation', '/confirm'
+    ];
     
+    const hasInvalidPath = invalidPaths.some(path => pathname.includes(path));
     if (hasInvalidPath) {
       results.isValid = false;
       results.issues.push(`URL inadequada para anúncios: ${pathname}`);
     }
 
-    // 5. Verificar elementos de anúncio existentes
+    // 7. Verificar páginas de navegação pura
+    const navigationOnlySelectors = [
+      'nav:only-child', 
+      '.navigation-only', 
+      '.menu-page',
+      '.sitemap-only'
+    ];
+    
+    const isNavigationOnly = navigationOnlySelectors.some(selector => 
+      document.querySelector(selector)
+    );
+    
+    if (isNavigationOnly) {
+      results.isValid = false;
+      results.issues.push('Página apenas de navegação detectada');
+    }
+
+    // 8. Verificar se é página de erro/resultado vazio
+    const emptyStateElements = document.querySelectorAll('.empty-state, .no-results, .not-found');
+    if (emptyStateElements.length > 0) {
+      results.warnings.push('Estados vazios detectados - verificar se conteúdo é suficiente');
+    }
+
+    // 9. Verificar elementos de anúncio existentes
     const adElements = document.querySelectorAll('.adsbygoogle');
     results.info.push(`${adElements.length} elementos de anúncio encontrados`);
 
-    // 6. Verificar se há iframes de anúncio carregados
+    // 10. Verificar se há iframes de anúncio carregados
     const adIframes = document.querySelectorAll('iframe[id*="google_ads"]');
     results.info.push(`${adIframes.length} anúncios carregados`);
+
+    // 11. Verificar densidade de anúncios vs conteúdo
+    if (adElements.length > 0 && mainContent) {
+      const adDensity = adElements.length / (mainContent.innerText.length / 1000);
+      if (adDensity > 2) {
+        results.warnings.push(`Alta densidade de anúncios detectada: ${adDensity.toFixed(2)} anúncios por 1000 caracteres`);
+      }
+    }
 
     return results;
   },
