@@ -61,7 +61,7 @@ function AppLayout() {
       </main>
 
       <Footer />
-      <AdSenseComplianceIndicator />
+      {/* <AdSenseComplianceIndicator /> */}
     </div>
   );
 }
