@@ -17,11 +17,19 @@ export default defineConfig({
     watchForFileChanges: false,
     experimentalStudio: true,
     retries: {
-      runMode: 2,
+      runMode: 0,
       openMode: 0
     },
     env: {
       coverage: false
+    },
+    setupNodeEvents(on, config) {
+      on('task', {
+        log(message) {
+          console.log(message)
+          return null
+        }
+      })
     }
   }
 })

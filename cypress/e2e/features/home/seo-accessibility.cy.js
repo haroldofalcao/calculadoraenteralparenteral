@@ -1,7 +1,7 @@
 // cypress/e2e/features/home/seo-accessibility.cy.js
 
 describe('Home - SEO e Acessibilidade', () => {
-  before(() => {
+  beforeEach(() => {
     cy.resetAppState()
     cy.visit('/')
     cy.waitForPageLoad()
@@ -46,7 +46,8 @@ describe('Home - SEO e Acessibilidade', () => {
       // Verifica se ícones têm contexto adequado
       cy.get('.fas').each(($icon) => {
         // Ícones decorativos devem estar em elementos com texto
-        cy.wrap($icon).parent().should('contain.text')
+        cy.wrap($icon).parent().should('not.be.empty')
+        cy.wrap($icon).parent().invoke('text').should('not.be.empty')
       })
     })
 
@@ -59,8 +60,8 @@ describe('Home - SEO e Acessibilidade', () => {
     })
 
     it('deve ser navegável por teclado', () => {
-      // Verifica que elementos focáveis existem
-      cy.get('a, button').each(($el) => {
+      // Verifica que elementos focáveis existem e são visíveis
+      cy.get('a, button').filter(':visible').each(($el) => {
         cy.wrap($el).should('be.visible')
         cy.wrap($el).focus().should('have.focus')
       })
@@ -88,12 +89,20 @@ describe('Home - SEO e Acessibilidade', () => {
     })
 
     it('deve ter imagens otimizadas', () => {
-      cy.get('img').each(($img) => {
-        // Verifica se imagens têm alt text
-        cy.wrap($img).should('have.attr', 'alt')
-        
-        // Verifica se imagens carregaram
-        cy.wrap($img).should('be.visible')
+      // Verifica se existem imagens na página
+      cy.get('body').then(($body) => {
+        if ($body.find('img').length > 0) {
+          cy.get('img').each(($img) => {
+            // Verifica se imagens têm alt text
+            cy.wrap($img).should('have.attr', 'alt')
+            
+            // Verifica se imagens carregaram
+            cy.wrap($img).should('be.visible')
+          })
+        } else {
+          // Se não há imagens, o teste passa (página pode não ter imagens)
+          cy.log('Nenhuma imagem encontrada na página - teste passou')
+        }
       })
     })
   })

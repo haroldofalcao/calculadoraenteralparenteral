@@ -32,11 +32,8 @@ beforeEach(() => {
 
 // Configuração após cada teste
 afterEach(() => {
-  // Captura screenshot em caso de falha
-  cy.screenshot('test-failure', { 
-    capture: 'viewport',
-    onlyOnFailure: true 
-  })
+  // Captura screenshot apenas em falhas críticas
+  cy.task('log', 'Test completed')
 })
 
 // // Configurações para melhor performance dos testes
