@@ -24,7 +24,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-        test-suite: ['home', 'full']
       fail-fast: false
     
     steps:
@@ -67,6 +66,9 @@ jobs:
     - name: Install dependencies
       run: pnpm install --frozen-lockfile --prefer-offline
       
+    - name: Install Cypress binary
+      run: pnpm cypress install
+      
     - name: Verify Cypress installation
       run: pnpm cypress verify
       
@@ -78,9 +80,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-build-${{ env.CACHE_VERSION }}-
         
-    - name: Run E2E tests based on matrix
+    - name: Run E2E tests
       run: pnpm test:e2e:ci
-       
       env:
         CYPRESS_baseUrl: http://localhost:4173
         CI: true
