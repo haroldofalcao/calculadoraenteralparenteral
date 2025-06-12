@@ -1,4 +1,4 @@
-import { defineConfig } from 'cypress'
+import { defineConfig } from 'cypress';
 
 export default defineConfig({
   projectId: 'esvdj5',
@@ -18,19 +18,18 @@ export default defineConfig({
     experimentalStudio: true,
     retries: {
       runMode: 0,
-      openMode: 0
+      openMode: 0,
     },
     env: {
-      coverage: false
+      coverage: false,
     },
     setupNodeEvents(on, config) {
       on('task', {
         log(message) {
-          console.log(message)
-          return null
-        }
-      })
-    }
-  }
-})
-
+          console.log(message);
+          return null;
+        },
+      });
+    },
+  },
+});

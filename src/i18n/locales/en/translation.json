@@ -172,7 +172,7 @@
     "exportReport": "Export Report",
     "summaryTable": {
       "measure": "Measure",
-      "score": "Score", 
+      "score": "Score",
       "classification": "Classification",
       "singleMeasurement": "Single Measurement"
     },
@@ -215,4 +215,3 @@
     "backHome": "Back to Home"
   }
 }
-

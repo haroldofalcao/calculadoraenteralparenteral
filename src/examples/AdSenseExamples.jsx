@@ -11,10 +11,10 @@ const ExamplePageWithAds = () => {
   useEffect(() => {
     const loadData = async () => {
       // Simular carregamento
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setDataLoaded(true);
     };
-    
+
     loadData();
   }, []);
 
@@ -31,40 +31,30 @@ const ExamplePageWithAds = () => {
   return (
     <div>
       {/* Banner no topo - só após conteúdo carregar */}
-      <ResponsiveBanner 
-        adSlot="exemplo-slot" 
-        requireContent={true} 
-      />
-      
+      <ResponsiveBanner adSlot="exemplo-slot" requireContent={true} />
+
       {/* Conteúdo principal */}
       <main>
         <h1>Página com Conteúdo Adequado</h1>
         <p>
-          Este é um exemplo de página que segue as políticas do AdSense.
-          O conteúdo é substancial, relevante e oferece valor real aos usuários.
-          Os anúncios só são exibidos após o conteúdo estar completamente carregado.
+          Este é um exemplo de página que segue as políticas do AdSense. O conteúdo é substancial,
+          relevante e oferece valor real aos usuários. Os anúncios só são exibidos após o conteúdo
+          estar completamente carregado.
         </p>
-        
+
         {/* Mais conteúdo para garantir densidade adequada */}
         <section>
           <h2>Seção de Conteúdo</h2>
           <p>
-            Conteúdo adicional que fornece informações úteis e relevantes.
-            É importante ter pelo menos 300 caracteres de conteúdo real
-            antes de exibir qualquer anúncio na página.
+            Conteúdo adicional que fornece informações úteis e relevantes. É importante ter pelo
+            menos 300 caracteres de conteúdo real antes de exibir qualquer anúncio na página.
           </p>
         </section>
       </main>
-      
+
       {/* Anúncio no meio do conteúdo - apenas se há resultados */}
-      {results && (
-        <InFeedAd 
-          adSlot="exemplo-infeed-slot"
-          requireContent={true}
-          showLabel={true}
-        />
-      )}
-      
+      {results && <InFeedAd adSlot="exemplo-infeed-slot" requireContent={true} showLabel={true} />}
+
       {/* Mais conteúdo */}
       <section>
         <h2>Conteúdo Adicional</h2>
@@ -77,12 +67,12 @@ const ExamplePageWithAds = () => {
 // ❌ EXEMPLO DE IMPLEMENTAÇÃO INCORRETA
 const BadExamplePage = () => {
   const [loading, setLoading] = useState(true);
-  
+
   return (
     <div>
       {/* ❌ ERRO: Anúncio no topo sempre presente */}
       <ResponsiveBanner adSlot="bad-example" />
-      
+
       {loading ? (
         <div>
           {/* ❌ ERRO: Anúncio durante loading */}
@@ -103,22 +93,22 @@ const BadExamplePage = () => {
 const GoodExamplePage = () => {
   const [contentReady, setContentReady] = useState(false);
   const [data, setData] = useState(null);
-  
+
   useEffect(() => {
     const loadContent = async () => {
       // Carregar dados primeiro
       const result = await fetchData();
       setData(result);
-      
+
       // Aguardar um pouco para garantir que tudo foi renderizado
       setTimeout(() => {
         setContentReady(true);
       }, 1000);
     };
-    
+
     loadContent();
   }, []);
-  
+
   if (!contentReady) {
     return (
       <div className="content-skeleton">
@@ -130,18 +120,17 @@ const GoodExamplePage = () => {
       </div>
     );
   }
-  
+
   return (
     <div>
       <main>
         {/* ✅ CORRETO: Conteúdo substancial primeiro */}
         <h1>Título da Página</h1>
         <p>
-          Conteúdo detalhado e útil que oferece valor real aos usuários.
-          Esta página contém informações relevantes e substanciais que
-          justificam a presença de anúncios publicitários.
+          Conteúdo detalhado e útil que oferece valor real aos usuários. Esta página contém
+          informações relevantes e substanciais que justificam a presença de anúncios publicitários.
         </p>
-        
+
         {data && (
           <section>
             <h2>Dados Carregados</h2>
@@ -150,22 +139,13 @@ const GoodExamplePage = () => {
           </section>
         )}
       </main>
-      
+
       {/* ✅ CORRETO: Anúncios só após conteúdo estar pronto */}
       {contentReady && (
         <>
-          <ResponsiveBanner 
-            adSlot="top-banner" 
-            requireContent={true}
-          />
-          
-          {data && (
-            <InFeedAd 
-              adSlot="content-ad"
-              requireContent={true}
-              showLabel={true}
-            />
-          )}
+          <ResponsiveBanner adSlot="top-banner" requireContent={true} />
+
+          {data && <InFeedAd adSlot="content-ad" requireContent={true} showLabel={true} />}
         </>
       )}
     </div>

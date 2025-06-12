@@ -15,14 +15,14 @@
 
 .results-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos para formulários */
 .form-container {
   background-color: #f8f9fa;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   padding: 20px;
   margin-bottom: 20px;
 }
@@ -31,7 +31,7 @@
 .table-container {
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 /* Estilos para botões */
@@ -50,7 +50,7 @@
   .form-row {
     flex-direction: column;
   }
-  
+
   .form-group {
     margin-bottom: 15px;
   }
@@ -95,7 +95,7 @@ footer {
     min-height: 50px !important;
     height: auto !important;
   }
-  
+
   .ad-container {
     padding: 10px;
     margin: 10px 0;
@@ -106,7 +106,7 @@ footer {
   .adsbygoogle {
     min-height: 50px !important;
   }
-  
+
   .ad-container {
     padding: 5px;
     margin: 5px 0;
@@ -202,13 +202,13 @@ footer {
   font-size: 1.2rem;
   font-weight: 600;
   margin: 1rem 0;
-  border: 2px solid rgba(255,255,255,0.2);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .gids-score-display h4 {
   margin: 0;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsividade para dispositivos móveis - GIDS */
@@ -216,15 +216,15 @@ footer {
   .gids-form .form-check {
     padding-left: 1.25rem !important;
   }
-  
+
   .gids-form .form-check-input {
     margin-left: -1.25rem !important;
   }
-  
+
   .gids-symptoms-section .form-check {
     padding: 0.5rem 0.75rem;
   }
-  
+
   .gids-score-display {
     padding: 1rem;
     font-size: 1rem;
@@ -235,15 +235,15 @@ footer {
   .gids-form .form-check {
     padding-left: 1rem !important;
   }
-  
+
   .gids-form .form-check-input {
     margin-left: -1rem !important;
   }
-  
+
   .gids-symptoms-section {
     padding: 0.75rem;
   }
-  
+
   .gids-symptoms-section .form-check {
     padding: 0.5rem;
     margin-bottom: 0.25rem;

@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Table, Modal, Alert } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { allProductsAtom,  userProductsAtom, hiddenDefaultProductsAtom, defaultProductsAtom } from '../store/productsAtoms';
+import {
+  allProductsAtom,
+  userProductsAtom,
+  hiddenDefaultProductsAtom,
+  defaultProductsAtom,
+} from '../store/productsAtoms';
 import { useAtom } from 'jotai';
 import SEO from './SEO.jsx';
 import { ResponsiveBanner } from './AdSense.jsx';
@@ -12,14 +17,14 @@ const ProductManager = () => {
   const [allProducts] = useAtom(allProductsAtom);
   const [hiddenDefaultProducts, setHiddenDefaultProducts] = useAtom(hiddenDefaultProductsAtom);
   const [defaultProducts] = useAtom(defaultProductsAtom);
-  
+
   const [newProduct, setNewProduct] = useState({
     nome: '',
     kcal_ml: '',
     cho_g_l: '',
     lip_g_l: '',
     ptn_g_l: '',
-    ep_ratio: ''
+    ep_ratio: '',
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -30,23 +35,23 @@ const ProductManager = () => {
     const { name, value } = e.target;
     setNewProduct({
       ...newProduct,
-      [name]: name === 'nome' ? value : parseFloat(value) || ''
+      [name]: name === 'nome' ? value : parseFloat(value) || '',
     });
   };
 
   const handleAddProduct = (e) => {
     e.preventDefault();
-     // Verificar se o produto já existe em qualquer um dos conjuntos
-    if (allProducts.some(p => p.nome.toLowerCase() === newProduct.nome.toLowerCase())) {
+    // Verificar se o produto já existe em qualquer um dos conjuntos
+    if (allProducts.some((p) => p.nome.toLowerCase() === newProduct.nome.toLowerCase())) {
       showAlertMessage('danger', t('productManager.validation.nameExists'));
       return;
     }
-    
+
     // Validar se todos os campos numéricos são positivos
     if (
-      newProduct.kcal_ml <= 0 || 
-      newProduct.cho_g_l < 0 || 
-      newProduct.lip_g_l < 0 || 
+      newProduct.kcal_ml <= 0 ||
+      newProduct.cho_g_l < 0 ||
+      newProduct.lip_g_l < 0 ||
       newProduct.ptn_g_l < 0 ||
       newProduct.ep_ratio < 0
     ) {
@@ -56,7 +61,7 @@ const ProductManager = () => {
 
     // Adicionar novo produto à lista de produtos do usuário
     setUserProducts([...userProducts, newProduct]);
-    
+
     // Limpar formulário
     setNewProduct({
       nome: '',
@@ -64,9 +69,9 @@ const ProductManager = () => {
       cho_g_l: '',
       lip_g_l: '',
       ptn_g_l: '',
-      ep_ratio: ''
+      ep_ratio: '',
     });
-    
+
     showAlertMessage('success', t('productManager.validation.productAdded'));
   };
 
@@ -78,12 +83,12 @@ const ProductManager = () => {
   const confirmDelete = () => {
     if (productToDelete) {
       // Verificar se é um produto personalizado ou padrão
-      const isUserProduct = userProducts.some(p => p.nome === productToDelete.nome);
-      const isDefaultProduct = defaultProducts.some(p => p.nome === productToDelete.nome);
-      
+      const isUserProduct = userProducts.some((p) => p.nome === productToDelete.nome);
+      const isDefaultProduct = defaultProducts.some((p) => p.nome === productToDelete.nome);
+
       if (isUserProduct) {
         // Remover produto personalizado
-        const updatedProducts = userProducts.filter(p => p.nome !== productToDelete.nome);
+        const updatedProducts = userProducts.filter((p) => p.nome !== productToDelete.nome);
         setUserProducts(updatedProducts);
         showAlertMessage('success', t('productManager.validation.productDeleted'));
       } else if (isDefaultProduct) {
@@ -92,14 +97,14 @@ const ProductManager = () => {
         setHiddenDefaultProducts(updatedHiddenProducts);
         showAlertMessage('success', t('productManager.validation.productDeleted'));
       }
-      
+
       setShowDeleteModal(false);
       setProductToDelete(null);
     }
   };
 
   const handleRestoreProduct = (productName) => {
-    const updatedHiddenProducts = hiddenDefaultProducts.filter(name => name !== productName);
+    const updatedHiddenProducts = hiddenDefaultProducts.filter((name) => name !== productName);
     setHiddenDefaultProducts(updatedHiddenProducts);
     showAlertMessage('success', t('productManager.validation.productDeleted'));
   };
@@ -112,20 +117,19 @@ const ProductManager = () => {
   };
 
   // Filtrar produtos com base na busca
-  const filteredProducts = allProducts.filter(product =>
+  const filteredProducts = allProducts.filter((product) =>
     product.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
   return (
     <Container>
-      <SEO 
-        title={t('productManager.title')} 
+      <SEO
+        title={t('productManager.title')}
         description={t('productManager.title')}
         canonical="/gerenciar-produtos"
         keywords="gerenciar produtos, produtos nutricionais, base de dados nutricional, personalizar produtos"
       />
-      
+
       <ResponsiveBanner adSlot="9004267172" requireContent={true} />
 
       <h1 className="mb-4 text-center">{t('productManager.title')}</h1>
@@ -228,8 +232,10 @@ const ProductManager = () => {
 
         <Col md={6}>
           <div className="p-4 shadow-sm rounded bg-light">
-            <h2 className="fs-5 mb-3 border-bottom pb-2">{t('productManager.registeredProducts')}</h2>
-            
+            <h2 className="fs-5 mb-3 border-bottom pb-2">
+              {t('productManager.registeredProducts')}
+            </h2>
+
             <Form.Group className="mb-3">
               <Form.Control
                 type="text"
@@ -238,7 +244,7 @@ const ProductManager = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Form.Group>
-            
+
             <div className="table-responsive">
               <Table striped hover>
                 <thead>
@@ -253,20 +259,24 @@ const ProductManager = () => {
                   {filteredProducts.length > 0 ? (
                     filteredProducts.map((product, index) => {
                       // Verificar se é um produto personalizado
-                      const isUserProduct = userProducts.some(p => p.nome === product.nome);
-                      
+                      const isUserProduct = userProducts.some((p) => p.nome === product.nome);
+
                       return (
                         <tr key={index}>
                           <td>{product.nome}</td>
                           <td>{product.kcal_ml.toFixed(1)}</td>
-                          <td>{isUserProduct ? t('common.custom') : t('productManager.standard')}</td>
+                          <td>
+                            {isUserProduct ? t('common.custom') : t('productManager.standard')}
+                          </td>
                           <td>
                             <Button
-                              variant={isUserProduct ? "danger" : "warning"}
+                              variant={isUserProduct ? 'danger' : 'warning'}
                               size="sm"
                               onClick={() => handleDeleteClick(product)}
                             >
-                              {isUserProduct ? t('productManager.delete') : t('productManager.hide')}
+                              {isUserProduct
+                                ? t('productManager.delete')
+                                : t('productManager.hide')}
                             </Button>
                           </td>
                         </tr>
@@ -292,15 +302,16 @@ const ProductManager = () => {
           <Col>
             <div className="p-4 shadow-sm rounded bg-light">
               <h2 className="fs-5 mb-3 border-bottom pb-2">{t('productManager.hiddenProducts')}</h2>
-              <p className="text-muted mb-3">
-                {t('productManager.hiddenProductsDescription')}
-              </p>
-              
+              <p className="text-muted mb-3">{t('productManager.hiddenProductsDescription')}</p>
+
               <div className="d-flex flex-wrap gap-2">
                 {hiddenDefaultProducts.map((productName, index) => {
-                  const product = defaultProducts.find(p => p.nome === productName);
+                  const product = defaultProducts.find((p) => p.nome === productName);
                   return (
-                    <div key={index} className="border rounded p-2 bg-white d-flex align-items-center gap-2">
+                    <div
+                      key={index}
+                      className="border rounded p-2 bg-white d-flex align-items-center gap-2"
+                    >
                       <span>{productName}</span>
                       <Button
                         variant="success"
@@ -322,20 +333,30 @@ const ProductManager = () => {
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) 
-              ? t('productManager.confirmDelete') 
+            {productToDelete && userProducts.some((p) => p.nome === productToDelete.nome)
+              ? t('productManager.confirmDelete')
               : t('productManager.confirmHide')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? (
+          {productToDelete && userProducts.some((p) => p.nome === productToDelete.nome) ? (
             <>
-              <p>{t('productManager.deleteConfirmation').replace('{{productName}}', productToDelete?.nome)}</p>
+              <p>
+                {t('productManager.deleteConfirmation').replace(
+                  '{{productName}}',
+                  productToDelete?.nome
+                )}
+              </p>
               <p className="text-danger">{t('productManager.deleteWarning')}</p>
             </>
           ) : (
             <>
-              <p>{t('productManager.hideConfirmation').replace('{{productName}}', productToDelete?.nome)}</p>
+              <p>
+                {t('productManager.hideConfirmation').replace(
+                  '{{productName}}',
+                  productToDelete?.nome
+                )}
+              </p>
               <p className="text-warning">{t('productManager.hideWarning')}</p>
             </>
           )}
@@ -344,11 +365,17 @@ const ProductManager = () => {
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             {t('common.cancel')}
           </Button>
-          <Button 
-            variant={productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? "danger" : "warning"} 
+          <Button
+            variant={
+              productToDelete && userProducts.some((p) => p.nome === productToDelete.nome)
+                ? 'danger'
+                : 'warning'
+            }
             onClick={confirmDelete}
           >
-            {productToDelete && userProducts.some(p => p.nome === productToDelete.nome) ? t('productManager.delete') : t('productManager.hide')}
+            {productToDelete && userProducts.some((p) => p.nome === productToDelete.nome)
+              ? t('productManager.delete')
+              : t('productManager.hide')}
           </Button>
         </Modal.Footer>
       </Modal>

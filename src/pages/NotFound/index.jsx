@@ -13,9 +13,7 @@ function NotFound() {
           <div className="py-5">
             <h1 className="display-1 text-muted">404</h1>
             <h2 className="mb-4">{t('notFound.title')}</h2>
-            <p className="lead text-muted mb-4">
-              {t('notFound.message')}
-            </p>
+            <p className="lead text-muted mb-4">{t('notFound.message')}</p>
             <Link to="/" className="btn btn-primary">
               {t('notFound.backHome')}
             </Link>

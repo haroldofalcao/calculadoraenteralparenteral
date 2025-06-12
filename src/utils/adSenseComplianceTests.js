@@ -41,8 +41,10 @@ const runComplianceTests = () => {
     const slot = ad.getAttribute('data-ad-slot');
     const status = ad.getAttribute('data-ad-status');
     const hasIframe = !!ad.querySelector('iframe');
-    
-    console.log(`  ${index + 1}. Slot: ${slot || 'N/A'}, Status: ${status || 'N/A'}, Iframe: ${hasIframe ? '✅' : '❌'}`);
+
+    console.log(
+      `  ${index + 1}. Slot: ${slot || 'N/A'}, Status: ${status || 'N/A'}, Iframe: ${hasIframe ? '✅' : '❌'}`
+    );
   });
 
   // Teste 4: Verificar conteúdo da página
@@ -59,13 +61,15 @@ const runComplianceTests = () => {
 
   // Teste 5: Verificar elementos problemáticos
   console.log('\n5️⃣ Testando elementos problemáticos...');
-  
-  const skeletons = document.querySelectorAll('.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton');
+
+  const skeletons = document.querySelectorAll(
+    '.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton'
+  );
   console.log(skeletons.length === 0 ? '✅' : '❌', `Skeletons: ${skeletons.length}`);
-  
+
   const noAds = document.querySelector('[data-no-ads="true"]');
   console.log(!noAds ? '✅' : '❌', `data-no-ads: ${!!noAds}`);
-  
+
   const modals = document.querySelectorAll('.modal.show, .overlay:not([style*="none"])');
   console.log(modals.length === 0 ? '✅' : '❌', `Modals ativos: ${modals.length}`);
 
@@ -73,16 +77,16 @@ const runComplianceTests = () => {
   console.log('\n6️⃣ Testando URL...');
   const pathname = window.location.pathname.toLowerCase();
   const invalidPaths = ['/404', '/error', '/skeleton', '/loading', '/maintenance'];
-  const isValidPath = !invalidPaths.some(path => pathname.includes(path));
+  const isValidPath = !invalidPaths.some((path) => pathname.includes(path));
   console.log(isValidPath ? '✅' : '❌', `URL válida: ${pathname}`);
 
   console.log('\n🏁 Testes concluídos!');
-  
+
   // Resumo final
   const finalValidation = policyGuard.forceValidation();
   console.log('\n📋 RESUMO FINAL:');
   console.log(finalValidation.isValid ? '🟢 PÁGINA EM COMPLIANCE' : '🔴 PÁGINA COM VIOLAÇÕES');
-  
+
   if (!finalValidation.isValid) {
     console.log('\n🚨 AÇÕES NECESSÁRIAS:');
     finalValidation.issues.forEach((issue, index) => {
@@ -96,69 +100,71 @@ const runComplianceTests = () => {
 // Teste de navegação SPA
 const testSPANavigation = (urls = ['/', '/gids', '/nenpt']) => {
   console.log('\n🔄 Testando navegação SPA...');
-  
+
   let currentIndex = 0;
-  
+
   const testNextUrl = () => {
     if (currentIndex >= urls.length) {
       console.log('✅ Teste de navegação concluído!');
       return;
     }
-    
+
     const url = urls[currentIndex];
     console.log(`\n📍 Navegando para: ${url}`);
-    
+
     // Simular navegação
     history.pushState({}, '', url);
-    
+
     // Aguardar um pouco para simular carregamento
     setTimeout(() => {
       const validation = policyGuard.forceValidation();
-      console.log(validation.isValid ? '✅' : '❌', `${url}: ${validation.isValid ? 'OK' : 'Violação'}`);
-      
+      console.log(
+        validation.isValid ? '✅' : '❌',
+        `${url}: ${validation.isValid ? 'OK' : 'Violação'}`
+      );
+
       if (!validation.isValid) {
         console.log('   Issues:', validation.issues);
       }
-      
+
       currentIndex++;
       testNextUrl();
     }, 2000);
   };
-  
+
   testNextUrl();
 };
 
 // Função para simular cenários de violação
 const simulateViolations = () => {
   console.log('\n🧨 Simulando violações para teste...');
-  
+
   // Simular skeleton
   const skeleton = document.createElement('div');
   skeleton.className = 'content-skeleton';
   skeleton.textContent = 'Loading...';
   document.body.appendChild(skeleton);
-  
+
   console.log('1. Skeleton adicionado');
-  
+
   setTimeout(() => {
     const validation1 = policyGuard.forceValidation();
     console.log(validation1.isValid ? '❌ Falhou' : '✅ Detectou', 'violação de skeleton');
-    
+
     // Remover skeleton
     skeleton.remove();
-    
+
     // Simular data-no-ads
     document.body.setAttribute('data-no-ads', 'true');
     console.log('2. data-no-ads adicionado');
-    
+
     setTimeout(() => {
       const validation2 = policyGuard.forceValidation();
       console.log(validation2.isValid ? '❌ Falhou' : '✅ Detectou', 'violação de data-no-ads');
-      
+
       // Limpar
       document.body.removeAttribute('data-no-ads');
       console.log('3. Testes de violação concluídos');
-      
     }, 1000);
   }, 1000);
 };
@@ -168,10 +174,10 @@ if (typeof window !== 'undefined') {
   window.runComplianceTests = runComplianceTests;
   window.testSPANavigation = testSPANavigation;
   window.simulateViolations = simulateViolations;
-  
+
   console.log('🛠️ Funções de teste disponíveis:');
   console.log('  - runComplianceTests()');
-  console.log('  - testSPANavigation()');  
+  console.log('  - testSPANavigation()');
   console.log('  - simulateViolations()');
 }
 

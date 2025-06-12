@@ -22,11 +22,11 @@ i18n
     resources,
     fallbackLng: 'pt', // Fallback para português
     debug: false,
-    
+
     interpolation: {
       escapeValue: false, // React já faz escape
     },
-    
+
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

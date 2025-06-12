@@ -21,14 +21,9 @@ class ErrorBoundary extends Component {
           <div className="container mt-5">
             <div className="alert alert-danger" role="alert">
               <h4 className="alert-heading">Oops! Algo deu errado</h4>
-              <p>
-                Ocorreu um erro inesperado. Por favor, recarregue a página ou tente novamente.
-              </p>
+              <p>Ocorreu um erro inesperado. Por favor, recarregue a página ou tente novamente.</p>
               <hr />
-              <button 
-                className="btn btn-primary"
-                onClick={() => window.location.reload()}
-              >
+              <button className="btn btn-primary" onClick={() => window.location.reload()}>
                 Recarregar Página
               </button>
             </div>

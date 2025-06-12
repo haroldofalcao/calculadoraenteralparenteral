@@ -25,11 +25,11 @@ export const calculateIMC = (weight, height) => {
  */
 export const calculateGEB = (weight, height, age, gender) => {
   if (!weight || !height || !age) return 0;
-  
+
   if (gender === 'masculino') {
-    return 66.5 + (13.75 * weight) + (5.003 * height) - (6.775 * age);
+    return 66.5 + 13.75 * weight + 5.003 * height - 6.775 * age;
   } else {
-    return 655.1 + (9.563 * weight) + (1.85 * height) - (4.676 * age);
+    return 655.1 + 9.563 * weight + 1.85 * height - 4.676 * age;
   }
 };
 
@@ -60,10 +60,10 @@ export const calculateResults = (patientData, product) => {
   const proteinModule = patientData.proteinModule ? parseFloat(patientData.proteinModule) : 0;
   const otherModule = patientData.otherModule ? parseFloat(patientData.otherModule) : 0;
   const kcalPerKg = parseFloat(patientData.kcalPerKg) || 25;
-  
+
   // Calcular IMC (se peso e altura estiverem disponíveis)
   const imc = calculateIMC(weight, height);
-  
+
   // Calcular GEB com base no método selecionado
   let geb = 0;
   if (patientData.calculationMethod === 'harris-benedict') {
@@ -71,36 +71,36 @@ export const calculateResults = (patientData, product) => {
   } else {
     geb = calculatePocketGEB(weight, kcalPerKg);
   }
-  
+
   // Calcular calorias da fórmula
   const formulaCalories = product.kcal_ml * volume;
-  
+
   // Calcular calorias totais (fórmula + módulo adicional)
   const totalCalories = formulaCalories + otherModule;
-  
+
   // Calcular macronutrientes
   const totalCarbs = (product.cho_g_l * volume) / 1000; // g/L para g
   const totalLipids = (product.lip_g_l * volume) / 1000; // g/L para g
   const formulaProtein = (product.ptn_g_l * volume) / 1000; // g/L para g
   const totalProtein = formulaProtein + proteinModule;
-  
+
   // Calcular calorias por macronutriente
   const carbsCalories = totalCarbs * 4; // 4 kcal/g para CHO
   const lipidsCalories = totalLipids * 9; // 9 kcal/g para LIP
   const proteinCalories = totalProtein * 4; // 4 kcal/g para PTN
-  
+
   // Calcular distribuição percentual de macronutrientes
   const carbsPercentage = totalCalories > 0 ? (carbsCalories / totalCalories) * 100 : 0;
   const lipidsPercentage = totalCalories > 0 ? (lipidsCalories / totalCalories) * 100 : 0;
   const proteinPercentage = totalCalories > 0 ? (proteinCalories / totalCalories) * 100 : 0;
-  
+
   // Calcular valores por kg de peso corporal
   const caloriesPerKg = weight > 0 ? totalCalories / weight : 0;
   const proteinPerKg = weight > 0 ? totalProtein / weight : 0;
-  
+
   // Calcular volume por hora (se tempo de infusão foi informado)
   const volumePerHour = infusionTime > 0 ? volume / infusionTime : null;
-  
+
   return {
     imc,
     geb,
@@ -116,6 +116,6 @@ export const calculateResults = (patientData, product) => {
     proteinPercentage,
     caloriesPerKg,
     proteinPerKg,
-    volumePerHour
+    volumePerHour,
   };
 };

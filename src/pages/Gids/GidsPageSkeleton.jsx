@@ -66,8 +66,16 @@ function GidsPageSkeleton() {
                   <Placeholder xs={7} />
                 </Placeholder>
                 {[...Array(4)].map((_, itemIndex) => (
-                  <div key={itemIndex} className="d-flex align-items-center mb-3 p-2 bg-light rounded">
-                    <Placeholder as="div" animation="glow" style={{ width: '20px', height: '20px' }} className="me-3" />
+                  <div
+                    key={itemIndex}
+                    className="d-flex align-items-center mb-3 p-2 bg-light rounded"
+                  >
+                    <Placeholder
+                      as="div"
+                      animation="glow"
+                      style={{ width: '20px', height: '20px' }}
+                      className="me-3"
+                    />
                     <Placeholder as="span" animation="glow">
                       <Placeholder xs={9} />
                     </Placeholder>
@@ -98,4 +106,3 @@ function GidsPageSkeleton() {
 }
 
 export default GidsPageSkeleton;
-

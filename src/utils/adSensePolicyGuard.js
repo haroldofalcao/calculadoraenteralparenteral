@@ -12,7 +12,7 @@ class AdSensePolicyGuard {
   // Iniciar monitoramento contínuo
   startMonitoring() {
     if (this.isMonitoring) return;
-    
+
     this.isMonitoring = true;
     console.log('🛡️ AdSense Policy Guard ativado');
 
@@ -32,7 +32,7 @@ class AdSensePolicyGuard {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['class', 'style', 'data-no-ads']
+      attributeFilter: ['class', 'style', 'data-no-ads'],
     });
 
     // Verificação periódica
@@ -47,12 +47,12 @@ class AdSensePolicyGuard {
   // Parar monitoramento
   stopMonitoring() {
     this.isMonitoring = false;
-    
+
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
     }
-    
+
     if (this.interval) {
       clearInterval(this.interval);
       this.interval = null;
@@ -68,11 +68,11 @@ class AdSensePolicyGuard {
   // Realizar verificação de políticas
   performCheck() {
     const validation = this.validatePage();
-    
+
     // Se mudou o status de validação
     if (this.lastValidation?.isValid !== validation.isValid) {
       this.lastValidation = validation;
-      
+
       if (!validation.isValid) {
         console.warn('🚨 Violação de política detectada!');
         console.warn('Issues:', validation.issues);
@@ -92,18 +92,20 @@ class AdSensePolicyGuard {
     const results = {
       isValid: true,
       issues: [],
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     // 1. Verificar conteúdo de loading/skeleton
     const loadingElements = document.querySelectorAll(
       '.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton, ' +
-      '.shimmer, .pulse, [data-loading="true"]'
+        '.shimmer, .pulse, [data-loading="true"]'
     );
-    
+
     if (loadingElements.length > 0) {
       results.isValid = false;
-      results.issues.push(`Página em carregamento: ${loadingElements.length} elementos encontrados`);
+      results.issues.push(
+        `Página em carregamento: ${loadingElements.length} elementos encontrados`
+      );
     }
 
     // 2. Verificar conteúdo insuficiente
@@ -111,7 +113,7 @@ class AdSensePolicyGuard {
     if (mainContent) {
       const textContent = mainContent.innerText || '';
       const contentLength = textContent.replace(/\s+/g, ' ').trim().length;
-      
+
       if (contentLength < 500) {
         results.isValid = false;
         results.issues.push(`Conteúdo insuficiente: ${contentLength} caracteres`);
@@ -125,10 +127,10 @@ class AdSensePolicyGuard {
         /loading\.{3}/i,
         /carregando\.{3}/i,
         /aguarde/i,
-        /em\s+construção/i
+        /em\s+construção/i,
       ];
 
-      if (lowValuePatterns.some(pattern => pattern.test(textContent))) {
+      if (lowValuePatterns.some((pattern) => pattern.test(textContent))) {
         results.isValid = false;
         results.issues.push('Conteúdo de baixo valor detectado');
       }
@@ -140,12 +142,19 @@ class AdSensePolicyGuard {
     // 3. Verificar páginas de erro/navegação
     const pathname = window.location.pathname.toLowerCase();
     const invalidPatterns = [
-      /\/404/, /\/error/, /\/maintenance/, /\/coming-?soon/,
-      /\/under-?construction/, /\/redirect/, /\/exit/,
-      /\/thank-?you/, /\/confirmation/, /\/loading/
+      /\/404/,
+      /\/error/,
+      /\/maintenance/,
+      /\/coming-?soon/,
+      /\/under-?construction/,
+      /\/redirect/,
+      /\/exit/,
+      /\/thank-?you/,
+      /\/confirmation/,
+      /\/loading/,
     ];
 
-    if (invalidPatterns.some(pattern => pattern.test(pathname))) {
+    if (invalidPatterns.some((pattern) => pattern.test(pathname))) {
       results.isValid = false;
       results.issues.push(`URL inadequada: ${pathname}`);
     }
@@ -160,7 +169,7 @@ class AdSensePolicyGuard {
     const blockingElements = document.querySelectorAll(
       '.modal.show, .overlay:not([style*="none"]), .popup:not(.d-none)'
     );
-    
+
     if (blockingElements.length > 0) {
       results.isValid = false;
       results.issues.push(`${blockingElements.length} elementos bloqueando o conteúdo`);
@@ -173,10 +182,10 @@ class AdSensePolicyGuard {
   blockAds() {
     // Marcar página como sem anúncios
     document.body.setAttribute('data-ads-blocked', 'true');
-    
+
     // Ocultar anúncios existentes
     const adElements = document.querySelectorAll('.adsbygoogle');
-    adElements.forEach(ad => {
+    adElements.forEach((ad) => {
       ad.style.display = 'none';
       ad.setAttribute('data-policy-blocked', 'true');
     });
@@ -191,10 +200,10 @@ class AdSensePolicyGuard {
   allowAds() {
     // Remover bloqueio
     document.body.removeAttribute('data-ads-blocked');
-    
+
     // Restaurar anúncios que foram bloqueados por política
     const blockedAds = document.querySelectorAll('[data-policy-blocked="true"]');
-    blockedAds.forEach(ad => {
+    blockedAds.forEach((ad) => {
       ad.style.display = '';
       ad.removeAttribute('data-policy-blocked');
     });
@@ -208,13 +217,13 @@ class AdSensePolicyGuard {
   // Configurar monitoramento de rotas (SPA)
   setupRouteMonitoring() {
     let currentPath = window.location.pathname;
-    
+
     // Observer para mudanças de URL
     const checkUrlChange = () => {
       if (window.location.pathname !== currentPath) {
         currentPath = window.location.pathname;
         console.log('🔄 Mudança de rota detectada:', currentPath);
-        
+
         // Aguardar um pouco para o conteúdo carregar
         setTimeout(() => {
           this.performCheck();
@@ -225,13 +234,13 @@ class AdSensePolicyGuard {
     // Monitorar pushState/replaceState
     const originalPushState = history.pushState;
     const originalReplaceState = history.replaceState;
-    
-    history.pushState = function(...args) {
+
+    history.pushState = function (...args) {
       originalPushState.apply(this, args);
       setTimeout(checkUrlChange, 100);
     };
-    
-    history.replaceState = function(...args) {
+
+    history.replaceState = function (...args) {
       originalReplaceState.apply(this, args);
       setTimeout(checkUrlChange, 100);
     };
@@ -249,7 +258,7 @@ class AdSensePolicyGuard {
 
   // Notificar violações
   notifyViolation(validation) {
-    this.violationCallbacks.forEach(callback => {
+    this.violationCallbacks.forEach((callback) => {
       try {
         callback(validation);
       } catch (error) {
@@ -263,7 +272,7 @@ class AdSensePolicyGuard {
     return {
       isMonitoring: this.isMonitoring,
       lastValidation: this.lastValidation,
-      adsBlocked: document.body.hasAttribute('data-ads-blocked')
+      adsBlocked: document.body.hasAttribute('data-ads-blocked'),
     };
   }
 

@@ -46,18 +46,32 @@ function GerenciarProdutosSkeleton() {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th><Placeholder xs={6} /></th>
-                    <th><Placeholder xs={4} /></th>
-                    <th><Placeholder xs={4} /></th>
-                    <th><Placeholder xs={4} /></th>
+                    <th>
+                      <Placeholder xs={6} />
+                    </th>
+                    <th>
+                      <Placeholder xs={4} />
+                    </th>
+                    <th>
+                      <Placeholder xs={4} />
+                    </th>
+                    <th>
+                      <Placeholder xs={4} />
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {[...Array(5)].map((_, index) => (
                     <tr key={index}>
-                      <td><Placeholder xs={8} /></td>
-                      <td><Placeholder xs={6} /></td>
-                      <td><Placeholder xs={6} /></td>
+                      <td>
+                        <Placeholder xs={8} />
+                      </td>
+                      <td>
+                        <Placeholder xs={6} />
+                      </td>
+                      <td>
+                        <Placeholder xs={6} />
+                      </td>
                       <td>
                         <Placeholder.Button variant="danger" size="sm" xs={8} />
                       </td>

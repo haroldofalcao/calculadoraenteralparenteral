@@ -23,11 +23,19 @@ function AppLayout() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <Nav.Link as={Link} to="/">{t('navigation.home')}</Nav.Link>
-              <Nav.Link as={Link} to="/nenpt">{t('navigation.nenpt')}</Nav.Link>
-              <Nav.Link as={Link} to="/nenpt/gerenciar-produtos">{t('navigation.manageProducts')}</Nav.Link>
-              <Nav.Link as={Link} to="/gids">{t('navigation.gids')}</Nav.Link>
-              
+              <Nav.Link as={Link} to="/">
+                {t('navigation.home')}
+              </Nav.Link>
+              <Nav.Link as={Link} to="/nenpt">
+                {t('navigation.nenpt')}
+              </Nav.Link>
+              <Nav.Link as={Link} to="/nenpt/gerenciar-produtos">
+                {t('navigation.manageProducts')}
+              </Nav.Link>
+              <Nav.Link as={Link} to="/gids">
+                {t('navigation.gids')}
+              </Nav.Link>
+
               <Dropdown align="end">
                 <Dropdown.Toggle variant="outline-light" size="sm" className="ms-2">
                   {i18n.language === 'pt-BR' ? '🇧🇷 PT' : '🇺🇸 EN'}
@@ -36,9 +44,7 @@ function AppLayout() {
                   <Dropdown.Item onClick={() => changeLanguage('pt-BR')}>
                     🇧🇷 Português
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => changeLanguage('en')}>
-                    🇺🇸 English
-                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => changeLanguage('en')}>🇺🇸 English</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Nav>
@@ -48,13 +54,18 @@ function AppLayout() {
 
       <main className="flex-grow-1 py-4">
         <ErrorBoundary>
-          <Suspense fallback={
-            <div className="d-flex justify-content-center align-items-center content-skeleton" style={{ minHeight: '200px' }}>
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Carregando...</span>
+          <Suspense
+            fallback={
+              <div
+                className="d-flex justify-content-center align-items-center content-skeleton"
+                style={{ minHeight: '200px' }}
+              >
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Carregando...</span>
+                </div>
               </div>
-            </div>
-          }>
+            }
+          >
             <Outlet />
           </Suspense>
         </ErrorBoundary>

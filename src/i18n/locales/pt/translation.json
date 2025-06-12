@@ -172,7 +172,7 @@
     "exportReport": "Exportar Relatório",
     "summaryTable": {
       "measure": "Medida",
-      "score": "Score", 
+      "score": "Score",
       "classification": "Classificação",
       "singleMeasurement": "Medida Única"
     },
@@ -215,4 +215,3 @@
     "backHome": "Voltar ao Início"
   }
 }
-

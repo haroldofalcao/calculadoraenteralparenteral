@@ -10,38 +10,41 @@ const GerenciarProdutos = lazy(() => import('../pages/Nenpt/GerenciarProdutos/in
 const Gids = lazy(() => import('../pages/Gids/index.jsx'));
 const NotFound = lazy(() => import('../pages/NotFound/index.jsx'));
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <AppLayout />,
+      errorElement: <RouteErrorPage />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: 'nenpt',
+          element: <Nenpt />,
+        },
+        {
+          path: 'nenpt/gerenciar-produtos',
+          element: <GerenciarProdutos />,
+        },
+        {
+          path: 'gids',
+          element: <Gids />,
+        },
+      ],
+    },
+    {
+      path: '*',
+      element: <NotFound />,
+    },
+  ],
   {
-    path: '/',
-    element: <AppLayout />,
-    errorElement: <RouteErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: 'nenpt',
-        element: <Nenpt />,
-      },
-      {
-        path: 'nenpt/gerenciar-produtos',
-        element: <GerenciarProdutos />,
-      },
-      {
-        path: 'gids',
-        element: <Gids />,
-      },
-    ],
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
-], {
-  future: {
-    v7_startTransition: true,
-  },
-});
+    future: {
+      v7_startTransition: true,
+    },
+  }
+);
 
 export default router;

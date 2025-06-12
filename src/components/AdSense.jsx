@@ -8,65 +8,94 @@ const hasValidContent = () => {
   // Verificar se existe conteúdo principal real na página
   const mainContent = document.querySelector('main');
   if (!mainContent) return false;
-  
+
   // Verificar se a página está marcada como sem anúncios
   const noAdsElement = document.querySelector('[data-no-ads="true"]');
   if (noAdsElement) return false;
-  
+
   // Verificar se há placeholders ou skeletons ativos
-  const hasSkeletons = document.querySelectorAll('.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton').length > 0;
+  const hasSkeletons =
+    document.querySelectorAll(
+      '.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton'
+    ).length > 0;
   if (hasSkeletons) return false;
 
   // Verificar páginas "em construção" ou "coming soon"
   const pageTitle = document.title.toLowerCase();
-  const constructionKeywords = ['construção', 'desenvolvimento', 'coming soon', 'em breve', 'maintenance', 'manutenção'];
-  if (constructionKeywords.some(keyword => pageTitle.includes(keyword))) return false;
+  const constructionKeywords = [
+    'construção',
+    'desenvolvimento',
+    'coming soon',
+    'em breve',
+    'maintenance',
+    'manutenção',
+  ];
+  if (constructionKeywords.some((keyword) => pageTitle.includes(keyword))) return false;
 
   // Verificar se há alertas/modais visíveis que possam interferir
-  const alertElements = document.querySelectorAll('.alert:not(.d-none), .modal.show, .overlay:not([style*="none"])');
+  const alertElements = document.querySelectorAll(
+    '.alert:not(.d-none), .modal.show, .overlay:not([style*="none"])'
+  );
   if (alertElements.length > 0) return false;
-  
+
   // Verificar se há texto suficiente (mínimo de 500 caracteres de conteúdo real)
   const textContent = mainContent.innerText || '';
   const contentLength = textContent.replace(/\s+/g, ' ').trim().length;
-  
+
   if (contentLength < 500) return false;
 
   // Verificar se não é conteúdo de baixo valor
-  const lowValueKeywords = ['lorem ipsum', 'texto de exemplo', 'placeholder', 'exemplo de texto', 'content here'];
-  if (lowValueKeywords.some(keyword => textContent.toLowerCase().includes(keyword))) return false;
+  const lowValueKeywords = [
+    'lorem ipsum',
+    'texto de exemplo',
+    'placeholder',
+    'exemplo de texto',
+    'content here',
+  ];
+  if (lowValueKeywords.some((keyword) => textContent.toLowerCase().includes(keyword))) return false;
 
   // Verificar se há elementos vazios dominando a página
   const emptyStateElements = document.querySelectorAll('.empty-state, .no-results, .not-found');
   if (emptyStateElements.length > 0) {
     // Se há estados vazios, verificar se ainda há conteúdo suficiente
-    const visibleEmptyStates = Array.from(emptyStateElements).filter(el => 
-      el.style.display !== 'none' && !el.classList.contains('d-none')
+    const visibleEmptyStates = Array.from(emptyStateElements).filter(
+      (el) => el.style.display !== 'none' && !el.classList.contains('d-none')
     );
     if (visibleEmptyStates.length > 0 && contentLength < 800) return false;
   }
-  
+
   return true;
 };
 
 // Verificar se a URL atual é adequada para anúncios
 const isValidPageForAds = (pathname) => {
   const invalidPages = [
-    '/404', '/error', '/skeleton', '/loading', '/maintenance',
-    '/coming-soon', '/under-construction', '/redirect', '/exit',
-    '/thank-you', '/thanks', '/confirmation', '/confirm',
-    '/navigation', '/sitemap'
+    '/404',
+    '/error',
+    '/skeleton',
+    '/loading',
+    '/maintenance',
+    '/coming-soon',
+    '/under-construction',
+    '/redirect',
+    '/exit',
+    '/thank-you',
+    '/thanks',
+    '/confirmation',
+    '/confirm',
+    '/navigation',
+    '/sitemap',
   ];
-  
-  return !invalidPages.some(page => pathname.toLowerCase().includes(page.toLowerCase()));
+
+  return !invalidPages.some((page) => pathname.toLowerCase().includes(page.toLowerCase()));
 };
 
 // Placeholder para desenvolvimento
 const AdPlaceholder = ({ adStyle, adFormat, children }) => {
   const isDev = import.meta.env.DEV;
-  
+
   if (!isDev) return children;
-  
+
   const getPlaceholderStyle = () => {
     const baseStyle = {
       backgroundColor: '#f0f0f0',
@@ -83,7 +112,7 @@ const AdPlaceholder = ({ adStyle, adFormat, children }) => {
       boxSizing: 'border-box',
       maxWidth: '100%',
       width: '100%',
-      ...adStyle
+      ...adStyle,
     };
 
     // Ajustar altura baseado no formato do anúncio
@@ -111,14 +140,14 @@ const AdPlaceholder = ({ adStyle, adFormat, children }) => {
   );
 };
 
-const AdSense = ({ 
-  adClient = "ca-pub-2235031118321497",
+const AdSense = ({
+  adClient = 'ca-pub-2235031118321497',
   adSlot,
   adStyle = { display: 'block' },
-  adFormat = "auto",
+  adFormat = 'auto',
   fullWidthResponsive = true,
-  className = "adsbygoogle",
-  requireContent = true // Nova prop para controlar se deve verificar conteúdo
+  className = 'adsbygoogle',
+  requireContent = true, // Nova prop para controlar se deve verificar conteúdo
 }) => {
   const adRef = useRef(null);
   const location = useLocation();
@@ -154,7 +183,7 @@ const AdSense = ({
       const checkContent = () => {
         const hasContent = hasValidContent();
         const policyCheck = policyGuard.forceValidation();
-        
+
         if (hasContent && policyCheck.isValid) {
           setContentReady(true);
           setPolicyCompliant(true);
@@ -227,18 +256,21 @@ const AdSense = ({
 // Componente para banner responsivo
 export const ResponsiveBanner = ({ adSlot, style = {}, requireContent = true }) => {
   const location = useLocation();
-  
+
   // Não exibir em páginas inadequadas
   if (!isValidPageForAds(location.pathname)) {
     return null;
   }
 
   return (
-    <div className="ad-container" style={{ 
-      textAlign: 'center', 
-      margin: '20px 0', 
-      ...style 
-    }}>
+    <div
+      className="ad-container"
+      style={{
+        textAlign: 'center',
+        margin: '20px 0',
+        ...style,
+      }}
+    >
       <AdSense
         adSlot={adSlot}
         requireContent={requireContent}
@@ -247,7 +279,7 @@ export const ResponsiveBanner = ({ adSlot, style = {}, requireContent = true }) 
           width: '100%',
           maxWidth: '100%',
           height: 'auto',
-          minHeight: '90px'
+          minHeight: '90px',
         }}
       />
     </div>
@@ -257,7 +289,7 @@ export const ResponsiveBanner = ({ adSlot, style = {}, requireContent = true }) 
 // Componente para anúncio lateral
 export const SidebarAd = ({ adSlot, style = {}, requireContent = true }) => {
   const location = useLocation();
-  
+
   if (!isValidPageForAds(location.pathname)) {
     return null;
   }
@@ -271,7 +303,7 @@ export const SidebarAd = ({ adSlot, style = {}, requireContent = true }) => {
           display: 'block',
           maxWidth: '100%',
           width: '100%',
-          minHeight: '250px'
+          minHeight: '250px',
         }}
         adFormat="rectangle"
       />
@@ -280,22 +312,28 @@ export const SidebarAd = ({ adSlot, style = {}, requireContent = true }) => {
 };
 
 // Componente para anúncio in-feed
-export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'default', requireContent = true }) => {
+export const InFeedAd = ({
+  adSlot,
+  style = {},
+  showLabel = true,
+  variant = 'default',
+  requireContent = true,
+}) => {
   const location = useLocation();
-  
+
   if (!isValidPageForAds(location.pathname)) {
     return null;
   }
 
   const getContainerStyle = () => {
     const baseStyle = {
-      margin: '40px auto', 
+      margin: '40px auto',
       maxWidth: '100%',
       width: '100%',
       textAlign: 'center',
       position: 'relative',
       boxSizing: 'border-box',
-      ...style
+      ...style,
     };
 
     switch (variant) {
@@ -303,7 +341,7 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
         return {
           ...baseStyle,
           padding: '15px',
-          backgroundColor: 'transparent'
+          backgroundColor: 'transparent',
         };
       case 'bordered':
         return {
@@ -312,7 +350,7 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
           backgroundColor: '#ffffff',
           borderRadius: '12px',
           border: '2px solid #dee2e6',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         };
       case 'seamless':
         return {
@@ -320,7 +358,7 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
           padding: '30px 20px',
           backgroundColor: '#f8f9fa',
           borderRadius: '8px',
-          border: '1px solid #e9ecef'
+          border: '1px solid #e9ecef',
         };
       default:
         return {
@@ -328,7 +366,7 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
           padding: '20px',
           backgroundColor: '#f8f9fa',
           borderRadius: '8px',
-          border: '1px solid #e9ecef'
+          border: '1px solid #e9ecef',
         };
     }
   };
@@ -337,17 +375,19 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
     <div style={getContainerStyle()} className="ad-container">
       {/* Label de compliance */}
       {showLabel && (
-        <div style={{
-          fontSize: '12px',
-          color: '#6c757d',
-          marginBottom: '10px',
-          fontFamily: 'Arial, sans-serif',
-          opacity: 0.8
-        }}>
+        <div
+          style={{
+            fontSize: '12px',
+            color: '#6c757d',
+            marginBottom: '10px',
+            fontFamily: 'Arial, sans-serif',
+            opacity: 0.8,
+          }}
+        >
           Publicidade
         </div>
       )}
-      
+
       <AdSense
         adSlot={adSlot}
         requireContent={requireContent}
@@ -355,7 +395,7 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
           display: 'block',
           minHeight: '120px',
           width: '100%',
-          maxWidth: '100%'
+          maxWidth: '100%',
         }}
         adFormat="fluid"
       />
@@ -366,20 +406,20 @@ export const InFeedAd = ({ adSlot, style = {}, showLabel = true, variant = 'defa
 // Componente especializado para anúncio após resultados
 export const ResultsAd = ({ adSlot, style = {} }) => {
   const location = useLocation();
-  
+
   if (!isValidPageForAds(location.pathname)) {
     return null;
   }
 
   return (
-    <InFeedAd 
-      adSlot={adSlot} 
+    <InFeedAd
+      adSlot={adSlot}
       variant="bordered"
       requireContent={true} // Sempre requer conteúdo para anúncios de resultado
       style={{
         marginTop: '50px',
         marginBottom: '30px',
-        ...style
+        ...style,
       }}
     />
   );
