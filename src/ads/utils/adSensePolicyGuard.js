@@ -89,6 +89,19 @@ class AdSensePolicyGuard {
 
 	// Validar página atual
 	validatePage() {
+		// Verificar se é um crawler/bot - Para eles, nunca bloqueie
+		const userAgent = navigator.userAgent.toLowerCase();
+		const isCrawler = /bot|crawl|spider|googlebot|bingbot|yandex|baidu|slurp|duckduckbot/i.test(userAgent);
+		
+		// Se for um crawler, retornar sempre válido para permitir indexação
+		if (isCrawler) {
+			return {
+				isValid: true,
+				issues: [],
+				timestamp: Date.now()
+			};
+		}
+		
 		const results = {
 			isValid: true,
 			issues: [],
@@ -184,8 +197,12 @@ class AdSensePolicyGuard {
 
 	// Bloquear anúncios
 	blockAds() {
-		// Marcar página como sem anúncios
-		document.body.setAttribute('data-ads-blocked', 'true')
+		// Não aplicar o atributo ao body inteiro para não prejudicar indexação
+		// Em vez disso, aplicar apenas aos contêineres de anúncios
+		const adContainers = document.querySelectorAll('.ad-container, .adsbygoogle-container')
+		adContainers.forEach((container) => {
+			container.setAttribute('data-ads-blocked', 'true')
+		})
 
 		// Ocultar anúncios existentes
 		const adElements = document.querySelectorAll('.adsbygoogle')
@@ -197,6 +214,11 @@ class AdSensePolicyGuard {
 		// Evitar carregamento de novos anúncios
 		if (window.adsbygoogle) {
 			window.adsbygoogle.blocked = true
+		}
+
+		// Log para depuração em desenvolvimento
+		if (!import.meta.env.PROD) {
+			console.debug('🚫 Bloqueio de anúncios aplicado apenas aos contêineres de anúncios')
 		}
 	}
 
@@ -210,6 +232,12 @@ class AdSensePolicyGuard {
 		blockedAds.forEach((ad) => {
 			ad.style.display = ''
 			ad.removeAttribute('data-policy-blocked')
+		})
+		
+		// Limpar também qualquer contêiner marcado
+		const blockedContainers = document.querySelectorAll('[data-ads-blocked="true"]')
+		blockedContainers.forEach((container) => {
+			container.removeAttribute('data-ads-blocked')
 		})
 
 		// Permitir carregamento de novos anúncios
@@ -276,7 +304,7 @@ class AdSensePolicyGuard {
 		return {
 			isMonitoring: this.isMonitoring,
 			lastValidation: this.lastValidation,
-			adsBlocked: document.body.hasAttribute('data-ads-blocked'),
+			adsBlocked: document.querySelectorAll('[data-ads-blocked="true"]').length > 0,
 		}
 	}
 

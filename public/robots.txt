@@ -3,8 +3,6 @@
 
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /admin/
 
 # Sitemap
 Sitemap: https://www.nutricalc.online/sitemap.xml
