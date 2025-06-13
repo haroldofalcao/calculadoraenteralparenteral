@@ -34,10 +34,3 @@ export {
 	testAdSense,
 	resetAdSense,
 } from './utils/adSenseTest'
-
-// Exemplos
-export {
-	GoodExamplePage,
-	BadExamplePage,
-	ExamplePageWithAds,
-} from './examples/AdSenseExamples'
