@@ -90,18 +90,21 @@ class AdSensePolicyGuard {
 	// Validar página atual
 	validatePage() {
 		// Verificar se é um crawler/bot - Para eles, nunca bloqueie
-		const userAgent = navigator.userAgent.toLowerCase();
-		const isCrawler = /bot|crawl|spider|googlebot|bingbot|yandex|baidu|slurp|duckduckbot/i.test(userAgent);
-		
+		const userAgent = navigator.userAgent.toLowerCase()
+		const isCrawler =
+			/bot|crawl|spider|googlebot|bingbot|yandex|baidu|slurp|duckduckbot/i.test(
+				userAgent,
+			)
+
 		// Se for um crawler, retornar sempre válido para permitir indexação
 		if (isCrawler) {
 			return {
 				isValid: true,
 				issues: [],
-				timestamp: Date.now()
-			};
+				timestamp: Date.now(),
+			}
 		}
-		
+
 		const results = {
 			isValid: true,
 			issues: [],
@@ -199,7 +202,9 @@ class AdSensePolicyGuard {
 	blockAds() {
 		// Não aplicar o atributo ao body inteiro para não prejudicar indexação
 		// Em vez disso, aplicar apenas aos contêineres de anúncios
-		const adContainers = document.querySelectorAll('.ad-container, .adsbygoogle-container')
+		const adContainers = document.querySelectorAll(
+			'.ad-container, .adsbygoogle-container',
+		)
 		adContainers.forEach((container) => {
 			container.setAttribute('data-ads-blocked', 'true')
 		})
@@ -218,7 +223,9 @@ class AdSensePolicyGuard {
 
 		// Log para depuração em desenvolvimento
 		if (!import.meta.env.PROD) {
-			console.debug('🚫 Bloqueio de anúncios aplicado apenas aos contêineres de anúncios')
+			console.debug(
+				'🚫 Bloqueio de anúncios aplicado apenas aos contêineres de anúncios',
+			)
 		}
 	}
 
@@ -233,9 +240,11 @@ class AdSensePolicyGuard {
 			ad.style.display = ''
 			ad.removeAttribute('data-policy-blocked')
 		})
-		
+
 		// Limpar também qualquer contêiner marcado
-		const blockedContainers = document.querySelectorAll('[data-ads-blocked="true"]')
+		const blockedContainers = document.querySelectorAll(
+			'[data-ads-blocked="true"]',
+		)
 		blockedContainers.forEach((container) => {
 			container.removeAttribute('data-ads-blocked')
 		})
@@ -304,7 +313,8 @@ class AdSensePolicyGuard {
 		return {
 			isMonitoring: this.isMonitoring,
 			lastValidation: this.lastValidation,
-			adsBlocked: document.querySelectorAll('[data-ads-blocked="true"]').length > 0,
+			adsBlocked:
+				document.querySelectorAll('[data-ads-blocked="true"]').length > 0,
 		}
 	}
 
@@ -317,16 +327,16 @@ class AdSensePolicyGuard {
 // Instância global
 export const policyGuard = new AdSensePolicyGuard()
 
-// Auto-inicialização em produção
+// Auto-inicialização em produção - temporariamente desativado para melhorar a indexação
 if (typeof window !== 'undefined' && import.meta.env.PROD) {
-	// Aguardar carregamento inicial
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', () => {
-			setTimeout(() => policyGuard.startMonitoring(), 2000)
-		})
-	} else {
-		setTimeout(() => policyGuard.startMonitoring(), 2000)
-	}
+	// Desativado para melhorar indexação pelo Google
+	// if (document.readyState === 'loading') {
+	// 	document.addEventListener('DOMContentLoaded', () => {
+	// 		setTimeout(() => policyGuard.startMonitoring(), 2000)
+	// 	})
+	// } else {
+	// 	setTimeout(() => policyGuard.startMonitoring(), 2000)
+	// }
 
 	// Limpeza para desenvolvimento
 	if (import.meta.hot) {
