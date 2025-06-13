@@ -254,7 +254,7 @@ const Calculator = () => {
 					{/* Anúncio no meio do formulário - discreto */}
 					<AdSenseCompliantPage minContentLength={600}>
 						<InFeedAd
-							adSlot="nenpt-form-ad"
+							adSlot="1864977909"
 							requireContent={true}
 							showLabel={true}
 							variant="subtle"
