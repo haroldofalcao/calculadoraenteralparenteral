@@ -155,13 +155,6 @@ const ProductManager = () => {
 
 	return (
 		<Container>
-			<SEO
-				title={t('productManager.title')}
-				description={t('productManager.title')}
-				canonical="/gerenciar-produtos"
-				keywords="gerenciar produtos, produtos nutricionais, base de dados nutricional, personalizar produtos"
-			/>
-
 			<ResponsiveBanner adSlot="9004267172" requireContent={true} />
 
 			<h1 className="mb-4 text-center">{t('productManager.title')}</h1>

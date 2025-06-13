@@ -68,20 +68,6 @@ const Calculator = () => {
 	return (
 		<main>
 			<Container>
-				<SEO
-					title="Calculadora de Terapia Nutricional - Enteral e Parenteral"
-					description="Calcule a terapia nutricional ideal com nossa calculadora especializada. Ferramenta profissional para nutricionistas e profissionais da saúde."
-					canonical="/"
-					keywords="calculadora nutricional, terapia nutricional, nutrição enteral, nutrição parenteral, cálculo nutricional, nutricionista"
-					structuredDataType="MedicalWebPage"
-					structuredData={{
-						audience: {
-							'@type': 'MedicalAudience',
-							audienceType: 'healthcare professionals',
-						},
-					}}
-				/>
-
 				{/* Banner de topo - só exibe após o conteúdo estar carregado */}
 				<AdSenseCompliantPage minContentLength={800}>
 					<ResponsiveBanner
