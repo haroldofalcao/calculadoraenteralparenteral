@@ -1,80 +1,92 @@
-import React, { Suspense } from 'react';
-import { Container, Nav, Navbar, Dropdown } from 'react-bootstrap';
-import { Link, Outlet } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import Footer from '../components/Footer.jsx';
-import ErrorBoundary from '../components/ErrorBoundary.jsx';
-import { AdSenseComplianceIndicator } from '../ads';
+import React, { Suspense } from 'react'
+import { Container, Dropdown, Nav, Navbar } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
+import { Link, Outlet } from 'react-router-dom'
+import { AdSenseComplianceIndicator } from '../ads'
+import ErrorBoundary from '../components/ErrorBoundary.jsx'
+import Footer from '../components/Footer.jsx'
 
 function AppLayout() {
-  const { t, i18n } = useTranslation();
+	const { t, i18n } = useTranslation()
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
+	const changeLanguage = (lng) => {
+		i18n.changeLanguage(lng)
+	}
 
-  return (
-    <div className="d-flex flex-column min-vh-100">
-      <Navbar bg="primary" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand as={Link} to="/" className="text-wrap" style={{ textWrap: 'wrap' }}>
-            {t('navigation.brand')} <small className="text-light">CC BY-NC-ND 4.0</small>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-              <Nav.Link as={Link} to="/">
-                {t('navigation.home')}
-              </Nav.Link>
-              <Nav.Link as={Link} to="/nenpt">
-                {t('navigation.nenpt')}
-              </Nav.Link>
-              <Nav.Link as={Link} to="/nenpt/gerenciar-produtos">
-                {t('navigation.manageProducts')}
-              </Nav.Link>
-              <Nav.Link as={Link} to="/gids">
-                {t('navigation.gids')}
-              </Nav.Link>
+	return (
+		<div className="d-flex flex-column min-vh-100">
+			<Navbar bg="primary" variant="dark" expand="lg">
+				<Container>
+					<Navbar.Brand
+						as={Link}
+						to="/"
+						className="text-wrap"
+						style={{ textWrap: 'wrap' }}
+					>
+						{t('navigation.brand')}{' '}
+						<small className="text-light">CC BY-NC-ND 4.0</small>
+					</Navbar.Brand>
+					<Navbar.Toggle aria-controls="basic-navbar-nav" />
+					<Navbar.Collapse id="basic-navbar-nav">
+						<Nav className="ms-auto">
+							<Nav.Link as={Link} to="/">
+								{t('navigation.home')}
+							</Nav.Link>
+							<Nav.Link as={Link} to="/nenpt">
+								{t('navigation.nenpt')}
+							</Nav.Link>
+							<Nav.Link as={Link} to="/nenpt/gerenciar-produtos">
+								{t('navigation.manageProducts')}
+							</Nav.Link>
+							<Nav.Link as={Link} to="/gids">
+								{t('navigation.gids')}
+							</Nav.Link>
 
-              <Dropdown align="end">
-                <Dropdown.Toggle variant="outline-light" size="sm" className="ms-2">
-                  {i18n.language === 'pt-BR' ? '🇧🇷 PT' : '🇺🇸 EN'}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => changeLanguage('pt-BR')}>
-                    🇧🇷 Português
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => changeLanguage('en')}>🇺🇸 English</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+							<Dropdown align="end">
+								<Dropdown.Toggle
+									variant="outline-light"
+									size="sm"
+									className="ms-2"
+								>
+									{i18n.language === 'pt-BR' ? '🇧🇷 PT' : '🇺🇸 EN'}
+								</Dropdown.Toggle>
+								<Dropdown.Menu>
+									<Dropdown.Item onClick={() => changeLanguage('pt-BR')}>
+										🇧🇷 Português
+									</Dropdown.Item>
+									<Dropdown.Item onClick={() => changeLanguage('en')}>
+										🇺🇸 English
+									</Dropdown.Item>
+								</Dropdown.Menu>
+							</Dropdown>
+						</Nav>
+					</Navbar.Collapse>
+				</Container>
+			</Navbar>
 
-      <main className="flex-grow-1 py-4">
-        <ErrorBoundary>
-          <Suspense
-            fallback={
-              <div
-                className="d-flex justify-content-center align-items-center content-skeleton"
-                style={{ minHeight: '200px' }}
-              >
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Carregando...</span>
-                </div>
-              </div>
-            }
-          >
-            <Outlet />
-          </Suspense>
-        </ErrorBoundary>
-      </main>
+			<main className="flex-grow-1 py-4">
+				<ErrorBoundary>
+					<Suspense
+						fallback={
+							<div
+								className="d-flex justify-content-center align-items-center content-skeleton"
+								style={{ minHeight: '200px' }}
+							>
+								<div className="spinner-border text-primary" role="status">
+									<span className="visually-hidden">Carregando...</span>
+								</div>
+							</div>
+						}
+					>
+						<Outlet />
+					</Suspense>
+				</ErrorBoundary>
+			</main>
 
-      <Footer />
-      {/* <AdSenseComplianceIndicator /> */}
-    </div>
-  );
+			<Footer />
+			{/* <AdSenseComplianceIndicator /> */}
+		</div>
+	)
 }
 
-export default AppLayout;
+export default AppLayout
