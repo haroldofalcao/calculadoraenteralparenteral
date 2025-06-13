@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
 // Importar teste do AdSense para depuração
-import '../utils/adSenseTest.js';
+import '../ads/utils/adSenseTest.js';
 
 function AppProvider() {
   return (

@@ -1,7 +1,7 @@
 // Exemplo de implementação ideal para componentes que usam anúncios
 
 import React, { useState, useEffect } from 'react';
-import { ResponsiveBanner, InFeedAd } from './AdSense.jsx';
+import { ResponsiveBanner, InFeedAd } from '../components/AdVariants.jsx';
 
 const ExamplePageWithAds = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -150,6 +150,12 @@ const GoodExamplePage = () => {
       )}
     </div>
   );
+};
+
+// Função fictícia para exemplo
+const fetchData = async () => {
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  return { id: 1, title: 'Dados carregados com sucesso' };
 };
 
 export { GoodExamplePage, BadExamplePage, ExamplePageWithAds };

@@ -1,8 +1,8 @@
 // Script de teste para verificar compliance AdSense
-// Execute no console do navegador: node test-adsense-compliance.js
+// Execute no console do navegador
 
-import { policyGuard } from './src/utils/adSensePolicyGuard.js';
-import { adSensePolicyValidator } from './src/utils/adSensePolicyValidator.js';
+import { policyGuard } from '../utils/adSensePolicyGuard.js';
+import { adSensePolicyValidator } from '../utils/adSensePolicyValidator.js';
 
 // Testes de compliance
 const runComplianceTests = () => {

@@ -43,3 +43,5 @@ if (typeof window !== 'undefined') {
   window.resetAdSense = resetAdSense;
   window.adSenseManager = adSenseManager;
 }
+
+export default { testAdSense, resetAdSense };

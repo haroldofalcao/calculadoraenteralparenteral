@@ -274,3 +274,5 @@ if (typeof window !== 'undefined') {
   window.checkAds = () => adSensePolicyValidator.checkLoadedAds();
   window.monitorAds = (interval) => adSensePolicyValidator.startMonitoring(interval);
 }
+
+export default adSensePolicyValidator;

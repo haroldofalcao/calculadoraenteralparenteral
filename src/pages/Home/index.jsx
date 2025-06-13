@@ -2,8 +2,7 @@ import React from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import AdSenseCompliantPage from '../../components/AdSenseCompliantPage.jsx';
-import { ResponsiveBanner, InFeedAd } from '../../components/AdSense.jsx';
+import { AdSenseCompliantPage, ResponsiveBanner, InFeedAd } from '../../ads';
 import SEO from '../../components/SEO.jsx';
 
 function Home() {

@@ -4,6 +4,7 @@ class AdSenseManager {
     this.autoAdsInitialized = false;
     this.loadedAds = new Set();
     this.initTimeout = null;
+    this.autoAdsEnabled = false; // Flag que indica se anúncios automáticos estão ativos
   }
 
   // Verificar se Auto Ads já foi inicializado globalmente
@@ -18,6 +19,8 @@ class AdSenseManager {
   // Inicializar Auto Ads apenas uma vez com verificações robustas
   initializeAutoAds() {
     if (this.autoAdsInitialized || typeof window === 'undefined') return;
+    
+    console.log('Auto Ads estão desativados - apenas anúncios manuais serão exibidos');
 
     // Verificar se já foi inicializado por outro script
     if (this.isAutoAdsAlreadyInitialized()) {
@@ -43,7 +46,7 @@ class AdSenseManager {
 
       window.adsbygoogle.push({
         google_ad_client: 'ca-pub-2235031118321497',
-        enable_page_level_ads: true,
+        enable_page_level_ads: false, // Desativando anúncios automáticos
       });
 
       this.autoAdsInitialized = true;
@@ -155,6 +158,11 @@ class AdSenseManager {
       adsbygoogleExists: typeof window !== 'undefined' && !!window.adsbygoogle,
     };
   }
+
+  // Verificar se anúncios automáticos estão habilitados
+  areAutoAdsEnabled() {
+    return this.autoAdsEnabled;
+  }
 }
 
 // Instância global
@@ -189,3 +197,5 @@ if (typeof window !== 'undefined') {
     });
   }
 }
+
+export default adSenseManager;
