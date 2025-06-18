@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import { Container, Dropdown, Nav, Navbar } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet } from 'react-router-dom'
@@ -66,20 +66,7 @@ function AppLayout() {
 
 			<main className="flex-grow-1 py-4">
 				<ErrorBoundary>
-					<Suspense
-						fallback={
-							<div
-								className="d-flex justify-content-center align-items-center content-skeleton"
-								style={{ minHeight: '200px' }}
-							>
-								<div className="spinner-border text-primary" role="status">
-									<span className="visually-hidden">Carregando...</span>
-								</div>
-							</div>
-						}
-					>
-						<Outlet />
-					</Suspense>
+					<Outlet />
 				</ErrorBoundary>
 			</main>
 

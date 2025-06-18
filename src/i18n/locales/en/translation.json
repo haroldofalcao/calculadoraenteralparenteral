@@ -44,6 +44,14 @@
   "nenpt": {
     "title": "Nutritional Therapy Calculator v.5",
     "warning": "This calculator is specific for use in adults. Do not use for nutritional calculations in pediatric patients.",
+    "clinicalImportance": {
+      "title": "Importance of Nutritional Therapy",
+      "content": "Adequate nutritional therapy is fundamental for critically ill and hospitalized patients. Enteral nutrition, when the gastrointestinal tract is functional, is always preferable to parenteral nutrition due to lower risks of infectious complications and maintenance of intestinal integrity. Parenteral nutrition is indicated when the enteral route is not viable or insufficient, providing all necessary nutrients intravenously."
+    },
+    "nutritionalAssessment": {
+      "title": "Nutritional Assessment and Prescription",
+      "content": "Precise calculation of caloric and protein needs is essential to optimize clinical outcomes. Predictive equations like Harris-Benedict or practical formulas based on body weight are used. Protein targets vary according to the patient's clinical condition, generally being 1.2-2.0 g/kg/day for critically ill patients. Continuous monitoring and prescription adjustments are fundamental to ensure nutritional adequacy."
+    },
     "patientData": "Patient Data",
     "weight": "Weight (kg)",
     "height": "Height (cm)",
@@ -91,6 +99,14 @@
   },
   "productManager": {
     "title": "Manage Nutritional Products",
+    "clinicalImportance": {
+      "title": "Importance of Product Management",
+      "content": "Proper management of nutritional products is essential for the accuracy of nutritional therapy calculations. Different enteral formulas and parenteral solutions have specific macronutrient compositions that directly impact nutritional planning. Database customization allows calculations to be adapted to formulas available at the institution, ensuring greater precision in prescriptions."
+    },
+    "productCustomization": {
+      "title": "Customization and Flexibility",
+      "content": "This tool allows adding institution-specific products, editing compositions as needed, and organizing the database according to your clinical needs. The hide/show products functionality facilitates organization without losing important data, keeping only the most used options visible during routine calculator use."
+    },
     "addProduct": "Add New Product",
     "registeredProducts": "Registered Products",
     "productName": "Product Name",
@@ -129,6 +145,23 @@
   "gids": {
     "title": "GIDS Calculator",
     "subtitle": "Gastrointestinal Dysfunction Score - Single Measurement",
+    "description": "Assessment of gastrointestinal dysfunction syndrome in critically ill patients. This tool assists in classifying the severity of gastrointestinal symptoms and in directing appropriate clinical management.",
+    "clinicalImportance": {
+      "title": "Clinical Importance in Critical Care",
+      "content": "Gastrointestinal (GI) tract dysfunction is a critical yet often under-recognized issue in ICU patients. Unlike cardiac, pulmonary, or renal failure, GI failure has historically been omitted from standard organ failure assessments (e.g., SOFA considers only the liver for GI). This lack of inclusion led to inconsistent recognition and a lack of standardized diagnostics. Clinically, GI dysfunction can precipitate serious complications – impaired gut barrier function may lead to infection or sepsis, and severe GI failure (e.g. ischemia or perforation) can be life-threatening. Moreover, recent evidence shows that GI dysfunction contributes independently to outcomes: a new GI Dysfunction Score (GIDS) was independently associated with higher 28- and 90-day mortality even after adjusting for other organ failures. Early recognition and management of GI tract dysfunction are therefore essential to improve patient prognosis and prevent cascading organ issues."
+    },
+    "prevalenceOutcomes": {
+      "title": "Prevalence and Outcomes",
+      "content": "GI dysfunction is common in critical care. GI symptoms (such as ileus, vomiting, distension) occur in approximately 62% of ICU patients. Using standardized definitions of acute gastrointestinal injury (AGI), roughly 40% of critically ill adults meet criteria for acute GI dysfunction. The presence of acute GI injury significantly worsens outcomes: a meta-analysis found about one-third (33%) of ICU patients with AGI do not survive, nearly double the mortality risk of patients without GI injury. Furthermore, greater severity of GI injury correlates with worse prognosis – patients with severe AGI (grades III–IV) have markedly higher mortality than those with milder dysfunction. These data underscore that GI tract dysfunction is both prevalent and prognostically important in the ICU setting."
+    },
+    "gidsClassification": {
+      "title": "GIDS Classification of Severity",
+      "content": "The Gastrointestinal Dysfunction Score (GIDS) is a five-tier grading system (0 through 4) developed to stratify GI dysfunction severity in critically ill patients. A GIDS of 0 denotes no evident GI dysfunction risk, whereas GIDS 4 represents life-threatening GI failure. This scoring was modeled on the earlier ESICM acute GI injury (AGI) grading, which ranged from mild risk to severe GI failure. GIDS scoring is based on objective clinical findings: it considers absence of enteral intake and signs of feeding intolerance (e.g. repeated vomiting, high gastric residual volumes, abdominal distension, abnormal bowel sounds, lack of bowel movements), as well as markers like elevated intra-abdominal pressure or GI bleeding. By quantifying GI dysfunction on a standardized scale, GIDS provides a common language to categorize severity and guides clinicians in prognostication and therapy adjustments."
+    },
+    "objectiveAssessment": {
+      "title": "Objective Assessment and Nutritional Management",
+      "content": "Utilizing objective criteria and tools like the GIDS calculator is crucial for guiding assessment and nutritional decisions in critical care. No single biomarker reliably measures GI function, so composite scores and clinical indices are needed to assess the GI tract. GIDS offers a structured, reproducible approach to track GI status at the bedside. In practice, a higher GIDS signals significant GI compromise and can prompt timely interventions. For example, gastrointestinal dysfunction frequently impairs enteral feeding tolerance, risking caloric/protein deficits; such patients are prime candidates for supplemental parenteral nutrition to avert malnutrition. An objective severity score also aids communication and decision-making – clinicians can adjust feeding strategies (enteral vs. parenteral), use pro-motility agents, or implement decompression based on GIDS level. Indeed, adoption of standardized GI severity criteria is advocated to improve diagnosis and management of GI dysfunction in ICU practice. By grounding nutritional therapy in objective GI function measures, critical care teams can better ensure adequate and safe nutrition delivery even in the face of GI tract dysfunction."
+    },
     "patientData": "Patient Data",
     "patientName": "Name",
     "patientId": "ID",

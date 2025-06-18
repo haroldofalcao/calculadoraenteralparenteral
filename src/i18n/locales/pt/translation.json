@@ -44,6 +44,14 @@
   "nenpt": {
     "title": "Calculadora de Terapia Nutricional v.5",
     "warning": "Esta calculadora é específica para uso em adultos. Não utilize para cálculos nutricionais em pacientes pediátricos.",
+    "clinicalImportance": {
+      "title": "Importância da Terapia Nutricional",
+      "content": "A terapia nutricional adequada é fundamental para pacientes críticos e hospitalizados. A nutrição enteral, quando o trato gastrointestinal está funcionante, é sempre preferível à parenteral devido aos menores riscos de complicações infecciosas e manutenção da integridade intestinal. A nutrição parenteral é indicada quando a via enteral não é viável ou insuficiente, fornecendo todos os nutrientes necessários por via endovenosa."
+    },
+    "nutritionalAssessment": {
+      "title": "Avaliação e Prescrição Nutricional",
+      "content": "O cálculo preciso das necessidades calóricas e proteicas é essencial para otimizar os resultados clínicos. Utilizam-se equações preditivas como Harris-Benedict ou fórmulas práticas baseadas no peso corporal. A meta proteica varia conforme o estado clínico do paciente, sendo geralmente 1,2-2,0 g/kg/dia para pacientes críticos. O monitoramento contínuo e ajustes na prescrição são fundamentais para garantir adequação nutricional."
+    },
     "patientData": "Dados do Paciente",
     "weight": "Peso (kg)",
     "height": "Altura (cm)",
@@ -91,6 +99,14 @@
   },
   "productManager": {
     "title": "Gerenciar Produtos Nutricionais",
+    "clinicalImportance": {
+      "title": "Importância do Gerenciamento de Produtos",
+      "content": "O gerenciamento adequado de produtos nutricionais é essencial para a precisão dos cálculos de terapia nutricional. Diferentes fórmulas enterais e soluções parenterais possuem composições específicas de macronutrientes que impactam diretamente no planejamento nutricional. A personalização da base de dados permite adequar os cálculos às fórmulas disponíveis na instituição, garantindo maior precisão nas prescrições."
+    },
+    "productCustomization": {
+      "title": "Personalização e Flexibilidade",
+      "content": "Esta ferramenta permite adicionar produtos específicos da sua instituição, editar composições conforme necessário e organizar a base de dados de acordo com suas necessidades clínicas. A funcionalidade de ocultar/mostrar produtos facilita a organização sem perder dados importantes, mantendo apenas as opções mais utilizadas visíveis durante o uso rotineiro da calculadora."
+    },
     "addProduct": "Adicionar Novo Produto",
     "registeredProducts": "Produtos Cadastrados",
     "productName": "Nome do Produto",
@@ -129,6 +145,23 @@
   "gids": {
     "title": "Calculadora GIDS",
     "subtitle": "Gastrointestinal Dysfunction Score - Medida Única",
+    "description": "Avaliação da síndrome de disfunção gastrointestinal em pacientes críticos. Esta ferramenta auxilia na classificação da gravidade dos sintomas gastrointestinais e no direcionamento do manejo clínico apropriado.",
+    "clinicalImportance": {
+      "title": "Importância Clínica em Cuidados Intensivos",
+      "content": "A disfunção do trato gastrointestinal (TGI) é um problema crítico, embora frequentemente subestimado, em pacientes de UTI. Diferentemente das falências cardíaca, pulmonar ou renal, a falência gastrointestinal historicamente foi excluída das avaliações padronizadas de órgãos (por exemplo, o escore SOFA considera apenas o fígado como representante do TGI). Essa exclusão acarretou reconhecimento inconsistente da disfunção GI e falta de critérios diagnósticos uniformes. Do ponto de vista clínico, a disfunção GI pode desencadear complicações graves – a perda da barreira intestinal pode levar a infecções ou sepse, e falência GI severa (como isquemia ou perfuração intestinal) pode ser fatal. Além disso, evidências recentes mostram que a disfunção GI impacta independentemente os desfechos: o novo Escore de Disfunção Gastrointestinal (GIDS) associou-se a maior mortalidade em 28 e 90 dias mesmo após ajuste para outras falências de órgãos. Portanto, reconhecer precocemente e manejar adequadamente a disfunção gastrointestinal é indispensável para melhorar o prognóstico e evitar a progressão para falência de múltiplos órgãos."
+    },
+    "prevalenceOutcomes": {
+      "title": "Prevalência e Prognóstico",
+      "content": "A disfunção gastrointestinal é frequente em cuidados críticos. Sintomas GI (como íleo paralítico, vômitos, distensão) ocorrem em aproximadamente 62% dos pacientes de UTI. Aplicando definições padronizadas de \"lesão gastrointestinal aguda\" (AGI), cerca de 40% dos adultos em estado crítico preenchem critérios de disfunção GI aguda. A presença de lesão GI aguda piora significativamente os desfechos: uma meta-análise mostrou que cerca de um terço (33%) dos pacientes críticos com AGI não sobrevive, quase o dobro do risco de mortalidade em comparação aos sem envolvimento GI. Ademais, maior gravidade da injúria GI correlaciona-se a pior prognóstico – pacientes com AGI grave (graus III–IV) apresentam mortalidade substancialmente mais alta do que aqueles com disfunção mais branda (grau II). Esses achados enfatizam que a disfunção do TGI é ao mesmo tempo prevalente e de grande impacto prognóstico no contexto da terapia intensiva."
+    },
+    "gidsClassification": {
+      "title": "Classificação pela Escala GIDS",
+      "content": "O Escore de Disfunção Gastrointestinal (GIDS, Gastrointestinal Dysfunction Score) é um sistema de graduação em cinco níveis (0 a 4) desenvolvido para estratificar a gravidade da disfunção GI em pacientes críticos. Um GIDS de 0 indica ausência de disfunção ou risco imediato, enquanto GIDS 4 reflete falência gastrointestinal com risco de vida. Essa escala baseia-se na classificação prévia de injúria GI aguda (AGI) proposta pela ESICM, que ia de risco leve até falência GI severa. O cálculo do GIDS apoia-se em achados clínicos objetivos: considera a ausência de ingestão enteral e sinais de intolerância alimentar (por exemplo, vômitos repetidos, alto volume residual gástrico, distensão abdominal, sons intestinais anormais, ausência de evacuações), além de marcadores como pressão intra-abdominal elevada ou sangramento GI. Ao quantificar a disfunção gastrointestinal de forma padronizada, o GIDS fornece uma linguagem comum para categorizar a gravidade, auxiliando os profissionais na estratificação de risco e na definição de condutas terapêuticas."
+    },
+    "objectiveAssessment": {
+      "title": "Avaliação Objetiva e Condutas Nutricionais",
+      "content": "A aplicação de critérios objetivos e ferramentas como a calculadora de GIDS é fundamental para orientar a avaliação e as decisões nutricionais em pacientes críticos. Não existe um biomarcador único e confiável da função gastrointestinal, por isso são necessários escores compostos e indicadores clínicos para avaliar o TGI. O GIDS oferece uma abordagem estruturada e reproduzível para monitorar a condição gastrointestinal à beira do leito. Na prática, um GIDS elevado sinaliza comprometimento GI significativo e deve motivar intervenções oportunas. Por exemplo, a disfunção GI frequentemente prejudica a tolerância à nutrição enteral, aumentando o risco de déficits calórico-proteicos; esses pacientes tornam-se candidatos típicos à nutrição parenteral complementar para evitar desnutrição. Um escore objetivo de gravidade também facilita a comunicação e a tomada de decisões – a equipe pode ajustar a estratégia nutricional (enteral versus parenteral), utilizar pró-cinéticos ou descompressão gastrointestinal de acordo com o nível de GIDS. De fato, a adoção de critérios padronizados de gravidade GI tem sido defendida para aprimorar o diagnóstico e manejo da disfunção gastrointestinal na UTI. Ao basear a terapia nutricional em medidas objetivas da função GI, as equipes de terapia intensiva podem garantir de forma mais eficaz uma nutrição adequada e segura mesmo diante da disfunção do trato gastrointestinal."
+    },
     "patientData": "Dados do Paciente",
     "patientName": "Nome",
     "patientId": "Registro",

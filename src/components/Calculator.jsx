@@ -78,6 +78,7 @@ const Calculator = () => {
 				</AdSenseCompliantPage>
 
 				<h1 className="mb-4 text-center">{t('nenpt.title')}</h1>
+
 				<Alert variant="info" className="mb-4">
 					<i className="bi bi-info-circle-fill me-2"></i>
 					<strong>{t('common.warning')}:</strong> {t('nenpt.warning')}
@@ -551,6 +552,37 @@ const Calculator = () => {
 						<ResultsAd adSlot="1864977909" />
 					</AdSenseCompliantPage>
 				)}
+
+				{/* Seções Informativas - Após o conteúdo principal */}
+				<div className="mb-4 mt-5">
+					<h3 className="text-primary mb-4 text-center">
+						Informações Sobre Terapia Nutricional
+					</h3>
+					
+					{/* Importância da Terapia Nutricional */}
+					<Card className="mb-3">
+						<Card.Body>
+							<h5 className="text-primary mb-3">
+								{t('nenpt.clinicalImportance.title')}
+							</h5>
+							<p className="text-justify">
+								{t('nenpt.clinicalImportance.content')}
+							</p>
+						</Card.Body>
+					</Card>
+
+					{/* Avaliação e Prescrição Nutricional */}
+					<Card className="mb-3">
+						<Card.Body>
+							<h5 className="text-primary mb-3">
+								{t('nenpt.nutritionalAssessment.title')}
+							</h5>
+							<p className="text-justify">
+								{t('nenpt.nutritionalAssessment.content')}
+							</p>
+						</Card.Body>
+					</Card>
+				</div>
 			</Container>
 		</main>
 	)

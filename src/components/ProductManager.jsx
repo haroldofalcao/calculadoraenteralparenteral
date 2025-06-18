@@ -424,6 +424,37 @@ const ProductManager = () => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
+
+			{/* Seções Informativas - Após o conteúdo principal */}
+			<div className="mb-4 mt-5">
+				<h3 className="text-primary mb-4 text-center">
+					Informações Sobre Gerenciamento de Produtos
+				</h3>
+				
+				{/* Importância do Gerenciamento */}
+				<Card className="mb-3">
+					<Card.Body>
+						<h5 className="text-primary mb-3">
+							{t('productManager.clinicalImportance.title')}
+						</h5>
+						<p className="text-justify">
+							{t('productManager.clinicalImportance.content')}
+						</p>
+					</Card.Body>
+				</Card>
+
+				{/* Personalização e Flexibilidade */}
+				<Card className="mb-3">
+					<Card.Body>
+						<h5 className="text-primary mb-3">
+							{t('productManager.productCustomization.title')}
+						</h5>
+						<p className="text-justify">
+							{t('productManager.productCustomization.content')}
+						</p>
+					</Card.Body>
+				</Card>
+			</div>
 		</Container>
 	)
 }

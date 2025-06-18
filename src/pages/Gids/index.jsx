@@ -313,12 +313,7 @@ function Gids() {
 									</h1>
 								</Card.Header>
 								<Card.Body>
-									<p className="mb-0 text-muted">
-										{t(
-											'gids.description',
-											'Avaliação da síndrome de disfunção gastrointestinal em pacientes críticos. Esta ferramenta auxilia na classificação da gravidade dos sintomas gastrointestinais e no direcionamento do manejo clínico apropriado.',
-										)}
-									</p>
+									<p className="mb-0 text-muted">{t('gids.description')}</p>
 								</Card.Body>
 							</Card>
 
@@ -697,6 +692,61 @@ function Gids() {
 									</div>
 								</Tab>
 							</Tabs>
+							
+							{/* Seções Informativas - Após o conteúdo principal */}
+							<div className="mb-4 mt-5">
+								<h3 className="text-primary mb-4 text-center">
+									Informações Sobre Disfunção Gastrointestinal
+								</h3>
+								
+								{/* Importância Clínica */}
+								<Card className="mb-3">
+									<Card.Body>
+										<h5 className="text-primary mb-3">
+											{t('gids.clinicalImportance.title')}
+										</h5>
+										<p className="text-justify">
+											{t('gids.clinicalImportance.content')}
+										</p>
+									</Card.Body>
+								</Card>
+
+								{/* Prevalência e Desfechos */}
+								<Card className="mb-3">
+									<Card.Body>
+										<h5 className="text-primary mb-3">
+											{t('gids.prevalenceOutcomes.title')}
+										</h5>
+										<p className="text-justify">
+											{t('gids.prevalenceOutcomes.content')}
+										</p>
+									</Card.Body>
+								</Card>
+
+								{/* Classificação GIDS */}
+								<Card className="mb-3">
+									<Card.Body>
+										<h5 className="text-primary mb-3">
+											{t('gids.gidsClassification.title')}
+										</h5>
+										<p className="text-justify">
+											{t('gids.gidsClassification.content')}
+										</p>
+									</Card.Body>
+								</Card>
+
+								{/* Avaliação Objetiva */}
+								<Card className="mb-3">
+									<Card.Body>
+										<h5 className="text-primary mb-3">
+											{t('gids.objectiveAssessment.title')}
+										</h5>
+										<p className="text-justify">
+											{t('gids.objectiveAssessment.content')}
+										</p>
+									</Card.Body>
+								</Card>
+							</div>
 						</Col>
 					</Row>
 				</Container>
