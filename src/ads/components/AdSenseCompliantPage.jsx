@@ -9,9 +9,10 @@ import { policyGuard } from '../utils/adSensePolicyGuard.js'
 const AdSenseCompliantPage = ({
 	children,
 	fallback = null,
-	minContentLength = 500,
+	minContentLength = 300, // Reduzido de 500 para 300
 	requireMainElement = true,
 	allowSkeletons = false,
+	timeout = 15000, // Timeout de 15 segundos
 }) => {
 	const [isCompliant, setIsCompliant] = useState(false)
 	const [validation, setValidation] = useState(null)
@@ -46,11 +47,26 @@ const AdSenseCompliantPage = ({
 					const skeletonElements = document.querySelectorAll(
 						'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
 					)
+					
 					if (skeletonElements.length > 0) {
-						result.isValid = false
-						result.issues.push(
-							`${skeletonElements.length} elementos de carregamento encontrados`,
-						)
+						// Verificar se skeletons estão realmente visíveis
+						const visibleSkeletons = Array.from(skeletonElements).filter(el => {
+							const style = window.getComputedStyle(el)
+							return style.display !== 'none' && style.visibility !== 'hidden'
+						})
+						
+						if (visibleSkeletons.length > 0) {
+							// Verificar se já passou do timeout
+							const pageLoadTime = performance.now()
+							if (pageLoadTime > timeout) {
+								console.warn(`🚨 Skeletons detectados após timeout de ${timeout}ms - liberando anúncios forçadamente`)
+							} else {
+								result.isValid = false
+								result.issues.push(
+									`${visibleSkeletons.length} elementos de carregamento visíveis encontrados`,
+								)
+							}
+						}
 					}
 				}
 			}

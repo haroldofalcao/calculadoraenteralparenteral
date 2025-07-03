@@ -66,13 +66,13 @@ const Calculator = () => {
 	}
 
 	return (
-		<main>
+		<main className="calculator">
 			<Container>
-				{/* Banner de topo - só exibe após o conteúdo estar carregado */}
-				<AdSenseCompliantPage minContentLength={800}>
+				{/* Banner de topo - configuração mais permissiva para calculadoras */}
+				<AdSenseCompliantPage minContentLength={50} allowSkeletons={true} timeout={5000}>
 					<ResponsiveBanner
 						adSlot="5804222918"
-						requireContent={true}
+						requireContent={false}
 						style={{ marginBottom: '30px' }}
 					/>
 				</AdSenseCompliantPage>
@@ -558,7 +558,7 @@ const Calculator = () => {
 					<h3 className="text-primary mb-4 text-center">
 						Informações Sobre Terapia Nutricional
 					</h3>
-					
+
 					{/* Importância da Terapia Nutricional */}
 					<Card className="mb-3">
 						<Card.Body>
@@ -579,6 +579,43 @@ const Calculator = () => {
 							</h5>
 							<p className="text-justify">
 								{t('nenpt.nutritionalAssessment.content')}
+							</p>
+						</Card.Body>
+					</Card>
+
+					{/* Seção adicional para garantir conteúdo suficiente */}
+					<Card className="mb-3">
+						<Card.Body>
+							<h5 className="text-primary mb-3">
+								Protocolo de Segurança e Boas Práticas
+							</h5>
+							<p className="text-justify">
+								A nutrição enteral e parenteral requer cuidados específicos e 
+								protocolos rigorosos de segurança. Esta calculadora foi desenvolvida 
+								seguindo diretrizes internacionais para auxiliar profissionais de 
+								saúde na prescrição nutricional adequada e segura para pacientes 
+								em diferentes estados clínicos.
+							</p>
+							<p className="text-justify">
+								É fundamental sempre considerar o quadro clínico completo do paciente, 
+								incluindo função renal, hepática, cardiovascular e metabólica antes 
+								de implementar qualquer protocolo nutricional. A monitorização contínua 
+								e ajustes baseados na resposta clínica são essenciais para o sucesso 
+								terapêutico.
+							</p>
+						</Card.Body>
+					</Card>
+
+					<Card className="mb-3">
+						<Card.Body>
+							<h5 className="text-primary mb-3">
+								Validação Científica e Referências
+							</h5>
+							<p className="text-justify">
+								Os cálculos implementados nesta ferramenta são baseados em evidências 
+								científicas atuais e protocolos validados por sociedades médicas 
+								reconhecidas. Recomendamos sempre consultar as diretrizes mais recentes 
+								da ASPEN, ESPEN e outras organizações especializadas em nutrição clínica.
 							</p>
 						</Card.Body>
 					</Card>

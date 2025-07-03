@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Dropdown, Nav, Navbar } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet } from 'react-router-dom'
-import { AdSenseComplianceIndicator } from '../ads'
+import { AdSenseComplianceIndicator, AdSenseDebugPanel } from '../ads'
 import ErrorBoundary from '../components/ErrorBoundary.jsx'
 import Footer from '../components/Footer.jsx'
 
@@ -72,6 +72,7 @@ function AppLayout() {
 
 			<Footer />
 			{/* <AdSenseComplianceIndicator /> */}
+			<AdSenseDebugPanel />
 		</div>
 	)
 }

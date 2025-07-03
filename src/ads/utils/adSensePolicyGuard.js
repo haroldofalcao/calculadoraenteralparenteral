@@ -327,16 +327,16 @@ class AdSensePolicyGuard {
 // Instância global
 export const policyGuard = new AdSensePolicyGuard()
 
-// Auto-inicialização em produção - temporariamente desativado para melhorar a indexação
+// Auto-inicialização em produção - habilitado com configuração otimizada
 if (typeof window !== 'undefined' && import.meta.env.PROD) {
-	// Desativado para melhorar indexação pelo Google
-	// if (document.readyState === 'loading') {
-	// 	document.addEventListener('DOMContentLoaded', () => {
-	// 		setTimeout(() => policyGuard.startMonitoring(), 2000)
-	// 	})
-	// } else {
-	// 	setTimeout(() => policyGuard.startMonitoring(), 2000)
-	// }
+	// Habilitado para melhorar compliance com políticas AdSense
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			setTimeout(() => policyGuard.startMonitoring(), 3000)
+		})
+	} else {
+		setTimeout(() => policyGuard.startMonitoring(), 3000)
+	}
 
 	// Limpeza para desenvolvimento
 	if (import.meta.hot) {

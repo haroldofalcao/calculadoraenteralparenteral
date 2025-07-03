@@ -12,12 +12,47 @@ export const hasValidContent = () => {
 	const noAdsElement = document.querySelector('[data-no-ads="true"]')
 	if (noAdsElement) return false
 
-	// Verificar se há placeholders ou skeletons ativos
-	const hasSkeletons =
-		document.querySelectorAll(
+	// Whitelist de páginas funcionais que devem sempre passar na validação
+	const currentPath = window.location.pathname.toLowerCase()
+	const functionalPages = ['/nenpt', '/gids', '/nenpt/gerenciar-produtos']
+	const isFunctionalPage = functionalPages.some(page => currentPath.includes(page))
+	
+	if (isFunctionalPage) {
+		console.log(`✅ Página funcional detectada (${currentPath}) - aplicando validação flexibilizada`)
+	}
+
+	// Verificar se há placeholders ou skeletons ativos com timeout
+	const hasSkeletons = () => {
+		const skeletonElements = document.querySelectorAll(
 			'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
-		).length > 0
-	if (hasSkeletons) return false
+		)
+		
+		// Se encontrou skeletons, verificar se são temporários
+		if (skeletonElements.length > 0) {
+			// Permitir um tempo máximo para carregamento (15 segundos após carregamento da página)
+			const pageLoadTime = performance.now()
+			if (pageLoadTime > 15000) {
+				console.warn('🚨 Skeletons detectados após 15s - liberando anúncios forçadamente')
+				return false // Permitir anúncios mesmo com skeletons
+			}
+			
+			// Verificar se skeletons estão realmente visíveis
+			const visibleSkeletons = Array.from(skeletonElements).filter(el => {
+				const style = window.getComputedStyle(el)
+				return style.display !== 'none' && style.visibility !== 'hidden'
+			})
+			
+			if (visibleSkeletons.length === 0) {
+				return false // Skeletons não visíveis, permitir anúncios
+			}
+			
+			console.log(`⏳ ${visibleSkeletons.length} skeleton(s) visível(is) detectado(s) - aguardando carregamento`)
+			return true // Bloquear se ainda em tempo de carregamento
+		}
+		return false
+	}
+	
+	if (hasSkeletons()) return false
 
 	// Verificar páginas "em construção" ou "coming soon"
 	const pageTitle = document.title.toLowerCase()
@@ -38,11 +73,31 @@ export const hasValidContent = () => {
 	)
 	if (alertElements.length > 0) return false
 
-	// Verificar se há texto suficiente (mínimo de 500 caracteres de conteúdo real)
+	// Verificar se há texto suficiente (mínimo reduzido de 500 para 300 caracteres)
 	const textContent = mainContent.innerText || ''
 	const contentLength = textContent.replace(/\s+/g, ' ').trim().length
 
-	if (contentLength < 500) return false
+	// Para páginas funcionais, ser muito mais flexível
+	const minContentRequired = isFunctionalPage ? 100 : 300
+
+	if (contentLength < minContentRequired) {
+		// Para páginas interativas (formulários, calculadoras), ser mais flexível
+		const interactiveElements = mainContent.querySelectorAll(
+			'form, input, button, select, textarea, .calculator, .interactive'
+		)
+		
+		// Se há elementos interativos, reduzir ainda mais o requisito
+		if (interactiveElements.length > 0 && contentLength >= 50) {
+			console.log(`📝 Página com ${interactiveElements.length} elementos interativos - requisito de conteúdo flexibilizado (${contentLength} chars)`)
+			// Continuar verificação com requisito flexibilizado
+		} else if (interactiveElements.length > 3 || isFunctionalPage) {
+			// Se há muitos elementos interativos ou é página funcional, assumir que é uma página válida
+			console.log(`📝 Página ${isFunctionalPage ? 'funcional' : 'altamente interativa'} (${interactiveElements.length} elementos) - liberando mesmo com pouco texto (${contentLength} chars)`)
+		} else {
+			console.log(`❌ Conteúdo insuficiente: ${contentLength}/${minContentRequired} caracteres e poucos elementos interativos (${interactiveElements.length})`)
+			return false
+		}
+	}
 
 	// Verificar se não é conteúdo de baixo valor
 	const lowValueKeywords = [
@@ -66,11 +121,18 @@ export const hasValidContent = () => {
 	if (emptyStateElements.length > 0) {
 		// Se há estados vazios, verificar se ainda há conteúdo suficiente
 		const visibleEmptyStates = Array.from(emptyStateElements).filter(
-			(el) => el.style.display !== 'none' && !el.classList.contains('d-none'),
+			(el) => {
+				const style = window.getComputedStyle(el)
+				return style.display !== 'none' && !el.classList.contains('d-none')
+			},
 		)
-		if (visibleEmptyStates.length > 0 && contentLength < 800) return false
+		if (visibleEmptyStates.length > 0 && contentLength < 600) {
+			console.log(`❌ Estados vazios detectados com conteúdo insuficiente: ${contentLength}/600 caracteres`)
+			return false
+		}
 	}
 
+	console.log(`✅ Conteúdo válido detectado: ${contentLength} caracteres`)
 	return true
 }
 

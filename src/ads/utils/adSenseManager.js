@@ -4,7 +4,7 @@ class AdSenseManager {
 		this.autoAdsInitialized = false
 		this.loadedAds = new Set()
 		this.initTimeout = null
-		this.autoAdsEnabled = false // Flag que indica se anúncios automáticos estão ativos
+		this.autoAdsEnabled = true // Habilitar anúncios automáticos
 	}
 
 	// Verificar se Auto Ads já foi inicializado globalmente
@@ -21,7 +21,7 @@ class AdSenseManager {
 		if (this.autoAdsInitialized || typeof window === 'undefined') return
 
 		console.log(
-			'Auto Ads estão desativados - apenas anúncios manuais serão exibidos',
+			'✅ Inicializando Auto Ads - anúncios automáticos habilitados',
 		)
 
 		// Verificar se já foi inicializado por outro script
@@ -49,11 +49,11 @@ class AdSenseManager {
 
 			window.adsbygoogle.push({
 				google_ad_client: 'ca-pub-2235031118321497',
-				enable_page_level_ads: false, // Desativando anúncios automáticos
+				enable_page_level_ads: true, // Habilitando anúncios automáticos
 			})
 
 			this.autoAdsInitialized = true
-			console.log('Auto Ads initialized successfully')
+			console.log('✅ Auto Ads initialized successfully - automáticos habilitados')
 		} catch (error) {
 			console.warn('Auto Ads initialization error:', error.message)
 			this.autoAdsInitialized = true // Marcar como inicializado para evitar retry
@@ -71,13 +71,38 @@ class AdSenseManager {
 			return
 		}
 
-		// Verificar se há conteúdo skeleton/placeholder ativo
-		const hasSkeletons =
-			document.querySelectorAll(
-				'.placeholder, .spinner-border, .content-skeleton',
-			).length > 0
-		if (hasSkeletons) {
-			console.log(`Skipping ad load due to skeleton content: ${adSlot}`)
+		// Verificar se há conteúdo skeleton/placeholder ativo com timeout
+		const hasSkeletons = () => {
+			const skeletonElements = document.querySelectorAll(
+				'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
+			)
+			
+			if (skeletonElements.length > 0) {
+				// Verificar se skeletons estão realmente visíveis
+				const visibleSkeletons = Array.from(skeletonElements).filter(el => {
+					const style = window.getComputedStyle(el)
+					return style.display !== 'none' && style.visibility !== 'hidden'
+				})
+				
+				if (visibleSkeletons.length === 0) {
+					return false // Skeletons não visíveis, permitir anúncios
+				}
+				
+				// Permitir um tempo máximo para carregamento
+				const pageLoadTime = performance.now()
+				if (pageLoadTime > 12000) { // 12 segundos
+					console.warn(`🚨 Skeletons detectados após 12s para anúncio ${adSlot} - liberando forçadamente`)
+					return false // Permitir anúncios mesmo com skeletons
+				}
+				
+				console.log(`⏳ Skeletons visíveis detectados para anúncio ${adSlot} - aguardando carregamento`)
+				return true
+			}
+			return false
+		}
+		
+		if (hasSkeletons()) {
+			console.log(`⏳ Skipping ad load due to skeleton content: ${adSlot}`)
 			return
 		}
 

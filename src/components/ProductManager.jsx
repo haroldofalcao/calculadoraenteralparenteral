@@ -155,7 +155,7 @@ const ProductManager = () => {
 
 	return (
 		<Container>
-			<ResponsiveBanner adSlot="9004267172" requireContent={true} />
+			<ResponsiveBanner adSlot="9004267172" requireContent={false} />
 
 			<h1 className="mb-4 text-center">{t('productManager.title')}</h1>
 
@@ -430,7 +430,7 @@ const ProductManager = () => {
 				<h3 className="text-primary mb-4 text-center">
 					Informações Sobre Gerenciamento de Produtos
 				</h3>
-				
+
 				{/* Importância do Gerenciamento */}
 				<Card className="mb-3">
 					<Card.Body>

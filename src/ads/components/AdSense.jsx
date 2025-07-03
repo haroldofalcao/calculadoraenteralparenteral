@@ -103,7 +103,7 @@ const AdSense = ({
 		}
 
 		if (requireContent) {
-			// Aguardar o conteúdo estar pronto
+			// Aguardar o conteúdo estar pronto com retry mais agressivo
 			const checkContent = () => {
 				const hasContent = hasValidContent()
 				const policyCheck = policyGuard.forceValidation()
@@ -111,14 +111,16 @@ const AdSense = ({
 				if (hasContent && policyCheck.isValid) {
 					setContentReady(true)
 					setPolicyCompliant(true)
+					console.log('✅ Conteúdo e política validados - liberando anúncios')
 				} else {
-					// Verificar novamente após um tempo
-					setTimeout(checkContent, 2000)
+					console.log(`⏳ Aguardando conteúdo: ${hasContent ? 'OK' : 'FALHA'} | Política: ${policyCheck.isValid ? 'OK' : 'FALHA'}`)
+					// Verificar novamente após um tempo menor
+					setTimeout(checkContent, 1000)
 				}
 			}
 
-			// Aguardar um pouco antes de começar a verificar
-			const initialDelay = setTimeout(checkContent, 3000)
+			// Aguardar menos tempo antes de começar a verificar
+			const initialDelay = setTimeout(checkContent, 1500)
 			return () => clearTimeout(initialDelay)
 		} else {
 			// Se não requer verificação de conteúdo, ainda verificar políticas

@@ -14,6 +14,7 @@ export {
 	useAdSenseCompliance,
 	AdSenseComplianceIndicator,
 } from './components/AdSenseDebug'
+export { default as AdSenseDebugPanel } from './components/AdSenseDebugPanel'
 
 // Utilitários
 export { default as adSenseManager } from './utils/adSenseManager'

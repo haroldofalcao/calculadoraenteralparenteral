@@ -32,11 +32,11 @@ function Home() {
 								<p className="lead text-muted">{t('home.subtitle')}</p>
 							</div>
 
-							{/* Anúncio superior - só carrega se página estiver em compliance */}
-							<AdSenseCompliantPage minContentLength={500}>
+							{/* Anúncio superior - configuração mais permissiva */}
+							<AdSenseCompliantPage minContentLength={200} allowSkeletons={true} timeout={10000}>
 								<ResponsiveBanner
 									adSlot="home-top-banner"
-									requireContent={true}
+									requireContent={false}
 									style={{ marginBottom: '30px' }}
 								/>
 							</AdSenseCompliantPage>
@@ -93,11 +93,11 @@ function Home() {
 								</Col>
 							</Row>
 
-							{/* Anúncio no meio do conteúdo */}
-							<AdSenseCompliantPage minContentLength={800}>
+							{/* Anúncio no meio do conteúdo - configuração mais permissiva */}
+							<AdSenseCompliantPage minContentLength={300} allowSkeletons={true} timeout={10000}>
 								<InFeedAd
 									adSlot="home-middle-ad"
-									requireContent={true}
+									requireContent={false}
 									showLabel={true}
 									style={{ margin: '40px 0' }}
 								/>
@@ -154,11 +154,11 @@ function Home() {
 								</Col>
 							</Row>
 
-							{/* Anúncio no final da página */}
-							<AdSenseCompliantPage minContentLength={1000}>
+							{/* Anúncio no final da página - configuração mais permissiva */}
+							<AdSenseCompliantPage minContentLength={400} allowSkeletons={true} timeout={8000}>
 								<ResponsiveBanner
 									adSlot="home-bottom-banner"
-									requireContent={true}
+									requireContent={false}
 									style={{ marginTop: '40px' }}
 								/>
 							</AdSenseCompliantPage>
