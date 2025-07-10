@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import {
 	Alert,
 	Button,
+	Card,
 	Col,
 	Container,
 	Form,
@@ -345,9 +346,6 @@ const ProductManager = () => {
 
 							<div className="d-flex flex-wrap gap-2">
 								{hiddenDefaultProducts.map((productName, index) => {
-									const product = defaultProducts.find(
-										(p) => p.nome === productName,
-									)
 									return (
 										<div
 											key={index}
