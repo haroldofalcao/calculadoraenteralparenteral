@@ -10,7 +10,8 @@ export function useAnalytics() {
      * @param {object} params - Parâmetros adicionais (ex: { label: "comprar" })
      */
     const trackEvent = useCallback((eventName, params = {}) => {
-        if (!analytics) return;
+        if (!analytics) return console.log("Analytics não inicializado");
+        ;
         try {
             logEvent(analytics, eventName, params);
             console.log("Evento enviado:", eventName, params);
