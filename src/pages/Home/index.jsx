@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { AdSenseCompliantPage, InFeedAd, ResponsiveBanner } from '../../ads'
 import SEO from '../../components/SEO.jsx'
+import VisitCounter from '../../components/VisitCounter'
+import { useAnalytics } from '../../hooks/useAnalytics'
 
 function Home() {
 	const { t } = useTranslation()
+	const { trackEvent } = useAnalytics()
 
 	return (
 		<>
@@ -33,7 +36,11 @@ function Home() {
 							</div>
 
 							{/* Anúncio superior - configuração mais permissiva */}
-							<AdSenseCompliantPage minContentLength={200} allowSkeletons={true} timeout={10000}>
+							<AdSenseCompliantPage
+								minContentLength={200}
+								allowSkeletons={true}
+								timeout={10000}
+							>
 								<ResponsiveBanner
 									adSlot="home-top-banner"
 									requireContent={false}
@@ -58,6 +65,11 @@ function Home() {
 													to="/nenpt"
 													variant="primary"
 													className="me-2"
+													onClick={() =>
+														trackEvent('home_nenpt_acessar_calculadora', {
+															origem: 'home',
+														})
+													}
 												>
 													{t('home.nenpt.accessCalculator')}
 												</Button>
@@ -65,6 +77,11 @@ function Home() {
 													as={Link}
 													to="/nenpt/gerenciar-produtos"
 													variant="outline-primary"
+													onClick={() =>
+														trackEvent('home_nenpt_gerenciar_produtos', {
+															origem: 'home',
+														})
+													}
 												>
 													{t('home.nenpt.manageProducts')}
 												</Button>
@@ -84,7 +101,14 @@ function Home() {
 												{t('home.gids.description')}
 											</Card.Text>
 											<div className="mt-auto">
-												<Button as={Link} to="/gids" variant="success">
+												<Button
+													as={Link}
+													to="/gids"
+													variant="success"
+													onClick={() =>
+														trackEvent('home_gids_acessar', { origem: 'home' })
+													}
+												>
 													{t('home.gids.access')}
 												</Button>
 											</div>
@@ -94,7 +118,11 @@ function Home() {
 							</Row>
 
 							{/* Anúncio no meio do conteúdo - configuração mais permissiva */}
-							<AdSenseCompliantPage minContentLength={300} allowSkeletons={true} timeout={10000}>
+							<AdSenseCompliantPage
+								minContentLength={300}
+								allowSkeletons={true}
+								timeout={10000}
+							>
 								<InFeedAd
 									adSlot="home-middle-ad"
 									requireContent={false}
@@ -155,13 +183,22 @@ function Home() {
 							</Row>
 
 							{/* Anúncio no final da página - configuração mais permissiva */}
-							<AdSenseCompliantPage minContentLength={400} allowSkeletons={true} timeout={8000}>
+							<AdSenseCompliantPage
+								minContentLength={400}
+								allowSkeletons={true}
+								timeout={8000}
+							>
 								<ResponsiveBanner
 									adSlot="home-bottom-banner"
 									requireContent={false}
 									style={{ marginTop: '40px' }}
 								/>
 							</AdSenseCompliantPage>
+
+							{/* Visit Counter (Realtime) */}
+							<div className="mt-4">
+								<VisitCounter pageId="home" autoIncrement={true} />
+							</div>
 						</Col>
 					</Row>
 				</Container>

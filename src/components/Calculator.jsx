@@ -10,6 +10,7 @@ import {
 	ResponsiveBanner,
 	ResultsAd,
 } from '../ads/components/AdVariants.jsx'
+import { useAnalytics } from '../hooks/useAnalytics'
 import { calculatorSchema } from '../schemas/calculatorSchema'
 import { allProductsAtom } from '../store/productsAtoms'
 import { calculateResults } from '../utils/calculationUtils'
@@ -20,6 +21,7 @@ const Calculator = () => {
 	const [allProducts] = useAtom(allProductsAtom)
 	const [results, setResults] = React.useState(null)
 	const [loading, setLoading] = React.useState(false)
+	const { trackEvent } = useAnalytics()
 
 	const {
 		control,
@@ -46,11 +48,22 @@ const Calculator = () => {
 	// Observar o método de cálculo para renderização condicional
 	const calculationMethod = watch('calculationMethod')
 
+	useEffect(() => {
+		trackEvent('calculator_view', { page: 'nenpt' })
+	}, [trackEvent])
+
 	const onSubmit = (data) => {
 		setLoading(true)
 
 		// Encontrar o produto selecionado
 		const selectedProduct = allProducts.find((p) => p.nome === data.product)
+
+		trackEvent('calculator_submitted', {
+			product: data.product || null,
+			weight: data.weight || null,
+			height: data.height || null,
+			calculationMethod: data.calculationMethod || null,
+		})
 
 		if (!selectedProduct) {
 			alert(t('nenpt.validation.invalidProduct'))
@@ -62,6 +75,12 @@ const Calculator = () => {
 		const calculatedResults = calculateResults(data, selectedProduct)
 		setResults(calculatedResults)
 
+		// Enviar evento de resultados mostrados
+		trackEvent('calculator_results_shown', {
+			totalCalories: calculatedResults.totalCalories,
+			totalProtein: calculatedResults.totalProtein,
+		})
+
 		setLoading(false)
 	}
 
@@ -69,7 +88,11 @@ const Calculator = () => {
 		<main className="calculator">
 			<Container>
 				{/* Banner de topo - configuração mais permissiva para calculadoras */}
-				<AdSenseCompliantPage minContentLength={50} allowSkeletons={true} timeout={5000}>
+				<AdSenseCompliantPage
+					minContentLength={50}
+					allowSkeletons={true}
+					timeout={5000}
+				>
 					<ResponsiveBanner
 						adSlot="5804222918"
 						requireContent={false}
@@ -260,7 +283,20 @@ const Calculator = () => {
 									name="product"
 									control={control}
 									render={({ field }) => (
-										<Form.Select isInvalid={!!errors.product} {...field}>
+										<Form.Select
+											isInvalid={!!errors.product}
+											{...field}
+											onChange={(e) => {
+												field.onChange(e)
+												const selected = allProducts.find(
+													(p) => p.nome === e.target.value,
+												)
+												trackEvent('calculator_product_selected', {
+													product: e.target.value,
+													productExists: !!selected,
+												})
+											}}
+										>
 											<option value="">{t('nenpt.selectProduct')}</option>
 											{allProducts.map((product, index) => (
 												<option key={index} value={product.nome}>
@@ -590,18 +626,18 @@ const Calculator = () => {
 								Protocolo de Segurança e Boas Práticas
 							</h5>
 							<p className="text-justify">
-								A nutrição enteral e parenteral requer cuidados específicos e 
-								protocolos rigorosos de segurança. Esta calculadora foi desenvolvida 
-								seguindo diretrizes internacionais para auxiliar profissionais de 
-								saúde na prescrição nutricional adequada e segura para pacientes 
-								em diferentes estados clínicos.
+								A nutrição enteral e parenteral requer cuidados específicos e
+								protocolos rigorosos de segurança. Esta calculadora foi
+								desenvolvida seguindo diretrizes internacionais para auxiliar
+								profissionais de saúde na prescrição nutricional adequada e
+								segura para pacientes em diferentes estados clínicos.
 							</p>
 							<p className="text-justify">
-								É fundamental sempre considerar o quadro clínico completo do paciente, 
-								incluindo função renal, hepática, cardiovascular e metabólica antes 
-								de implementar qualquer protocolo nutricional. A monitorização contínua 
-								e ajustes baseados na resposta clínica são essenciais para o sucesso 
-								terapêutico.
+								É fundamental sempre considerar o quadro clínico completo do
+								paciente, incluindo função renal, hepática, cardiovascular e
+								metabólica antes de implementar qualquer protocolo nutricional.
+								A monitorização contínua e ajustes baseados na resposta clínica
+								são essenciais para o sucesso terapêutico.
 							</p>
 						</Card.Body>
 					</Card>
@@ -612,10 +648,11 @@ const Calculator = () => {
 								Validação Científica e Referências
 							</h5>
 							<p className="text-justify">
-								Os cálculos implementados nesta ferramenta são baseados em evidências 
-								científicas atuais e protocolos validados por sociedades médicas 
-								reconhecidas. Recomendamos sempre consultar as diretrizes mais recentes 
-								da ASPEN, ESPEN e outras organizações especializadas em nutrição clínica.
+								Os cálculos implementados nesta ferramenta são baseados em
+								evidências científicas atuais e protocolos validados por
+								sociedades médicas reconhecidas. Recomendamos sempre consultar
+								as diretrizes mais recentes da ASPEN, ESPEN e outras
+								organizações especializadas em nutrição clínica.
 							</p>
 						</Card.Body>
 					</Card>

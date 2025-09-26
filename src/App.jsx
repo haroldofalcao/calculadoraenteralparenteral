@@ -1,8 +1,8 @@
-import React from 'react';
-import AppProvider from './providers/AppProvider.jsx';
+import React from 'react'
+import AppProvider from './providers/AppProvider.jsx'
 
 function App() {
-  return <AppProvider />;
+	return <AppProvider />
 }
 
-export default App;
+export default App

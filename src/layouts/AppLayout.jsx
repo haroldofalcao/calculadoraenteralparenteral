@@ -5,6 +5,7 @@ import { Link, Outlet } from 'react-router-dom'
 import { AdSenseComplianceIndicator, AdSenseDebugPanel } from '../ads'
 import ErrorBoundary from '../components/ErrorBoundary.jsx'
 import Footer from '../components/Footer.jsx'
+import { usePageTracking } from '../hooks/usePageTracking'
 
 function AppLayout() {
 	const { t, i18n } = useTranslation()
@@ -12,6 +13,8 @@ function AppLayout() {
 	const changeLanguage = (lng) => {
 		i18n.changeLanguage(lng)
 	}
+
+	usePageTracking()
 
 	return (
 		<div className="d-flex flex-column min-vh-100">

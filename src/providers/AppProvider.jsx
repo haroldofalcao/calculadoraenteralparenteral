@@ -10,6 +10,7 @@ import '../App.css'
 
 // Importar teste do AdSense para depuração
 import '../ads/utils/adSenseTest.js'
+import { usePageTracking } from '../hooks/usePageTracking.js'
 
 function AppProvider() {
 	return (

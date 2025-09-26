@@ -13,6 +13,7 @@ import {
 } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { ResponsiveBanner } from '../ads/components/AdVariants.jsx'
+import { useAnalytics } from '../hooks/useAnalytics'
 import {
 	allProductsAtom,
 	defaultProductsAtom,
@@ -29,6 +30,7 @@ const ProductManager = () => {
 		hiddenDefaultProductsAtom,
 	)
 	const [defaultProducts] = useAtom(defaultProductsAtom)
+	const { trackEvent } = useAnalytics()
 
 	const [newProduct, setNewProduct] = useState({
 		nome: '',
@@ -42,6 +44,10 @@ const ProductManager = () => {
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
 	const [productToDelete, setProductToDelete] = useState(null)
 	const [alert, setAlert] = useState({ show: false, variant: '', message: '' })
+
+	useEffect(() => {
+		trackEvent('productManager_view', { page: 'product_manager' })
+	}, [trackEvent])
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target
@@ -60,6 +66,10 @@ const ProductManager = () => {
 			)
 		) {
 			showAlertMessage('danger', t('productManager.validation.nameExists'))
+			trackEvent('productManager_add_failed', {
+				reason: 'name_exists',
+				name: newProduct.nome,
+			})
 			return
 		}
 
@@ -72,11 +82,13 @@ const ProductManager = () => {
 			newProduct.ep_ratio < 0
 		) {
 			showAlertMessage('danger', t('productManager.validation.invalidValues'))
+			trackEvent('productManager_add_failed', { reason: 'invalid_values' })
 			return
 		}
 
 		// Adicionar novo produto à lista de produtos do usuário
 		setUserProducts([...userProducts, newProduct])
+		trackEvent('productManager_add_product', { name: newProduct.nome })
 
 		// Limpar formulário
 		setNewProduct({
@@ -94,6 +106,7 @@ const ProductManager = () => {
 	const handleDeleteClick = (product) => {
 		setProductToDelete(product)
 		setShowDeleteModal(true)
+		trackEvent('productManager_delete_initiated', { name: product.nome })
 	}
 
 	const confirmDelete = () => {
@@ -112,6 +125,10 @@ const ProductManager = () => {
 					(p) => p.nome !== productToDelete.nome,
 				)
 				setUserProducts(updatedProducts)
+				trackEvent('productManager_deleted', {
+					name: productToDelete.nome,
+					type: 'user',
+				})
 				showAlertMessage(
 					'success',
 					t('productManager.validation.productDeleted'),
@@ -123,6 +140,10 @@ const ProductManager = () => {
 					productToDelete.nome,
 				]
 				setHiddenDefaultProducts(updatedHiddenProducts)
+				trackEvent('productManager_hidden', {
+					name: productToDelete.nome,
+					type: 'default',
+				})
 				showAlertMessage(
 					'success',
 					t('productManager.validation.productDeleted'),
@@ -139,6 +160,7 @@ const ProductManager = () => {
 			(name) => name !== productName,
 		)
 		setHiddenDefaultProducts(updatedHiddenProducts)
+		trackEvent('productManager_restored', { name: productName })
 		showAlertMessage('success', t('productManager.validation.productDeleted'))
 	}
 
@@ -153,6 +175,13 @@ const ProductManager = () => {
 	const filteredProducts = allProducts.filter((product) =>
 		product.nome.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
+
+	// track search when user presses Enter
+	const handleSearchKeyDown = (e) => {
+		if (e.key === 'Enter') {
+			trackEvent('productManager_search', { query: searchTerm })
+		}
+	}
 
 	return (
 		<Container>
@@ -274,6 +303,7 @@ const ProductManager = () => {
 								placeholder={t('productManager.searchProduct')}
 								value={searchTerm}
 								onChange={(e) => setSearchTerm(e.target.value)}
+								onKeyDown={handleSearchKeyDown}
 							/>
 						</Form.Group>
 
@@ -422,8 +452,6 @@ const ProductManager = () => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
-
-			{/* Seções Informativas - Após o conteúdo principal */}
 			<div className="mb-4 mt-5">
 				<h3 className="text-primary mb-4 text-center">
 					Informações Sobre Gerenciamento de Produtos
