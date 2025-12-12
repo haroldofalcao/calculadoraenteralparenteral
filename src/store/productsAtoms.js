@@ -69,6 +69,14 @@ const defaultProductsList = [
     ep_ratio: 20.0,
   },
   {
+    nome: 'Fresubin HP Energy',
+    kcal_ml: 1.5,
+    cho_g_l: 170.0,
+    lip_g_l: 34.0,
+    ptn_g_l: 75.0,
+    ep_ratio: 20.0,
+  },
+  {
     nome: 'Fresubin Original',
     kcal_ml: 1.0,
     cho_g_l: 138.0,
