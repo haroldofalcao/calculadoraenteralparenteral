@@ -12,6 +12,7 @@
     "warning": "Warning",
     "success": "Success",
     "custom": "Custom",
+    "optional": "Optional",
     "noResults": "No results found"
   },
   "navigation": {
@@ -68,7 +69,15 @@
     "formulaProduct": "Formula/Product",
     "selectProduct": "Select a product",
     "prescribedVolume": "Prescribed Volume (mL)",
+    "secondaryFormula": "Secondary Formula (Supplemental)",
     "optionalData": "Optional Data",
+    "nonNutritionalCalories": "Non-Nutritional Calories",
+    "citratoLabel": "Add Citrate (300 kcal)",
+    "citratoHelp": "Check if patient receives citrate",
+    "propofolVolume": "Propofol (mL)",
+    "propofolHelp": "1.1 kcal/mL + 20g lip/100mL",
+    "sg5Volume": "SG5% (mL)",
+    "sg5Help": "0.2 kcal/mL + 50g CHO/L",
     "infusionTime": "Infusion Time (h)",
     "proteinModule": "Protein Module (g)",
     "otherModule": "Other Module (Kcal)",
@@ -88,13 +97,22 @@
       "proteinDistribution": "PTN Distribution",
       "bmi": "BMI",
       "proteinPerKg": "Protein (g/kg)",
-      "caloriesPerKg": "Calories (kcal/kg)"
+      "caloriesPerKg": "Calories (kcal/kg)",
+      "detailedBreakdown": "Detailed Breakdown by Formula",
+      "metric": "Metric",
+      "formula1": "Formula 1",
+      "formula2": "Formula 2",
+      "total": "Total",
+      "nonNutritionalIncluded": "Non-nutritional calories included in total"
     },
     "validation": {
       "selectProduct": "Select a product",
       "volumeRequired": "Volume is required",
       "kcalKgRequired": "kcal/kg value is required for pocket formula method",
-      "invalidProduct": "Please select a valid product."
+      "invalidProduct": "Please select a valid product.",
+      "product2RequiredIfVolume2": "Select a product for Formula 2",
+      "volume2RequiredIfProduct2": "Enter volume for Formula 2",
+      "nonNegativeValue": "Value cannot be negative"
     }
   },
   "productManager": {

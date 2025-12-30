@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAtom } from 'jotai'
 import React, { useEffect } from 'react'
-import { Alert, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import { Alert, Button, Card, Col, Container, Form, Row, Table } from 'react-bootstrap'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import AdSenseCompliantPage from '../ads/components/AdSenseCompliantPage.jsx'
@@ -39,9 +39,14 @@ const Calculator = () => {
 			kcalPerKg: '25',
 			product: '',
 			volume: '',
+			product2: '',
+			volume2: '',
 			infusionTime: '',
 			proteinModule: '',
 			otherModule: '',
+			citrato: false,
+			propofol_ml: '',
+			sg5_ml: '',
 		},
 	})
 
@@ -55,30 +60,56 @@ const Calculator = () => {
 	const onSubmit = (data) => {
 		setLoading(true)
 
-		// Encontrar o produto selecionado
-		const selectedProduct = allProducts.find((p) => p.nome === data.product)
+		// Encontrar o produto selecionado (Fórmula 1)
+		const selectedProduct1 = allProducts.find((p) => p.nome === data.product)
+
+		// Encontrar o segundo produto se preenchido (Fórmula 2)
+		const selectedProduct2 = data.product2
+			? allProducts.find((p) => p.nome === data.product2)
+			: null
+
+		// Preparar dados de calorias não-nutricionais
+		const nonNutritionalCals = {
+			citrato: data.citrato || false,
+			propofol_ml: data.propofol_ml || 0,
+			sg5_ml: data.sg5_ml || 0,
+		}
 
 		trackEvent('calculator_submitted', {
 			product: data.product || null,
+			product2: data.product2 || null,
 			weight: data.weight || null,
 			height: data.height || null,
 			calculationMethod: data.calculationMethod || null,
+			hasSecondFormula: !!selectedProduct2,
+			hasNonNutritional:
+				nonNutritionalCals.citrato ||
+				parseFloat(nonNutritionalCals.propofol_ml) > 0 ||
+				parseFloat(nonNutritionalCals.sg5_ml) > 0,
 		})
 
-		if (!selectedProduct) {
+		if (!selectedProduct1) {
 			alert(t('nenpt.validation.invalidProduct'))
 			setLoading(false)
 			return
 		}
 
-		// Calcular resultados
-		const calculatedResults = calculateResults(data, selectedProduct)
+		// Calcular resultados com múltiplas fórmulas e calorias não-nutricionais
+		const calculatedResults = calculateResults(
+			data,
+			selectedProduct1,
+			selectedProduct2,
+			nonNutritionalCals,
+		)
 		setResults(calculatedResults)
 
 		// Enviar evento de resultados mostrados
 		trackEvent('calculator_results_shown', {
-			totalCalories: calculatedResults.totalCalories,
-			totalProtein: calculatedResults.totalProtein,
+			totalCalories: calculatedResults.totals.totalCalories,
+			totalProtein: calculatedResults.totals.totalProtein,
+			hasSecondFormula: !!selectedProduct2,
+			hasNonNutritional:
+				calculatedResults.nonNutritional.totalCalories > 0,
 		})
 
 		setLoading(false)
@@ -337,6 +368,73 @@ const Calculator = () => {
 						</Col>
 					</Row>
 
+					{/* Segunda Fórmula (Suplementar) */}
+					<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
+						{t('nenpt.secondaryFormula')}{' '}
+						<span className="text-muted fs-6">({t('common.optional')})</span>
+					</h2>
+					<Row className="mb-3">
+						<Col md={6}>
+							<Form.Group>
+								<Form.Label>{t('nenpt.formulaProduct')}</Form.Label>
+								<Controller
+									name="product2"
+									control={control}
+									render={({ field }) => (
+										<Form.Select
+											isInvalid={!!errors.product2}
+											{...field}
+											onChange={(e) => {
+												field.onChange(e)
+												const selected = allProducts.find(
+													(p) => p.nome === e.target.value,
+												)
+												trackEvent('calculator_product2_selected', {
+													product: e.target.value,
+													productExists: !!selected,
+												})
+											}}
+										>
+											<option value="">{t('nenpt.selectProduct')}</option>
+											{allProducts.map((product, index) => (
+												<option key={index} value={product.nome}>
+													{product.nome}
+												</option>
+											))}
+										</Form.Select>
+									)}
+								/>
+								{errors.product2 && (
+									<Form.Control.Feedback type="invalid">
+										{errors.product2.message}
+									</Form.Control.Feedback>
+								)}
+							</Form.Group>
+						</Col>
+						<Col md={6}>
+							<Form.Group>
+								<Form.Label>{t('nenpt.prescribedVolume')}</Form.Label>
+								<Controller
+									name="volume2"
+									control={control}
+									render={({ field }) => (
+										<Form.Control
+											type="number"
+											min="0"
+											isInvalid={!!errors.volume2}
+											{...field}
+										/>
+									)}
+								/>
+								{errors.volume2 && (
+									<Form.Control.Feedback type="invalid">
+										{errors.volume2.message}
+									</Form.Control.Feedback>
+								)}
+							</Form.Group>
+						</Col>
+					</Row>
+
 					<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
 						{t('nenpt.optionalData')}
 					</h2>
@@ -409,6 +507,83 @@ const Calculator = () => {
 						</Col>
 					</Row>
 
+					{/* Calorias Não-Nutricionais */}
+					<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
+						{t('nenpt.nonNutritionalCalories')}{' '}
+						<span className="text-muted fs-6">({t('common.optional')})</span>
+					</h2>
+					<Row className="mb-3">
+						<Col md={4}>
+							<Form.Group>
+								<Controller
+									name="citrato"
+									control={control}
+									render={({ field }) => (
+										<Form.Check
+											type="checkbox"
+											label={t('nenpt.citratoLabel')}
+											checked={field.value}
+											onChange={(e) => field.onChange(e.target.checked)}
+										/>
+									)}
+								/>
+								<Form.Text className="text-muted">
+									{t('nenpt.citratoHelp')}
+								</Form.Text>
+							</Form.Group>
+						</Col>
+						<Col md={4}>
+							<Form.Group>
+								<Form.Label>{t('nenpt.propofolVolume')}</Form.Label>
+								<Controller
+									name="propofol_ml"
+									control={control}
+									render={({ field }) => (
+										<Form.Control
+											type="number"
+											min="0"
+											placeholder="0"
+											isInvalid={!!errors.propofol_ml}
+											{...field}
+										/>
+									)}
+								/>
+								<Form.Text className="text-muted">
+									{t('nenpt.propofolHelp')}
+								</Form.Text>
+								{errors.propofol_ml && (
+									<Form.Control.Feedback type="invalid">
+										{errors.propofol_ml.message}
+									</Form.Control.Feedback>
+								)}
+							</Form.Group>
+						</Col>
+						<Col md={4}>
+							<Form.Group>
+								<Form.Label>{t('nenpt.sg5Volume')}</Form.Label>
+								<Controller
+									name="sg5_ml"
+									control={control}
+									render={({ field }) => (
+										<Form.Control
+											type="number"
+											min="0"
+											placeholder="0"
+											isInvalid={!!errors.sg5_ml}
+											{...field}
+										/>
+									)}
+								/>
+								<Form.Text className="text-muted">{t('nenpt.sg5Help')}</Form.Text>
+								{errors.sg5_ml && (
+									<Form.Control.Feedback type="invalid">
+										{errors.sg5_ml.message}
+									</Form.Control.Feedback>
+								)}
+							</Form.Group>
+						</Col>
+					</Row>
+
 					<div className="d-grid gap-2 col-6 mx-auto mt-4">
 						<Button variant="primary" type="submit" disabled={loading}>
 							{loading ? t('common.loading') : t('nenpt.calculateButton')}
@@ -454,13 +629,145 @@ const Calculator = () => {
 											{t('nenpt.results.caloriesProvided')}
 										</Card.Title>
 										<Card.Text className="fs-4 text-primary">
-											{results.totalCalories.toFixed(1)} kcal
+											{results.totals.totalCalories.toFixed(1)} kcal
 										</Card.Text>
 									</Card.Body>
 								</Card>
 							</Col>
 						</Row>
-						<Row>
+
+						{/* Tabela Comparativa de Fórmulas */}
+						<Card className="mt-4">
+							<Card.Body>
+								<Card.Title className="fs-5 mb-3">
+									{t('nenpt.results.detailedBreakdown')}
+								</Card.Title>
+								<Table responsive hover bordered>
+									<thead className="table-light">
+										<tr>
+											<th>{t('nenpt.results.metric')}</th>
+											<th className="text-center">{t('nenpt.results.formula1')}</th>
+											{results.formula2 && results.formula2.calories > 0 && (
+												<th className="text-center text-success">
+													{t('nenpt.results.formula2')}
+												</th>
+											)}
+											<th className="text-center text-primary">
+												<strong>{t('nenpt.results.total')}</strong>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<strong>{t('nenpt.results.caloriesProvided')}</strong>
+											</td>
+											<td className="text-center">
+												{results.formula1.calories.toFixed(1)} kcal
+											</td>
+											{results.formula2 && results.formula2.calories > 0 && (
+												<td className="text-center text-success">
+													{results.formula2.calories.toFixed(1)} kcal
+												</td>
+											)}
+											<td className="text-center bg-light">
+												<strong className="text-primary">
+													{results.totals.totalCalories.toFixed(1)} kcal
+												</strong>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<strong>{t('nenpt.results.proteinProvided')}</strong>
+											</td>
+											<td className="text-center">
+												{results.formula1.protein.toFixed(1)} g
+											</td>
+											{results.formula2 && results.formula2.calories > 0 && (
+												<td className="text-center text-success">
+													{results.formula2.protein.toFixed(1)} g
+												</td>
+											)}
+											<td className="text-center bg-light">
+												<strong className="text-primary">
+													{results.totals.totalProtein.toFixed(1)} g
+												</strong>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<strong>{t('nenpt.results.carbsProvided')}</strong>
+											</td>
+											<td className="text-center">
+												{results.formula1.carbs.toFixed(1)} g
+											</td>
+											{results.formula2 && results.formula2.calories > 0 && (
+												<td className="text-center text-success">
+													{results.formula2.carbs.toFixed(1)} g
+												</td>
+											)}
+											<td className="text-center bg-light">
+												<strong className="text-primary">
+													{results.totals.totalCarbs.toFixed(1)} g
+												</strong>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<strong>{t('nenpt.results.lipidsProvided')}</strong>
+											</td>
+											<td className="text-center">
+												{results.formula1.lipids.toFixed(1)} g
+											</td>
+											{results.formula2 && results.formula2.calories > 0 && (
+												<td className="text-center text-success">
+													{results.formula2.lipids.toFixed(1)} g
+												</td>
+											)}
+											<td className="text-center bg-light">
+												<strong className="text-primary">
+													{results.totals.totalLipids.toFixed(1)} g
+												</strong>
+											</td>
+										</tr>
+									</tbody>
+								</Table>
+
+								{/* Alert de Calorias Não-Nutricionais */}
+								{results.nonNutritional && results.nonNutritional.totalCalories > 0 && (
+									<Alert variant="info" className="mt-3 mb-0">
+										<div className="d-flex align-items-start">
+											<div className="me-2">ℹ️</div>
+											<div>
+												<strong>{t('nenpt.results.nonNutritionalIncluded')}:</strong>
+												<ul className="mb-0 mt-2">
+													{results.nonNutritional.calories.citrato > 0 && (
+														<li>
+															Citrato: {results.nonNutritional.calories.citrato} kcal
+														</li>
+													)}
+													{results.nonNutritional.calories.propofol > 0 && (
+														<li>
+															Propofol: {results.nonNutritional.calories.propofol.toFixed(1)}{' '}
+															kcal ({results.nonNutritional.macros.lipids.toFixed(1)}g
+															lipídios)
+														</li>
+													)}
+													{results.nonNutritional.calories.sg5 > 0 && (
+														<li>
+															SG5%: {results.nonNutritional.calories.sg5.toFixed(1)} kcal (
+															{results.nonNutritional.macros.carbs.toFixed(1)}g CHO)
+														</li>
+													)}
+												</ul>
+											</div>
+										</div>
+									</Alert>
+								)}
+							</Card.Body>
+						</Card>
+
+						<Row className="mt-4">
 							<Col md={4} className="mb-3">
 								<Card>
 									<Card.Body>
@@ -468,7 +775,7 @@ const Calculator = () => {
 											{t('nenpt.results.proteinProvided')}
 										</Card.Title>
 										<Card.Text className="fs-4 text-primary">
-											{results.totalProtein.toFixed(1)} g
+											{results.totals.totalProtein.toFixed(1)} g
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -480,7 +787,7 @@ const Calculator = () => {
 											{t('nenpt.results.carbsProvided')}
 										</Card.Title>
 										<Card.Text className="fs-4 text-primary">
-											{results.totalCarbs.toFixed(1)} g
+											{results.totals.totalCarbs.toFixed(1)} g
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -492,7 +799,7 @@ const Calculator = () => {
 											{t('nenpt.results.lipidsProvided')}
 										</Card.Title>
 										<Card.Text className="fs-4 text-primary">
-											{results.totalLipids.toFixed(1)} g
+											{results.totals.totalLipids.toFixed(1)} g
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -550,7 +857,7 @@ const Calculator = () => {
 											{t('nenpt.results.carbsDistribution')}
 										</Card.Title>
 										<Card.Text className="fs-4 text-primary">
-											{results.carbsPercentage.toFixed(1)}%
+											{results.totals.carbsPercentage.toFixed(1)}%
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -562,7 +869,7 @@ const Calculator = () => {
 											{t('nenpt.results.lipidsDistribution')}
 										</Card.Title>
 										<Card.Text className="fs-4 text-primary">
-											{results.lipidsPercentage.toFixed(1)}%
+											{results.totals.lipidsPercentage.toFixed(1)}%
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -574,7 +881,7 @@ const Calculator = () => {
 											{t('nenpt.results.proteinDistribution')}
 										</Card.Title>
 										<Card.Text className="fs-4 text-primary">
-											{results.proteinPercentage.toFixed(1)}%
+											{results.totals.proteinPercentage.toFixed(1)}%
 										</Card.Text>
 									</Card.Body>
 								</Card>
