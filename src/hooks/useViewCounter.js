@@ -34,7 +34,11 @@ export default function useViewCounter(pageId, options = {}) {
     const visitorId = getOrCreateVisitorId()
 
     useEffect(() => {
-        if (!pageId) return
+        if (!pageId || !database) {
+            setLoading(false)
+            setCount(0)
+            return
+        }
         const nodeRef = ref(database, `views/${pageId}/count`)
 
         const unsubscribe = onValue(
@@ -56,7 +60,7 @@ export default function useViewCounter(pageId, options = {}) {
 
     // Increment sem rate-limit (uso interno quando permitido)
     const incrementRaw = useCallback(async (n = 1) => {
-        if (!pageId) return false
+        if (!pageId || !database) return false
         setLoading(true)
         const nodeRef = ref(database, `views/${pageId}/count`)
         try {
@@ -76,7 +80,7 @@ export default function useViewCounter(pageId, options = {}) {
 
     // Increment com rate-limit baseado em visitorId e cooldownSeconds
     const increment = useCallback(async () => {
-        if (!pageId) return false
+        if (!pageId || !database) return false
         setLoading(true)
         const now = Date.now()
         const visitorPath = `visitors/${visitorId}/lastViews/${pageId}`

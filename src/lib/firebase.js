@@ -20,5 +20,29 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
-export const database = getDatabase(app);
+
+// Initialize Analytics with error handling
+let analytics = null;
+try {
+  if (import.meta.env.VITE_FIREBASE_MEASUREMENT_ID) {
+    analytics = getAnalytics(app);
+  } else {
+    console.warn('Firebase Analytics não inicializado - variáveis de ambiente ausentes');
+  }
+} catch (error) {
+  console.error('Erro ao inicializar Firebase Analytics:', error);
+}
+export { analytics };
+
+// Initialize Database with error handling
+let database = null;
+try {
+  if (import.meta.env.VITE_FIREBASE_DATABASE_URL && import.meta.env.VITE_FIREBASE_PROJECT_ID) {
+    database = getDatabase(app);
+  } else {
+    console.warn('Firebase Database não inicializado - variáveis de ambiente ausentes');
+  }
+} catch (error) {
+  console.error('Erro ao inicializar Firebase Database:', error);
+}
+export { database };
