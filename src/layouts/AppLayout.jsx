@@ -2,7 +2,12 @@ import React from 'react'
 import { Container, Dropdown, Nav, Navbar } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet } from 'react-router-dom'
-import { AdSenseComplianceIndicator, AdSenseDebugPanel } from '../ads'
+import {
+	AdSenseComplianceIndicator,
+	AdSenseDebugPanel,
+	AdSenseCompliantPage,
+	ResponsiveBanner,
+} from '../ads'
 import ErrorBoundary from '../components/ErrorBoundary.jsx'
 import Footer from '../components/Footer.jsx'
 import { usePageTracking } from '../hooks/usePageTracking'
@@ -66,6 +71,21 @@ function AppLayout() {
 					</Navbar.Collapse>
 				</Container>
 			</Navbar>
+
+			{/* Global Top Banner Ad Slot - Automatically appears on all pages */}
+			<Container className="mt-3">
+				<AdSenseCompliantPage
+					minContentLength={100}
+					allowSkeletons={true}
+					timeout={5000}
+				>
+					<ResponsiveBanner
+						adSlot="global-top-banner"
+						requireContent={false}
+						style={{ minHeight: '100px' }}
+					/>
+				</AdSenseCompliantPage>
+			</Container>
 
 			<main className="flex-grow-1 py-4">
 				<ErrorBoundary>
