@@ -32,7 +32,21 @@ function Home() {
 								<h1 className="display-4 text-primary mb-3">
 									{t('home.title')}
 								</h1>
-								<p className="lead text-muted">{t('home.subtitle')}</p>
+								<p className="lead text-muted mb-4">{t('home.subtitle')}</p>
+								<div className="text-start mx-auto" style={{ maxWidth: '800px' }}>
+									<p className="mb-3">
+										{t(
+											'home.intro.p1',
+											'Bem-vindo ao NutriCalc, a plataforma de referência para cálculos nutricionais hospitalares. Nossa ferramenta foi desenvolvida para otimizar o fluxo de trabalho de nutricionistas, médicos e enfermeiros, oferecendo precisão matemática aliada a protocolos clínicos validados.',
+										)}
+									</p>
+									<p>
+										{t(
+											'home.intro.p2',
+											'Diferente de calculadoras genéricas, o NutriCalc foca nas especificidades da terapia nutricional enteral e parenteral, considerando fatores críticos como calorias não-nutricionais (propofol, citrato), ajustes para pacientes renais e metas proteicas individualizadas.',
+										)}
+									</p>
+								</div>
 							</div>
 
 							{/* Anúncio superior - configuração mais permissiva */}
@@ -131,52 +145,105 @@ function Home() {
 								/>
 							</AdSenseCompliantPage>
 
-							<Row className="mt-5">
+							{/* Seção de Benefícios - AdSense Content Expansion */}
+							<Row className="mt-5 mb-5">
+								<Col md={12}>
+									<h2 className="text-center mb-4 text-primary">
+										{t('home.whyChoose.title', 'Por que escolher o NutriCalc?')}
+									</h2>
+								</Col>
+								<Col md={4}>
+									<div className="p-3 h-100">
+										<h4 className="text-info h5">
+											<i className="fas fa-check-circle me-2"></i>
+											{t('home.whyChoose.precision.title', 'Precisão Clínica')}
+										</h4>
+										<p className="text-muted small">
+											{t(
+												'home.whyChoose.precision.desc',
+												'Nossos algoritmos são calibrados com as diretrizes mais recentes (ASPEN/ESPEN). Garantimos que cada mililitro de propofol ou citrato seja contabilizado no balanço energético final.',
+											)}
+										</p>
+									</div>
+								</Col>
+								<Col md={4}>
+									<div className="p-3 h-100">
+										<h4 className="text-info h5">
+											<i className="fas fa-user-md me-2"></i>
+											{t('home.whyChoose.professional.title', 'Foco Profissional')}
+										</h4>
+										<p className="text-muted small">
+											{t(
+												'home.whyChoose.professional.desc',
+												'Ferramenta "Point-of-Care" ideal para uso à beira do leito. Interface limpa, rápida e responsiva, permitindo decisões ágeis durante rounds multidisciplinares.',
+											)}
+										</p>
+									</div>
+								</Col>
+								<Col md={4}>
+									<div className="p-3 h-100">
+										<h4 className="text-info h5">
+											<i className="fas fa-shield-alt me-2"></i>
+											{t('home.whyChoose.safety.title', 'Segurança do Paciente')}
+										</h4>
+										<p className="text-muted small">
+											{t(
+												'home.whyChoose.safety.desc',
+												'Alertas automáticos para inconsistências e validações de dados vitais previnem erros de prescrição e melhoram a segurança na terapia nutricional.',
+											)}
+										</p>
+									</div>
+								</Col>
+							</Row>
+
+							<Row className="mb-5">
 								<Col>
-									<Card className="bg-light">
-										<Card.Body>
-											<Card.Title className="text-info">
+									<Card className="bg-light border-0 shadow-sm">
+										<Card.Body className="p-4">
+											<Card.Title className="text-dark mb-3">
 												<i className="fas fa-info-circle me-2"></i>
 												{t('home.about.title')}
 											</Card.Title>
 											<Card.Text>{t('home.about.description')}</Card.Text>
 
-											{/* Conteúdo adicional para garantir densidade adequada */}
 											<div className="mt-4">
-												<h5>
+												<h5 className="h6 fw-bold">
 													{t(
 														'home.features.title',
 														'Características principais:',
 													)}
 												</h5>
-												<ul>
-													<li>
+												<ul className="row">
+													<li className="col-md-6 mb-2">
 														{t(
 															'home.features.accurate',
 															'Cálculos precisos e confiáveis',
 														)}
 													</li>
-													<li>
+													<li className="col-md-6 mb-2">
 														{t('home.features.easy', 'Interface fácil de usar')}
 													</li>
-													<li>
+													<li className="col-md-6 mb-2">
 														{t(
 															'home.features.professional',
 															'Desenvolvido para profissionais de saúde',
 														)}
 													</li>
-													<li>
+													<li className="col-md-6 mb-2">
 														{t(
 															'home.features.validated',
+															'Baseado em protocolos validados',
 															'Baseado em protocolos validados',
 														)}
 													</li>
 												</ul>
 											</div>
 
-											<small className="text-muted">
-												<strong>{t('home.about.license')}</strong>
-											</small>
+											<div className="mt-3 pt-3 border-top">
+												<small className="text-muted">
+													<strong>{t('home.about.license')}</strong>
+												</small>
+											</div>
 										</Card.Body>
 									</Card>
 								</Col>

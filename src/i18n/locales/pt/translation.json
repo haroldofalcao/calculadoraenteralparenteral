@@ -40,6 +40,25 @@
       "title": "Sobre as Calculadoras",
       "description": "Estas ferramentas foram desenvolvidas para auxiliar profissionais de saúde no cálculo de necessidades nutricionais e avaliação de disfunções gastrointestinais. Todas as calculadoras seguem protocolos clínicos estabelecidos e devem ser utilizadas por profissionais qualificados.",
       "license": "Licença: CC BY-NC-ND 4.0 - Uso não comercial permitido com atribuição"
+    },
+    "intro": {
+      "p1": "Bem-vindo ao NutriCalc, a plataforma de referência para cálculos nutricionais hospitalares. Nossa ferramenta foi desenvolvida para otimizar o fluxo de trabalho de nutricionistas, médicos e enfermeiros, oferecendo precisão matemática aliada a protocolos clínicos validados.",
+      "p2": "Diferente de calculadoras genéricas, o NutriCalc foca nas especificidades da terapia nutricional enteral e parenteral, considerando fatores críticos como calorias não-nutricionais (propofol, citrato), ajustes para pacientes renais e metas proteicas individualizadas."
+    },
+    "whyChoose": {
+      "title": "Por que escolher o NutriCalc?",
+      "precision": {
+        "title": "Precisão Clínica",
+        "desc": "Nossos algoritmos são calibrados com as diretrizes mais recentes (ASPEN/ESPEN). Garantimos que cada mililitro de propofol ou citrato seja contabilizado no balanço energético final."
+      },
+      "professional": {
+        "title": "Foco Profissional",
+        "desc": "Ferramenta \"Point-of-Care\" ideal para uso à beira do leito. Interface limpa, rápida e responsiva, permitindo decisões ágeis durante rounds multidisciplinares."
+      },
+      "safety": {
+        "title": "Segurança do Paciente",
+        "desc": "Alertas automáticos para inconsistências e validações de dados vitais previnem erros de prescrição e melhoram a segurança na terapia nutricional."
+      }
     }
   },
   "nenpt": {
@@ -113,6 +132,25 @@
       "product2RequiredIfVolume2": "Selecione um produto para a Fórmula 2",
       "volume2RequiredIfProduct2": "Informe o volume para a Fórmula 2",
       "nonNegativeValue": "O valor não pode ser negativo"
+    },
+    "guide": {
+      "title": "Como Utilizar a Calculadora NENPT",
+      "step1": {
+        "title": "Dados do Paciente",
+        "desc": "Insira peso, altura, idade e sexo. O IMC e as necessidades basais serão calculados automaticamente."
+      },
+      "step2": {
+        "title": "Definição de Metas",
+        "desc": "Escolha entre Harris-Benedict ou Fórmula de Bolso. Ajuste o valor de kcal/kg conforme a condição clínica (ex: 25-30 kcal/kg para manutenção)."
+      },
+      "step3": {
+        "title": "Seleção de Fórmulas",
+        "desc": "Selecione a dieta enteral principal. Se necessário, adicione uma segunda fórmula para complementar."
+      },
+      "step4": {
+        "title": "Ajustes Finos",
+        "desc": "Adicione módulos de proteína ou calorias não-nutricionais (propofol, citrato) para maior precisão."
+      }
     }
   },
   "productManager": {
