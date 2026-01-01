@@ -35,7 +35,18 @@ function Home() {
 								<p className="lead text-muted">{t('home.subtitle')}</p>
 							</div>
 
-							{/* Anúncio superior foi movido para o layout global */}
+							{/* Anúncio superior - configuração mais permissiva */}
+							<AdSenseCompliantPage
+								minContentLength={200}
+								allowSkeletons={true}
+								timeout={10000}
+							>
+								<ResponsiveBanner
+									adSlot="home-top-banner"
+									requireContent={false}
+									style={{ marginBottom: '30px' }}
+								/>
+							</AdSenseCompliantPage>
 
 							<Row className="g-4">
 								<Col md={6}>

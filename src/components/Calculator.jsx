@@ -4,13 +4,11 @@ import React, { useEffect } from 'react'
 import { Alert, Button, Card, Col, Container, Form, Row, Table } from 'react-bootstrap'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import SidebarLayout from '../layouts/SidebarLayout'
 import AdSenseCompliantPage from '../ads/components/AdSenseCompliantPage.jsx'
 import {
 	InFeedAd,
 	ResponsiveBanner,
 	ResultsAd,
-	SidebarAd,
 } from '../ads/components/AdVariants.jsx'
 import { useAnalytics } from '../hooks/useAnalytics'
 import { calculatorSchema } from '../schemas/calculatorSchema'
@@ -119,38 +117,21 @@ const Calculator = () => {
 
 	return (
 		<main className="calculator">
-			{/* Banner de topo removido - agora global no AppLayout */}
 			<Container>
+				{/* Banner de topo - configuração mais permissiva para calculadoras */}
+				<AdSenseCompliantPage
+					minContentLength={50}
+					allowSkeletons={true}
+					timeout={5000}
+				>
+					<ResponsiveBanner
+						adSlot="5804222918"
+						requireContent={false}
+						style={{ marginBottom: '30px' }}
+					/>
+				</AdSenseCompliantPage>
+
 				<h1 className="mb-4 text-center">{t('nenpt.title')}</h1>
-			</Container>
-
-			<SidebarLayout
-				sidebar={
-					<div className="d-flex flex-column gap-4">
-						{/* Anúncio Vertical na Sidebar */}
-						<AdSenseCompliantPage minContentLength={100}>
-							<SidebarAd
-								adSlot="sidebar-calculator-right"
-								style={{ minHeight: '600px' }}
-							/>
-						</AdSenseCompliantPage>
-
-						{/* Widget: Produtos Populares (Exemplo para preencher espaço) */}
-						<Card className="shadow-sm border-0 bg-light">
-							<Card.Body>
-								<h6 className="text-muted text-uppercase small fw-bold mb-3">
-									Destaques
-								</h6>
-								<p className="small mb-0">
-									Confira nossos guias e calculadoras especializadas para
-									nutrição clínica.
-								</p>
-							</Card.Body>
-						</Card>
-					</div>
-				}
-			>
-
 
 				<Alert variant="info" className="mb-4">
 					<i className="bi bi-info-circle-fill me-2"></i>
@@ -983,7 +964,7 @@ const Calculator = () => {
 						</Card.Body>
 					</Card>
 				</div>
-			</SidebarLayout>
+			</Container>
 		</main>
 	)
 }
