@@ -150,17 +150,15 @@ function Gids() {
 		}
 
 		// GIDS 1: Risco aumentado
-		// - 1 sintoma (se for "não via oral") OU
-		// - 2 ou mais sintomas básicos
-		if ((data.noOral && basicSymptoms === 1) || basicSymptoms >= 2) {
+		// - 2 ou mais sintomas básicos marcados
+		if (basicSymptoms >= 2) {
 			console.log('GIDS 1: Risco aumentado', {
-				noOralCondition: data.noOral && basicSymptoms === 1,
 				basicCondition: basicSymptoms >= 2,
 			})
 			return 1
 		}
 
-		// GIDS 0: Sem risco (0-1 sintomas básicos, exceto quando é só "não via oral")
+		// GIDS 0: Sem risco (0-1 sintomas básicos)
 		console.log('GIDS 0: Sem risco')
 		return 0
 	}
@@ -524,8 +522,6 @@ function Gids() {
 														calculationReason = t('gids.debug.gids1Basic', {
 															count: basicCount,
 														})
-													} else if (watchedValues.noOral && basicCount === 1) {
-														calculationReason = t('gids.debug.gids1NoOral')
 													} else {
 														calculationReason = t('gids.debug.gids0', {
 															count: basicCount,
