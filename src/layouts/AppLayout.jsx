@@ -73,7 +73,12 @@ function AppLayout() {
 
 					<nav className="hidden items-center gap-1 md:flex">
 						{links.map((l) => (
-							<NavLink key={l.to} to={l.to} end={l.end} className={navItemClass}>
+							<NavLink
+								key={l.to}
+								to={l.to}
+								end={l.end}
+								className={navItemClass}
+							>
 								{l.label}
 							</NavLink>
 						))}
@@ -111,7 +116,11 @@ function AppLayout() {
 							aria-expanded={menuOpen}
 							onClick={() => setMenuOpen((v) => !v)}
 						>
-							{menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+							{menuOpen ? (
+								<X className="size-5" />
+							) : (
+								<Menu className="size-5" />
+							)}
 						</Button>
 					</div>
 				</div>

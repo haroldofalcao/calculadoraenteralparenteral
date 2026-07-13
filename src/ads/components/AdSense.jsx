@@ -113,7 +113,9 @@ const AdSense = ({
 					setPolicyCompliant(true)
 					console.log('✅ Conteúdo e política validados - liberando anúncios')
 				} else {
-					console.log(`⏳ Aguardando conteúdo: ${hasContent ? 'OK' : 'FALHA'} | Política: ${policyCheck.isValid ? 'OK' : 'FALHA'}`)
+					console.log(
+						`⏳ Aguardando conteúdo: ${hasContent ? 'OK' : 'FALHA'} | Política: ${policyCheck.isValid ? 'OK' : 'FALHA'}`,
+					)
 					// Verificar novamente após um tempo menor
 					setTimeout(checkContent, 1000)
 				}

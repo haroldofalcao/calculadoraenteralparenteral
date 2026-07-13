@@ -15,10 +15,14 @@ export const hasValidContent = () => {
 	// Whitelist de páginas funcionais que devem sempre passar na validação
 	const currentPath = window.location.pathname.toLowerCase()
 	const functionalPages = ['/nenpt', '/gids', '/nenpt/gerenciar-produtos']
-	const isFunctionalPage = functionalPages.some(page => currentPath.includes(page))
-	
+	const isFunctionalPage = functionalPages.some((page) =>
+		currentPath.includes(page),
+	)
+
 	if (isFunctionalPage) {
-		console.log(`✅ Página funcional detectada (${currentPath}) - aplicando validação flexibilizada`)
+		console.log(
+			`✅ Página funcional detectada (${currentPath}) - aplicando validação flexibilizada`,
+		)
 	}
 
 	// Verificar se há placeholders ou skeletons ativos com timeout
@@ -26,32 +30,36 @@ export const hasValidContent = () => {
 		const skeletonElements = document.querySelectorAll(
 			'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
 		)
-		
+
 		// Se encontrou skeletons, verificar se são temporários
 		if (skeletonElements.length > 0) {
 			// Permitir um tempo máximo para carregamento (15 segundos após carregamento da página)
 			const pageLoadTime = performance.now()
 			if (pageLoadTime > 15000) {
-				console.warn('🚨 Skeletons detectados após 15s - liberando anúncios forçadamente')
+				console.warn(
+					'🚨 Skeletons detectados após 15s - liberando anúncios forçadamente',
+				)
 				return false // Permitir anúncios mesmo com skeletons
 			}
-			
+
 			// Verificar se skeletons estão realmente visíveis
-			const visibleSkeletons = Array.from(skeletonElements).filter(el => {
+			const visibleSkeletons = Array.from(skeletonElements).filter((el) => {
 				const style = window.getComputedStyle(el)
 				return style.display !== 'none' && style.visibility !== 'hidden'
 			})
-			
+
 			if (visibleSkeletons.length === 0) {
 				return false // Skeletons não visíveis, permitir anúncios
 			}
-			
-			console.log(`⏳ ${visibleSkeletons.length} skeleton(s) visível(is) detectado(s) - aguardando carregamento`)
+
+			console.log(
+				`⏳ ${visibleSkeletons.length} skeleton(s) visível(is) detectado(s) - aguardando carregamento`,
+			)
 			return true // Bloquear se ainda em tempo de carregamento
 		}
 		return false
 	}
-	
+
 	if (hasSkeletons()) return false
 
 	// Verificar páginas "em construção" ou "coming soon"
@@ -83,18 +91,24 @@ export const hasValidContent = () => {
 	if (contentLength < minContentRequired) {
 		// Para páginas interativas (formulários, calculadoras), ser mais flexível
 		const interactiveElements = mainContent.querySelectorAll(
-			'form, input, button, select, textarea, .calculator, .interactive'
+			'form, input, button, select, textarea, .calculator, .interactive',
 		)
-		
+
 		// Se há elementos interativos, reduzir ainda mais o requisito
 		if (interactiveElements.length > 0 && contentLength >= 50) {
-			console.log(`📝 Página com ${interactiveElements.length} elementos interativos - requisito de conteúdo flexibilizado (${contentLength} chars)`)
+			console.log(
+				`📝 Página com ${interactiveElements.length} elementos interativos - requisito de conteúdo flexibilizado (${contentLength} chars)`,
+			)
 			// Continuar verificação com requisito flexibilizado
 		} else if (interactiveElements.length > 3 || isFunctionalPage) {
 			// Se há muitos elementos interativos ou é página funcional, assumir que é uma página válida
-			console.log(`📝 Página ${isFunctionalPage ? 'funcional' : 'altamente interativa'} (${interactiveElements.length} elementos) - liberando mesmo com pouco texto (${contentLength} chars)`)
+			console.log(
+				`📝 Página ${isFunctionalPage ? 'funcional' : 'altamente interativa'} (${interactiveElements.length} elementos) - liberando mesmo com pouco texto (${contentLength} chars)`,
+			)
 		} else {
-			console.log(`❌ Conteúdo insuficiente: ${contentLength}/${minContentRequired} caracteres e poucos elementos interativos (${interactiveElements.length})`)
+			console.log(
+				`❌ Conteúdo insuficiente: ${contentLength}/${minContentRequired} caracteres e poucos elementos interativos (${interactiveElements.length})`,
+			)
 			return false
 		}
 	}
@@ -120,14 +134,14 @@ export const hasValidContent = () => {
 	)
 	if (emptyStateElements.length > 0) {
 		// Se há estados vazios, verificar se ainda há conteúdo suficiente
-		const visibleEmptyStates = Array.from(emptyStateElements).filter(
-			(el) => {
-				const style = window.getComputedStyle(el)
-				return style.display !== 'none' && !el.classList.contains('d-none')
-			},
-		)
+		const visibleEmptyStates = Array.from(emptyStateElements).filter((el) => {
+			const style = window.getComputedStyle(el)
+			return style.display !== 'none' && !el.classList.contains('d-none')
+		})
 		if (visibleEmptyStates.length > 0 && contentLength < 600) {
-			console.log(`❌ Estados vazios detectados com conteúdo insuficiente: ${contentLength}/600 caracteres`)
+			console.log(
+				`❌ Estados vazios detectados com conteúdo insuficiente: ${contentLength}/600 caracteres`,
+			)
 			return false
 		}
 	}

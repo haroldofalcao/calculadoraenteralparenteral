@@ -1,9 +1,11 @@
-// Componente de debug para monitorar status dos anúncios AdSense
+// Componente de debug para monitorar status dos anúncios AdSense (apenas DEV)
 import React, { useEffect, useState } from 'react'
-import { Badge, Card, Button } from 'react-bootstrap'
 import { policyGuard } from '../utils/adSensePolicyGuard.js'
 import { adSenseManager } from '../utils/adSenseManager.js'
 import { hasValidContent } from '../utils/adSenseHelpers.js'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const AdSenseDebugPanel = ({ show = false }) => {
 	const [status, setStatus] = useState({
@@ -29,7 +31,7 @@ const AdSenseDebugPanel = ({ show = false }) => {
 				'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
 			)
 
-			const visibleSkeletons = Array.from(skeletonElements).filter(el => {
+			const visibleSkeletons = Array.from(skeletonElements).filter((el) => {
 				const style = window.getComputedStyle(el)
 				return style.display !== 'none' && style.visibility !== 'hidden'
 			})
@@ -44,117 +46,79 @@ const AdSenseDebugPanel = ({ show = false }) => {
 			})
 		}
 
-		// Atualizar status imediatamente e a cada 2 segundos
 		updateStatus()
 		const interval = setInterval(updateStatus, 2000)
-
 		return () => clearInterval(interval)
 	}, [showPanel])
 
-	// Só mostrar em desenvolvimento ou quando forçado
-	if (!import.meta.env.DEV && !show) {
-		return null
-	}
+	if (!import.meta.env.DEV && !show) return null
 
 	if (!showPanel) {
 		return (
-			<div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 9999 }}>
-				<Button
-					size="sm"
-					variant="outline-primary"
-					onClick={() => setShowPanel(true)}
-				>
+			<div className="fixed right-3 top-3 z-[9999]">
+				<Button variant="outline" size="sm" onClick={() => setShowPanel(true)}>
 					📊 AdSense Debug
 				</Button>
 			</div>
 		)
 	}
 
+	const row = (label, ok, okText, badText, sub) => (
+		<div className="space-y-1">
+			<div className="text-sm font-medium">{label}</div>
+			<Badge variant={ok ? 'success' : 'destructive'}>
+				{ok ? okText : badText}
+			</Badge>
+			{sub && <div className="text-xs text-muted-foreground">{sub}</div>}
+		</div>
+	)
+
 	return (
-		<div
-			style={{
-				position: 'fixed',
-				top: '10px',
-				right: '10px',
-				width: '350px',
-				zIndex: 9999,
-				maxHeight: '80vh',
-				overflowY: 'auto',
-			}}
-		>
-			<Card className="shadow">
-				<Card.Header className="d-flex justify-content-between align-items-center">
-					<strong>🛡️ AdSense Debug Panel</strong>
+		<div className="fixed right-3 top-3 z-[9999] max-h-[80vh] w-[350px] overflow-y-auto">
+			<Card className="shadow-lg">
+				<CardHeader className="flex-row items-center justify-between space-y-0">
+					<CardTitle className="text-sm">🛡️ AdSense Debug Panel</CardTitle>
 					<Button
-						size="sm"
-						variant="outline-secondary"
+						variant="ghost"
+						size="icon"
+						className="size-7"
 						onClick={() => setShowPanel(false)}
 					>
 						✕
 					</Button>
-				</Card.Header>
-				<Card.Body>
-					<div className="mb-3">
-						<strong>📄 Conteúdo:</strong>
-						<br />
-						<Badge bg={status.hasValidContent ? 'success' : 'danger'}>
-							{status.hasValidContent ? 'VÁLIDO' : 'INVÁLIDO'}
-						</Badge>
-						<br />
-						<small>
-							{status.contentLength} caracteres | {status.pageLoadTime}ms carregado
-						</small>
-					</div>
-
-					<div className="mb-3">
-						<strong>🎭 Skeletons:</strong>
-						<br />
-						<Badge bg={status.skeletonCount === 0 ? 'success' : 'warning'}>
+				</CardHeader>
+				<CardContent className="space-y-4">
+					{row(
+						'📄 Conteúdo',
+						status.hasValidContent,
+						'VÁLIDO',
+						'INVÁLIDO',
+						`${status.contentLength} caracteres | ${status.pageLoadTime}ms`,
+					)}
+					<div className="space-y-1">
+						<div className="text-sm font-medium">🎭 Skeletons</div>
+						<Badge variant={status.skeletonCount === 0 ? 'success' : 'warning'}>
 							{status.skeletonCount} visíveis
 						</Badge>
 					</div>
-
-					<div className="mb-3">
-						<strong>🛡️ Policy Guard:</strong>
-						<br />
-						<Badge
-							bg={
-								status.policyStatus?.lastValidation?.isValid
-									? 'success'
-									: 'danger'
-							}
-						>
-							{status.policyStatus?.isMonitoring ? 'ATIVO' : 'INATIVO'}
-						</Badge>
-						<br />
-						<small>
-							Última validação:{' '}
-							{status.policyStatus?.lastValidation?.isValid ? '✅' : '❌'}
-						</small>
-					</div>
-
-					<div className="mb-3">
-						<strong>📺 AdSense Manager:</strong>
-						<br />
-						<Badge
-							bg={
-								status.adSenseStatus?.autoAdsInitialized ? 'success' : 'warning'
-							}
-						>
-							{status.adSenseStatus?.autoAdsInitialized
-								? 'INICIALIZADO'
-								: 'PENDENTE'}
-						</Badge>
-						<br />
-						<small>
-							Anúncios carregados: {status.adSenseStatus?.loadedAdsCount || 0}
-						</small>
-					</div>
-
-					<div className="d-grid gap-2">
+					{row(
+						'🛡️ Policy Guard',
+						status.policyStatus?.isMonitoring,
+						'ATIVO',
+						'INATIVO',
+						`Última validação: ${status.policyStatus?.lastValidation?.isValid ? '✅' : '❌'}`,
+					)}
+					{row(
+						'📺 AdSense Manager',
+						status.adSenseStatus?.autoAdsInitialized,
+						'INICIALIZADO',
+						'PENDENTE',
+						`Anúncios carregados: ${status.adSenseStatus?.loadedAdsCount || 0}`,
+					)}
+					<div className="grid gap-2">
 						<Button
+							variant="outline"
 							size="sm"
-							variant="outline-primary"
 							onClick={() => {
 								const result = policyGuard.forceValidation()
 								console.log('🔍 Validação forçada:', result)
@@ -163,8 +127,8 @@ const AdSenseDebugPanel = ({ show = false }) => {
 							🔄 Forçar Validação
 						</Button>
 						<Button
+							variant="outline"
 							size="sm"
-							variant="outline-info"
 							onClick={() => {
 								console.log('📊 Status completo:', {
 									contentValid: hasValidContent(),
@@ -176,7 +140,7 @@ const AdSenseDebugPanel = ({ show = false }) => {
 							📋 Log Status
 						</Button>
 					</div>
-				</Card.Body>
+				</CardContent>
 			</Card>
 		</div>
 	)

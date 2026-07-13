@@ -77,13 +77,12 @@ function Home() {
 			description: t('home.gids.description'),
 			actions: (
 				<div className="mt-auto pt-4">
-					<Button
-						asChild
-						variant="success"
-					>
+					<Button asChild variant="success">
 						<Link
 							to="/gids"
-							onClick={() => trackEvent('home_gids_acessar', { origem: 'home' })}
+							onClick={() =>
+								trackEvent('home_gids_acessar', { origem: 'home' })
+							}
 						>
 							{t('home.gids.access')}
 							<ArrowRight className="size-4" />
@@ -99,9 +98,10 @@ function Home() {
 			accent: 'text-foreground',
 			chip: 'bg-secondary text-secondary-foreground',
 			title: t('navigation.manageProducts'),
-			description: t(
-				'productManager.productCustomization.content',
-			).slice(0, 180),
+			description: t('productManager.productCustomization.content').slice(
+				0,
+				180,
+			),
 			actions: (
 				<div className="mt-auto pt-4">
 					<Button asChild variant="outline">
@@ -399,7 +399,9 @@ function Home() {
 								))}
 							</ul>
 							<p className="border-t border-border pt-4 text-xs text-muted-foreground">
-								<strong className="font-medium">{t('home.about.license')}</strong>
+								<strong className="font-medium">
+									{t('home.about.license')}
+								</strong>
 							</p>
 						</CardContent>
 					</Card>
@@ -431,12 +433,7 @@ function Home() {
 						<p className="mx-auto mt-3 max-w-xl text-pretty text-primary-foreground/85">
 							{t('home.finalCta.description')}
 						</p>
-						<Button
-							asChild
-							size="lg"
-							variant="secondary"
-							className="mt-6"
-						>
+						<Button asChild size="lg" variant="secondary" className="mt-6">
 							<Link
 								to="/nenpt"
 								onClick={() =>

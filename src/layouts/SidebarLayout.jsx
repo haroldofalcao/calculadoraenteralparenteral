@@ -12,14 +12,10 @@ const SidebarLayout = ({ children, sidebar, reverse = false }) => {
 	return (
 		<div className="mx-auto max-w-6xl px-4">
 			<div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-				<div
-					className={cn('min-w-0 lg:col-span-8', reverse && 'lg:order-2')}
-				>
+				<div className={cn('min-w-0 lg:col-span-8', reverse && 'lg:order-2')}>
 					{children}
 				</div>
-				<aside
-					className={cn('lg:col-span-4', reverse && 'lg:order-1')}
-				>
+				<aside className={cn('lg:col-span-4', reverse && 'lg:order-1')}>
 					<div className="lg:sticky lg:top-20">{sidebar}</div>
 				</aside>
 			</div>

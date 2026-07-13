@@ -72,39 +72,43 @@ const SelectLabel = React.forwardRef(({ className, ...props }, ref) => (
 ))
 SelectLabel.displayName = 'SelectLabel'
 
-const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => (
-	<SelectPrimitive.Item
-		ref={ref}
-		className={cn(
-			'relative flex w-full cursor-pointer items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none',
-			'focus:bg-accent focus:text-accent-foreground',
-			'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-			className,
-		)}
-		{...props}
-	>
-		<span className="absolute right-2 flex size-3.5 items-center justify-center">
-			<SelectPrimitive.ItemIndicator>
-				<CheckIcon className="size-4" />
-			</SelectPrimitive.ItemIndicator>
-		</span>
-		<SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-	</SelectPrimitive.Item>
-))
+const SelectItem = React.forwardRef(
+	({ className, children, ...props }, ref) => (
+		<SelectPrimitive.Item
+			ref={ref}
+			className={cn(
+				'relative flex w-full cursor-pointer items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none',
+				'focus:bg-accent focus:text-accent-foreground',
+				'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+				className,
+			)}
+			{...props}
+		>
+			<span className="absolute right-2 flex size-3.5 items-center justify-center">
+				<SelectPrimitive.ItemIndicator>
+					<CheckIcon className="size-4" />
+				</SelectPrimitive.ItemIndicator>
+			</span>
+			<SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+		</SelectPrimitive.Item>
+	),
+)
 SelectItem.displayName = 'SelectItem'
 
-const SelectScrollUpButton = React.forwardRef(({ className, ...props }, ref) => (
-	<SelectPrimitive.ScrollUpButton
-		ref={ref}
-		className={cn(
-			'flex cursor-default items-center justify-center py-1',
-			className,
-		)}
-		{...props}
-	>
-		<ChevronUpIcon className="size-4" />
-	</SelectPrimitive.ScrollUpButton>
-))
+const SelectScrollUpButton = React.forwardRef(
+	({ className, ...props }, ref) => (
+		<SelectPrimitive.ScrollUpButton
+			ref={ref}
+			className={cn(
+				'flex cursor-default items-center justify-center py-1',
+				className,
+			)}
+			{...props}
+		>
+			<ChevronUpIcon className="size-4" />
+		</SelectPrimitive.ScrollUpButton>
+	),
+)
 SelectScrollUpButton.displayName = 'SelectScrollUpButton'
 
 const SelectScrollDownButton = React.forwardRef(

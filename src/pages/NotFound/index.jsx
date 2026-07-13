@@ -1,8 +1,8 @@
-import React from 'react'
-import { useEffect } from 'react'
-import { Col, Container, Row } from 'react-bootstrap'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { Home } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { useAnalytics } from '../../hooks/useAnalytics'
 
 function NotFound() {
@@ -14,26 +14,29 @@ function NotFound() {
 	}, [trackEvent])
 
 	return (
-		<Container data-no-ads="true">
-			<Row className="justify-content-center text-center">
-				<Col md={6}>
-					<div className="py-5">
-						<h1 className="display-1 text-muted">404</h1>
-						<h2 className="mb-4">{t('notFound.title')}</h2>
-						<p className="lead text-muted mb-4">{t('notFound.message')}</p>
-						<Link
-							to="/"
-							className="btn btn-primary"
-							onClick={() =>
-								trackEvent('notfound_back_home', { label: 'back_home' })
-							}
-						>
-							{t('notFound.backHome')}
-						</Link>
-					</div>
-				</Col>
-			</Row>
-		</Container>
+		<div
+			data-no-ads="true"
+			className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center px-4 py-20 text-center"
+		>
+			<p className="text-8xl font-bold tabular-nums text-muted-foreground/30">
+				404
+			</p>
+			<h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground">
+				{t('notFound.title')}
+			</h1>
+			<p className="mt-2 text-muted-foreground">{t('notFound.message')}</p>
+			<Button asChild className="mt-6">
+				<Link
+					to="/"
+					onClick={() =>
+						trackEvent('notfound_back_home', { label: 'back_home' })
+					}
+				>
+					<Home className="size-4" />
+					{t('notFound.backHome')}
+				</Link>
+			</Button>
+		</div>
 	)
 }
 

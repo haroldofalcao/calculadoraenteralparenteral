@@ -20,9 +20,7 @@ class AdSenseManager {
 	initializeAutoAds() {
 		if (this.autoAdsInitialized || typeof window === 'undefined') return
 
-		console.log(
-			'✅ Inicializando Auto Ads - anúncios automáticos habilitados',
-		)
+		console.log('✅ Inicializando Auto Ads - anúncios automáticos habilitados')
 
 		// Verificar se já foi inicializado por outro script
 		if (this.isAutoAdsAlreadyInitialized()) {
@@ -53,7 +51,9 @@ class AdSenseManager {
 			})
 
 			this.autoAdsInitialized = true
-			console.log('✅ Auto Ads initialized successfully - automáticos habilitados')
+			console.log(
+				'✅ Auto Ads initialized successfully - automáticos habilitados',
+			)
 		} catch (error) {
 			console.warn('Auto Ads initialization error:', error.message)
 			this.autoAdsInitialized = true // Marcar como inicializado para evitar retry
@@ -76,31 +76,36 @@ class AdSenseManager {
 			const skeletonElements = document.querySelectorAll(
 				'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
 			)
-			
+
 			if (skeletonElements.length > 0) {
 				// Verificar se skeletons estão realmente visíveis
-				const visibleSkeletons = Array.from(skeletonElements).filter(el => {
+				const visibleSkeletons = Array.from(skeletonElements).filter((el) => {
 					const style = window.getComputedStyle(el)
 					return style.display !== 'none' && style.visibility !== 'hidden'
 				})
-				
+
 				if (visibleSkeletons.length === 0) {
 					return false // Skeletons não visíveis, permitir anúncios
 				}
-				
+
 				// Permitir um tempo máximo para carregamento
 				const pageLoadTime = performance.now()
-				if (pageLoadTime > 12000) { // 12 segundos
-					console.warn(`🚨 Skeletons detectados após 12s para anúncio ${adSlot} - liberando forçadamente`)
+				if (pageLoadTime > 12000) {
+					// 12 segundos
+					console.warn(
+						`🚨 Skeletons detectados após 12s para anúncio ${adSlot} - liberando forçadamente`,
+					)
 					return false // Permitir anúncios mesmo com skeletons
 				}
-				
-				console.log(`⏳ Skeletons visíveis detectados para anúncio ${adSlot} - aguardando carregamento`)
+
+				console.log(
+					`⏳ Skeletons visíveis detectados para anúncio ${adSlot} - aguardando carregamento`,
+				)
 				return true
 			}
 			return false
 		}
-		
+
 		if (hasSkeletons()) {
 			console.log(`⏳ Skipping ad load due to skeleton content: ${adSlot}`)
 			return

@@ -18,12 +18,7 @@ import { allProductsAtom } from '../store/productsAtoms'
 import { calculateResults } from '../utils/calculationUtils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
 	Form,
@@ -168,7 +163,11 @@ const Calculator = () => {
 
 	return (
 		<SidebarLayout sidebar={<SidebarAd />}>
-			<AdSenseCompliantPage minContentLength={50} allowSkeletons={true} timeout={5000}>
+			<AdSenseCompliantPage
+				minContentLength={50}
+				allowSkeletons={true}
+				timeout={5000}
+			>
 				<ResponsiveBanner
 					adSlot="5804222918"
 					requireContent={false}
@@ -193,7 +192,9 @@ const Calculator = () => {
 					{/* Dados do Paciente */}
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-lg">{t('nenpt.patientData')}</CardTitle>
+							<CardTitle className="text-lg">
+								{t('nenpt.patientData')}
+							</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -274,7 +275,9 @@ const Calculator = () => {
 					{/* Fórmula 1 */}
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-lg">{t('nenpt.formulaData')}</CardTitle>
+							<CardTitle className="text-lg">
+								{t('nenpt.formulaData')}
+							</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -379,7 +382,9 @@ const Calculator = () => {
 					{/* Dados Opcionais */}
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-lg">{t('nenpt.optionalData')}</CardTitle>
+							<CardTitle className="text-lg">
+								{t('nenpt.optionalData')}
+							</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -429,7 +434,12 @@ const Calculator = () => {
 										<FormItem>
 											<FormLabel>{t('nenpt.propofolVolume')}</FormLabel>
 											<FormControl>
-												<Input type="number" min="0" placeholder="0" {...field} />
+												<Input
+													type="number"
+													min="0"
+													placeholder="0"
+													{...field}
+												/>
 											</FormControl>
 											<p className="text-xs text-muted-foreground">
 												{t('nenpt.propofolHelp')}
@@ -445,7 +455,12 @@ const Calculator = () => {
 										<FormItem>
 											<FormLabel>{t('nenpt.sg5Volume')}</FormLabel>
 											<FormControl>
-												<Input type="number" min="0" placeholder="0" {...field} />
+												<Input
+													type="number"
+													min="0"
+													placeholder="0"
+													{...field}
+												/>
 											</FormControl>
 											<p className="text-xs text-muted-foreground">
 												{t('nenpt.sg5Help')}
@@ -593,7 +608,9 @@ const Calculator = () => {
 												{results.nonNutritional.calories.propofol > 0 && (
 													<li>
 														Propofol:{' '}
-														{results.nonNutritional.calories.propofol.toFixed(1)}{' '}
+														{results.nonNutritional.calories.propofol.toFixed(
+															1,
+														)}{' '}
 														kcal (
 														{results.nonNutritional.macros.lipids.toFixed(1)}g
 														lipídios)
@@ -602,8 +619,9 @@ const Calculator = () => {
 												{results.nonNutritional.calories.sg5 > 0 && (
 													<li>
 														SG5%:{' '}
-														{results.nonNutritional.calories.sg5.toFixed(1)} kcal
-														({results.nonNutritional.macros.carbs.toFixed(1)}g
+														{results.nonNutritional.calories.sg5.toFixed(1)}{' '}
+														kcal (
+														{results.nonNutritional.macros.carbs.toFixed(1)}g
 														CHO)
 													</li>
 												)}

@@ -20,12 +20,7 @@ import {
 } from '../store/productsAtoms'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
 	Dialog,
 	DialogContent,
@@ -420,9 +415,7 @@ const ProductManager = () => {
 					</DialogHeader>
 					<p
 						className={
-							deletingUser
-								? 'text-sm text-destructive'
-								: 'text-sm text-warning'
+							deletingUser ? 'text-sm text-destructive' : 'text-sm text-warning'
 						}
 					>
 						{deletingUser
@@ -430,10 +423,7 @@ const ProductManager = () => {
 							: t('productManager.hideWarning')}
 					</p>
 					<DialogFooter>
-						<Button
-							variant="outline"
-							onClick={() => setShowDeleteModal(false)}
-						>
+						<Button variant="outline" onClick={() => setShowDeleteModal(false)}>
 							{t('common.cancel')}
 						</Button>
 						<Button

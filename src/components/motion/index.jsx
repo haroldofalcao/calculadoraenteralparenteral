@@ -4,7 +4,8 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 // Curva ease-out suave (entrada). Ver system.md + guideline `easing`.
 export const easeOut = [0.16, 1, 0.3, 1]
 
-const resolveTag = (as) => (typeof as === 'string' ? motion[as] ?? motion.div : as)
+const resolveTag = (as) =>
+	typeof as === 'string' ? (motion[as] ?? motion.div) : as
 
 /**
  * FadeIn — revela ao entrar no viewport (scroll reveal).
@@ -68,7 +69,13 @@ export function Stagger({
 	)
 }
 
-export function StaggerItem({ children, className, y = 18, as = 'div', ...props }) {
+export function StaggerItem({
+	children,
+	className,
+	y = 18,
+	as = 'div',
+	...props
+}) {
 	const reduce = useReducedMotion()
 	const MotionTag = resolveTag(as)
 	return (

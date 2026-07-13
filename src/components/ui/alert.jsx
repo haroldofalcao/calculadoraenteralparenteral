@@ -37,10 +37,7 @@ Alert.displayName = 'Alert'
 const AlertTitle = React.forwardRef(({ className, ...props }, ref) => (
 	<div
 		ref={ref}
-		className={cn(
-			'col-start-2 min-h-4 font-medium tracking-tight',
-			className,
-		)}
+		className={cn('col-start-2 min-h-4 font-medium tracking-tight', className)}
 		{...props}
 	/>
 ))

@@ -30,7 +30,7 @@ const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
 			'inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-md px-4 py-1 text-sm font-medium whitespace-nowrap transition-all cursor-pointer',
 			'text-muted-foreground focus-visible:ring-[3px] focus-visible:ring-ring/40 outline-none',
 			'disabled:pointer-events-none disabled:opacity-50',
-			"data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
+			'data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm',
 			"[&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0",
 			className,
 		)}

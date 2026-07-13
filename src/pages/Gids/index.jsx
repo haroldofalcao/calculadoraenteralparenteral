@@ -4,20 +4,11 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { Download, Eraser, Save } from 'lucide-react'
-import {
-	AdSenseCompliantPage,
-	ResponsiveBanner,
-	ResultsAd,
-} from '../../ads'
+import { AdSenseCompliantPage, ResponsiveBanner, ResultsAd } from '../../ads'
 import SEO from '../../components/SEO.jsx'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -185,7 +176,11 @@ function Gids() {
 			const data = JSON.parse(saved)
 			setSavedData(data)
 			Object.keys(data).forEach((key) => {
-				if (key !== 'score' && key !== 'classification' && key !== 'timestamp') {
+				if (
+					key !== 'score' &&
+					key !== 'classification' &&
+					key !== 'timestamp'
+				) {
 					setValue(key, data[key])
 				}
 			})
@@ -587,9 +582,11 @@ function GidsBreakdown({ data, t }) {
 		data.iap_gt_20,
 	].filter(Boolean).length
 
-	const lifeThreateningCount = [data.shock, data.ischemia, data.compartment].filter(
-		Boolean,
-	).length
+	const lifeThreateningCount = [
+		data.shock,
+		data.ischemia,
+		data.compartment,
+	].filter(Boolean).length
 
 	let failureCount = dysfunctionCount
 	if (data.ileus) failureCount++
@@ -636,7 +633,9 @@ function GidsBreakdown({ data, t }) {
 				)}
 			</ul>
 			<div className="mt-3 rounded-md bg-background p-2 font-medium text-foreground">
-				<span className="text-muted-foreground">{t('gids.debug.calculation')}</span>{' '}
+				<span className="text-muted-foreground">
+					{t('gids.debug.calculation')}
+				</span>{' '}
 				{reason}
 			</div>
 		</div>
