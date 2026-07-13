@@ -265,6 +265,7 @@ const Calculator = () => {
 					<AdSenseCompliantPage minContentLength={600}>
 						<InFeedAd
 							adSlot="1864977909"
+							adLayoutKey="-fb+5w+4e-db+86"
 							requireContent={true}
 							showLabel={true}
 							variant="subtle"
@@ -684,7 +685,7 @@ const Calculator = () => {
 
 			{results && (
 				<AdSenseCompliantPage minContentLength={1200}>
-					<ResultsAd adSlot="1864977909" />
+					<ResultsAd adSlot="1864977909" adLayoutKey="-fb+5w+4e-db+86" />
 				</AdSenseCompliantPage>
 			)}
 

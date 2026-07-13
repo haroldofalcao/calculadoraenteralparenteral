@@ -113,6 +113,7 @@ export const SidebarAd = ({ adSlot, style = {}, requireContent = true }) => {
 // Componente para anúncio in-feed
 export const InFeedAd = ({
 	adSlot,
+	adLayoutKey,
 	style = {},
 	showLabel = true,
 	variant = 'default',
@@ -189,6 +190,7 @@ export const InFeedAd = ({
 
 			<AdSense
 				adSlot={adSlot}
+				adLayoutKey={adLayoutKey}
 				requireContent={requireContent}
 				adStyle={{
 					display: 'block',
@@ -217,7 +219,7 @@ export const InFeedAd = ({
 }
 
 // Componente especializado para anúncio após resultados
-export const ResultsAd = ({ adSlot, style = {} }) => {
+export const ResultsAd = ({ adSlot, adLayoutKey, style = {} }) => {
 	const location = useLocation()
 
 	if (!isValidPageForAds(location.pathname)) {
@@ -227,6 +229,7 @@ export const ResultsAd = ({ adSlot, style = {} }) => {
 	return (
 		<InFeedAd
 			adSlot={adSlot}
+			adLayoutKey={adLayoutKey}
 			variant="bordered"
 			requireContent={true} // Sempre requer conteúdo para anúncios de resultado
 			style={{

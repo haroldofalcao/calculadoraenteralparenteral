@@ -67,6 +67,7 @@ const AdSense = ({
 	adStyle = { display: 'block' },
 	adFormat = 'auto',
 	fullWidthResponsive = true,
+	adLayoutKey,
 	className = 'adsbygoogle',
 	requireContent = true, // Nova prop para controlar se deve verificar conteúdo
 }) => {
@@ -176,7 +177,10 @@ const AdSense = ({
 			data-ad-client={adClient}
 			data-ad-slot={adSlot}
 			data-ad-format={adFormat}
-			data-full-width-responsive={fullWidthResponsive}
+			data-ad-layout-key={adLayoutKey}
+			{...(adFormat !== 'fluid'
+				? { 'data-full-width-responsive': fullWidthResponsive }
+				: {})}
 		/>
 	)
 

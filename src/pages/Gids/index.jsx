@@ -260,7 +260,7 @@ function Gids() {
 					timeout={10000}
 				>
 					<ResponsiveBanner
-						adSlot="gids-top-banner"
+						adSlot="5804222918"
 						requireContent={false}
 						style={{ marginBottom: '24px' }}
 					/>
@@ -367,7 +367,8 @@ function Gids() {
 							{currentScore > 0 && (
 								<AdSenseCompliantPage minContentLength={1000}>
 									<ResultsAd
-										adSlot="gids-results-ad"
+										adSlot="1864977909"
+										adLayoutKey="-fb+5w+4e-db+86"
 										style={{ margin: '8px 0' }}
 									/>
 								</AdSenseCompliantPage>

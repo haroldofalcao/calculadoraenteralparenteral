@@ -242,7 +242,7 @@ function Home() {
 					timeout={10000}
 				>
 					<ResponsiveBanner
-						adSlot="home-top-banner"
+						adSlot="5804222918"
 						requireContent={false}
 						style={{ margin: '32px 0' }}
 					/>
@@ -300,7 +300,8 @@ function Home() {
 					timeout={10000}
 				>
 					<InFeedAd
-						adSlot="home-middle-ad"
+						adSlot="1864977909"
+						adLayoutKey="-fb+5w+4e-db+86"
 						requireContent={false}
 						showLabel={true}
 						style={{ margin: '24px 0' }}
@@ -412,7 +413,7 @@ function Home() {
 					timeout={8000}
 				>
 					<ResponsiveBanner
-						adSlot="home-bottom-banner"
+						adSlot="9004267172"
 						requireContent={false}
 						style={{ margin: '24px 0' }}
 					/>
