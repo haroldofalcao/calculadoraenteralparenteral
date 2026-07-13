@@ -1,15 +1,157 @@
 import React from 'react'
-import { Button, Card, Col, Container, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import {
+	ArrowRight,
+	Boxes,
+	Calculator,
+	CheckCircle2,
+	ClipboardList,
+	ShieldCheck,
+	Sparkles,
+	Stethoscope,
+	Target,
+	UserRound,
+} from 'lucide-react'
 import { AdSenseCompliantPage, InFeedAd, ResponsiveBanner } from '../../ads'
 import SEO from '../../components/SEO.jsx'
 import VisitCounter from '../../components/VisitCounter'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
+import { FadeIn, Stagger, StaggerItem } from '@/components/motion'
 import { useAnalytics } from '../../hooks/useAnalytics'
 
 function Home() {
 	const { t } = useTranslation()
 	const { trackEvent } = useAnalytics()
+
+	const tools = [
+		{
+			key: 'nenpt',
+			testid: 'tool-card-nenpt',
+			icon: Calculator,
+			accent: 'text-primary',
+			chip: 'bg-primary/10 text-primary',
+			title: t('home.nenpt.title'),
+			description: t('home.nenpt.description'),
+			actions: (
+				<div className="mt-auto flex flex-wrap gap-2 pt-4">
+					<Button asChild>
+						<Link
+							to="/nenpt"
+							onClick={() =>
+								trackEvent('home_nenpt_acessar_calculadora', { origem: 'home' })
+							}
+						>
+							{t('home.nenpt.accessCalculator')}
+							<ArrowRight className="size-4" />
+						</Link>
+					</Button>
+					<Button asChild variant="outline">
+						<Link
+							to="/nenpt/gerenciar-produtos"
+							onClick={() =>
+								trackEvent('home_nenpt_gerenciar_produtos', { origem: 'home' })
+							}
+						>
+							{t('home.nenpt.manageProducts')}
+						</Link>
+					</Button>
+				</div>
+			),
+		},
+		{
+			key: 'gids',
+			testid: 'tool-card-gids',
+			icon: Stethoscope,
+			accent: 'text-success',
+			chip: 'bg-success/10 text-success',
+			title: t('home.gids.title'),
+			description: t('home.gids.description'),
+			actions: (
+				<div className="mt-auto pt-4">
+					<Button asChild variant="success">
+						<Link
+							to="/gids"
+							onClick={() =>
+								trackEvent('home_gids_acessar', { origem: 'home' })
+							}
+						>
+							{t('home.gids.access')}
+							<ArrowRight className="size-4" />
+						</Link>
+					</Button>
+				</div>
+			),
+		},
+		{
+			key: 'products',
+			testid: 'tool-card-products',
+			icon: Boxes,
+			accent: 'text-foreground',
+			chip: 'bg-secondary text-secondary-foreground',
+			title: t('navigation.manageProducts'),
+			description: t('productManager.productCustomization.content').slice(
+				0,
+				180,
+			),
+			actions: (
+				<div className="mt-auto pt-4">
+					<Button asChild variant="outline">
+						<Link
+							to="/nenpt/gerenciar-produtos"
+							onClick={() =>
+								trackEvent('home_products_acessar', { origem: 'home' })
+							}
+						>
+							{t('home.nenpt.manageProducts')}
+							<ArrowRight className="size-4" />
+						</Link>
+					</Button>
+				</div>
+			),
+		},
+	]
+
+	const benefits = [
+		{
+			icon: Target,
+			title: t('home.whyChoose.precision.title', 'Precisão Clínica'),
+			desc: t('home.whyChoose.precision.desc'),
+		},
+		{
+			icon: UserRound,
+			title: t('home.whyChoose.professional.title', 'Foco Profissional'),
+			desc: t('home.whyChoose.professional.desc'),
+		},
+		{
+			icon: ShieldCheck,
+			title: t('home.whyChoose.safety.title', 'Segurança do Paciente'),
+			desc: t('home.whyChoose.safety.desc'),
+		},
+	]
+
+	const steps = [1, 2, 3, 4].map((n) => ({
+		n,
+		title: t(`home.how.step${n}.title`),
+		desc: t(`home.how.step${n}.desc`),
+	}))
+
+	const stats = [
+		{ value: t('home.stats.formulasValue'), label: t('home.stats.formulas') },
+		{
+			value: t('home.stats.calculatorsValue'),
+			label: t('home.stats.calculators'),
+		},
+		{ value: t('home.stats.costValue'), label: t('home.stats.cost') },
+	]
 
 	return (
 		<>
@@ -24,252 +166,291 @@ function Home() {
 					operatingSystem: 'Web Browser',
 				}}
 			/>
-			<main>
-				<Container>
-					<Row className="justify-content-center">
-						<Col md={10} lg={8}>
-							<div className="text-center mb-5">
-								<h1 className="display-4 text-primary mb-3">
-									{t('home.title')}
-								</h1>
-								<p className="lead text-muted mb-4">{t('home.subtitle')}</p>
-								<div className="text-start mx-auto" style={{ maxWidth: '800px' }}>
-									<p className="mb-3">
-										{t(
-											'home.intro.p1',
-											'Bem-vindo ao NutriCalc, a plataforma de referência para cálculos nutricionais hospitalares. Nossa ferramenta foi desenvolvida para otimizar o fluxo de trabalho de nutricionistas, médicos e enfermeiros, oferecendo precisão matemática aliada a protocolos clínicos validados.',
-										)}
-									</p>
-									<p>
-										{t(
-											'home.intro.p2',
-											'Diferente de calculadoras genéricas, o NutriCalc foca nas especificidades da terapia nutricional enteral e parenteral, considerando fatores críticos como calorias não-nutricionais (propofol, citrato), ajustes para pacientes renais e metas proteicas individualizadas.',
-										)}
+
+			{/* ============================ HERO ============================ */}
+			<section className="relative overflow-hidden">
+				<div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-secondary/70 via-background to-background" />
+				<div
+					aria-hidden
+					className="pointer-events-none absolute left-1/2 top-[-10%] -z-10 h-72 w-[42rem] max-w-full -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"
+				/>
+				<div className="mx-auto max-w-6xl px-4 pb-4 pt-6 text-center sm:pt-12">
+					<FadeIn className="mx-auto max-w-3xl">
+						<Badge variant="secondary" className="mb-5 gap-1.5 px-3 py-1">
+							<Sparkles className="size-3.5 text-primary" />
+							{t('home.hero.badge')}
+						</Badge>
+						<h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+							{t('home.title')}
+						</h1>
+						<p className="mt-3 text-balance text-xl font-semibold text-primary sm:text-2xl">
+							{t('home.hero.titleHighlight')}
+						</p>
+						<p className="mx-auto mt-4 max-w-2xl text-pretty text-lg text-muted-foreground">
+							{t('home.hero.description')}
+						</p>
+						<div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+							<Button asChild size="lg">
+								<Link
+									to="/nenpt"
+									onClick={() =>
+										trackEvent('home_hero_nenpt', { origem: 'hero' })
+									}
+								>
+									<Calculator className="size-4" />
+									{t('home.hero.ctaPrimary')}
+									<ArrowRight className="size-4" />
+								</Link>
+							</Button>
+							<Button asChild size="lg" variant="outline">
+								<Link
+									to="/gids"
+									onClick={() =>
+										trackEvent('home_hero_gids', { origem: 'hero' })
+									}
+								>
+									<Stethoscope className="size-4" />
+									{t('home.hero.ctaSecondary')}
+								</Link>
+							</Button>
+						</div>
+					</FadeIn>
+
+					{/* Stats */}
+					<Stagger className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+						{stats.map((s) => (
+							<StaggerItem key={s.label}>
+								<div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+									<div className="text-3xl font-bold tabular-nums text-primary">
+										{s.value}
+									</div>
+									<div className="mt-1 text-sm text-muted-foreground">
+										{s.label}
+									</div>
+								</div>
+							</StaggerItem>
+						))}
+					</Stagger>
+				</div>
+			</section>
+
+			<div className="mx-auto max-w-6xl px-4">
+				{/* Anúncio superior */}
+				<AdSenseCompliantPage
+					minContentLength={200}
+					allowSkeletons={true}
+					timeout={10000}
+				>
+					<ResponsiveBanner
+						adSlot="5804222918"
+						requireContent={false}
+						style={{ margin: '32px 0' }}
+					/>
+				</AdSenseCompliantPage>
+
+				{/* ============================ TOOLS ============================ */}
+				<section className="py-8 sm:py-12">
+					<FadeIn className="mb-8 text-center">
+						<h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+							{t('home.toolsTitle')}
+						</h2>
+						<p className="mt-2 text-muted-foreground">{t('home.subtitle')}</p>
+					</FadeIn>
+
+					<Stagger className="grid grid-cols-1 gap-6 md:grid-cols-3">
+						{tools.map((tool) => {
+							const Icon = tool.icon
+							return (
+								<StaggerItem
+									key={tool.key}
+									whileHover={{ y: -4 }}
+									transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+								>
+									<Card
+										data-testid={tool.testid}
+										className="flex h-full flex-col transition-shadow hover:shadow-md"
+									>
+										<CardHeader>
+											<div
+												className={`mb-2 grid size-11 place-items-center rounded-lg ${tool.chip}`}
+											>
+												<Icon className="size-6" />
+											</div>
+											<CardTitle className={`text-lg ${tool.accent}`}>
+												{tool.title}
+											</CardTitle>
+										</CardHeader>
+										<CardContent className="flex flex-1 flex-col">
+											<CardDescription className="text-pretty leading-relaxed">
+												{tool.description}
+											</CardDescription>
+											{tool.actions}
+										</CardContent>
+									</Card>
+								</StaggerItem>
+							)
+						})}
+					</Stagger>
+				</section>
+
+				{/* Anúncio meio */}
+				<AdSenseCompliantPage
+					minContentLength={300}
+					allowSkeletons={true}
+					timeout={10000}
+				>
+					<InFeedAd
+						adSlot="1864977909"
+						adLayoutKey="-fb+5w+4e-db+86"
+						requireContent={false}
+						showLabel={true}
+						style={{ margin: '24px 0' }}
+					/>
+				</AdSenseCompliantPage>
+
+				{/* ============================ BENEFITS ============================ */}
+				<section className="py-8 sm:py-12">
+					<FadeIn className="mb-8 text-center">
+						<h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+							{t('home.whyChoose.title', 'Por que escolher o NutriCalc?')}
+						</h2>
+					</FadeIn>
+					<Stagger className="grid grid-cols-1 gap-6 md:grid-cols-3">
+						{benefits.map((b) => {
+							const Icon = b.icon
+							return (
+								<StaggerItem key={b.title}>
+									<div className="h-full rounded-xl border border-border bg-card p-6 shadow-sm">
+										<div className="mb-3 grid size-10 place-items-center rounded-lg bg-primary/10 text-primary">
+											<Icon className="size-5" />
+										</div>
+										<h3 className="text-base font-semibold">{b.title}</h3>
+										<p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+											{b.desc}
+										</p>
+									</div>
+								</StaggerItem>
+							)
+						})}
+					</Stagger>
+				</section>
+
+				{/* ============================ HOW IT WORKS ============================ */}
+				<section className="py-8 sm:py-12">
+					<FadeIn className="mb-8 text-center">
+						<h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+							{t('home.how.title')}
+						</h2>
+						<p className="mt-2 text-muted-foreground">
+							{t('home.how.subtitle')}
+						</p>
+					</FadeIn>
+					<Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+						{steps.map((s) => (
+							<StaggerItem key={s.n}>
+								<div className="relative h-full rounded-xl border border-border bg-card p-5 shadow-sm">
+									<div className="mb-3 grid size-9 place-items-center rounded-full bg-primary font-bold text-primary-foreground tabular-nums">
+										{s.n}
+									</div>
+									<h3 className="text-sm font-semibold">{s.title}</h3>
+									<p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+										{s.desc}
 									</p>
 								</div>
-							</div>
+							</StaggerItem>
+						))}
+					</Stagger>
+				</section>
 
-							{/* Anúncio superior - configuração mais permissiva */}
-							<AdSenseCompliantPage
-								minContentLength={200}
-								allowSkeletons={true}
-								timeout={10000}
+				{/* ============================ ABOUT ============================ */}
+				<FadeIn as="section" className="py-8 sm:py-12">
+					<Card className="bg-secondary/40">
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-xl">
+								<ClipboardList className="size-5 text-primary" />
+								{t('home.about.title')}
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-4">
+							<p className="leading-relaxed text-muted-foreground">
+								{t('home.about.description')}
+							</p>
+							<ul className="grid gap-2 sm:grid-cols-2">
+								{[
+									t('home.features.accurate', 'Cálculos precisos e confiáveis'),
+									t('home.features.easy', 'Interface fácil de usar'),
+									t(
+										'home.features.professional',
+										'Desenvolvido para profissionais de saúde',
+									),
+									t(
+										'home.features.validated',
+										'Baseado em protocolos validados',
+									),
+								].map((f) => (
+									<li
+										key={f}
+										className="flex items-start gap-2 text-sm text-foreground"
+									>
+										<CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" />
+										{f}
+									</li>
+								))}
+							</ul>
+							<p className="border-t border-border pt-4 text-xs text-muted-foreground">
+								<strong className="font-medium">
+									{t('home.about.license')}
+								</strong>
+							</p>
+						</CardContent>
+					</Card>
+				</FadeIn>
+
+				{/* Anúncio inferior */}
+				<AdSenseCompliantPage
+					minContentLength={400}
+					allowSkeletons={true}
+					timeout={8000}
+				>
+					<ResponsiveBanner
+						adSlot="9004267172"
+						requireContent={false}
+						style={{ margin: '24px 0' }}
+					/>
+				</AdSenseCompliantPage>
+
+				{/* ============================ FINAL CTA ============================ */}
+				<FadeIn as="section" className="py-8 sm:py-12">
+					<div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-12 text-center shadow-sm">
+						<div
+							aria-hidden
+							className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_55%)]"
+						/>
+						<h2 className="text-balance text-2xl font-bold text-primary-foreground sm:text-3xl">
+							{t('home.finalCta.title')}
+						</h2>
+						<p className="mx-auto mt-3 max-w-xl text-pretty text-primary-foreground/85">
+							{t('home.finalCta.description')}
+						</p>
+						<Button asChild size="lg" variant="secondary" className="mt-6">
+							<Link
+								to="/nenpt"
+								onClick={() =>
+									trackEvent('home_final_cta', { origem: 'final_cta' })
+								}
 							>
-								<ResponsiveBanner
-									adSlot="home-top-banner"
-									requireContent={false}
-									style={{ marginBottom: '30px' }}
-								/>
-							</AdSenseCompliantPage>
+								{t('home.finalCta.button')}
+								<ArrowRight className="size-4" />
+							</Link>
+						</Button>
+					</div>
+				</FadeIn>
 
-							<Row className="g-4">
-								<Col md={6}>
-									<Card className="h-100 shadow-sm">
-										<Card.Body className="d-flex flex-column">
-											<Card.Title className="text-primary">
-												<i className="fas fa-calculator me-2"></i>
-												{t('home.nenpt.title')}
-											</Card.Title>
-											<Card.Text className="flex-grow-1">
-												{t('home.nenpt.description')}
-											</Card.Text>
-											<div className="mt-auto">
-												<Button
-													as={Link}
-													to="/nenpt"
-													variant="primary"
-													className="me-2"
-													onClick={() =>
-														trackEvent('home_nenpt_acessar_calculadora', {
-															origem: 'home',
-														})
-													}
-												>
-													{t('home.nenpt.accessCalculator')}
-												</Button>
-												<Button
-													as={Link}
-													to="/nenpt/gerenciar-produtos"
-													variant="outline-primary"
-													onClick={() =>
-														trackEvent('home_nenpt_gerenciar_produtos', {
-															origem: 'home',
-														})
-													}
-												>
-													{t('home.nenpt.manageProducts')}
-												</Button>
-											</div>
-										</Card.Body>
-									</Card>
-								</Col>
-
-								<Col md={6}>
-									<Card className="h-100 shadow-sm">
-										<Card.Body className="d-flex flex-column">
-											<Card.Title className="text-success">
-												<i className="fas fa-stethoscope me-2"></i>
-												{t('home.gids.title')}
-											</Card.Title>
-											<Card.Text className="flex-grow-1">
-												{t('home.gids.description')}
-											</Card.Text>
-											<div className="mt-auto">
-												<Button
-													as={Link}
-													to="/gids"
-													variant="success"
-													onClick={() =>
-														trackEvent('home_gids_acessar', { origem: 'home' })
-													}
-												>
-													{t('home.gids.access')}
-												</Button>
-											</div>
-										</Card.Body>
-									</Card>
-								</Col>
-							</Row>
-
-							{/* Anúncio no meio do conteúdo - configuração mais permissiva */}
-							<AdSenseCompliantPage
-								minContentLength={300}
-								allowSkeletons={true}
-								timeout={10000}
-							>
-								<InFeedAd
-									adSlot="home-middle-ad"
-									requireContent={false}
-									showLabel={true}
-									style={{ margin: '40px 0' }}
-								/>
-							</AdSenseCompliantPage>
-
-							{/* Seção de Benefícios - AdSense Content Expansion */}
-							<Row className="mt-5 mb-5">
-								<Col md={12}>
-									<h2 className="text-center mb-4 text-primary">
-										{t('home.whyChoose.title', 'Por que escolher o NutriCalc?')}
-									</h2>
-								</Col>
-								<Col md={4}>
-									<div className="p-3 h-100">
-										<h4 className="text-info h5">
-											<i className="fas fa-check-circle me-2"></i>
-											{t('home.whyChoose.precision.title', 'Precisão Clínica')}
-										</h4>
-										<p className="text-muted small">
-											{t(
-												'home.whyChoose.precision.desc',
-												'Nossos algoritmos são calibrados com as diretrizes mais recentes (ASPEN/ESPEN). Garantimos que cada mililitro de propofol ou citrato seja contabilizado no balanço energético final.',
-											)}
-										</p>
-									</div>
-								</Col>
-								<Col md={4}>
-									<div className="p-3 h-100">
-										<h4 className="text-info h5">
-											<i className="fas fa-user-md me-2"></i>
-											{t('home.whyChoose.professional.title', 'Foco Profissional')}
-										</h4>
-										<p className="text-muted small">
-											{t(
-												'home.whyChoose.professional.desc',
-												'Ferramenta "Point-of-Care" ideal para uso à beira do leito. Interface limpa, rápida e responsiva, permitindo decisões ágeis durante rounds multidisciplinares.',
-											)}
-										</p>
-									</div>
-								</Col>
-								<Col md={4}>
-									<div className="p-3 h-100">
-										<h4 className="text-info h5">
-											<i className="fas fa-shield-alt me-2"></i>
-											{t('home.whyChoose.safety.title', 'Segurança do Paciente')}
-										</h4>
-										<p className="text-muted small">
-											{t(
-												'home.whyChoose.safety.desc',
-												'Alertas automáticos para inconsistências e validações de dados vitais previnem erros de prescrição e melhoram a segurança na terapia nutricional.',
-											)}
-										</p>
-									</div>
-								</Col>
-							</Row>
-
-							<Row className="mb-5">
-								<Col>
-									<Card className="bg-light border-0 shadow-sm">
-										<Card.Body className="p-4">
-											<Card.Title className="text-dark mb-3">
-												<i className="fas fa-info-circle me-2"></i>
-												{t('home.about.title')}
-											</Card.Title>
-											<Card.Text>{t('home.about.description')}</Card.Text>
-
-											<div className="mt-4">
-												<h5 className="h6 fw-bold">
-													{t(
-														'home.features.title',
-														'Características principais:',
-													)}
-												</h5>
-												<ul className="row">
-													<li className="col-md-6 mb-2">
-														{t(
-															'home.features.accurate',
-															'Cálculos precisos e confiáveis',
-														)}
-													</li>
-													<li className="col-md-6 mb-2">
-														{t('home.features.easy', 'Interface fácil de usar')}
-													</li>
-													<li className="col-md-6 mb-2">
-														{t(
-															'home.features.professional',
-															'Desenvolvido para profissionais de saúde',
-														)}
-													</li>
-													<li className="col-md-6 mb-2">
-														{t(
-															'home.features.validated',
-															'Baseado em protocolos validados',
-															'Baseado em protocolos validados',
-														)}
-													</li>
-												</ul>
-											</div>
-
-											<div className="mt-3 pt-3 border-top">
-												<small className="text-muted">
-													<strong>{t('home.about.license')}</strong>
-												</small>
-											</div>
-										</Card.Body>
-									</Card>
-								</Col>
-							</Row>
-
-							{/* Anúncio no final da página - configuração mais permissiva */}
-							<AdSenseCompliantPage
-								minContentLength={400}
-								allowSkeletons={true}
-								timeout={8000}
-							>
-								<ResponsiveBanner
-									adSlot="home-bottom-banner"
-									requireContent={false}
-									style={{ marginTop: '40px' }}
-								/>
-							</AdSenseCompliantPage>
-
-							{/* Visit Counter (Realtime) */}
-							<div className="mt-4">
-								<VisitCounter pageId="home" autoIncrement={true} />
-							</div>
-						</Col>
-					</Row>
-				</Container>
-			</main>
+				{/* Visit Counter */}
+				<div className="pb-8 pt-2">
+					<VisitCounter pageId="home" autoIncrement={true} />
+				</div>
+			</div>
 		</>
 	)
 }

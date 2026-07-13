@@ -1,39 +1,26 @@
 import React from 'react'
-import { Col, Container, Row } from 'react-bootstrap'
+import { cn } from '@/lib/utils'
 
 /**
- * SidebarLayout - Layout com duas colunas para otimização de anúncios
+ * SidebarLayout — duas colunas para otimização de anúncios.
  *
- * @param {Object} props
- * @param {React.ReactNode} props.children - Conteúdo principal
- * @param {React.ReactNode} props.sidebar - Conteúdo da barra lateral (opcional)
- * @param {boolean} props.reverse - Se true, inverte a ordem (Sidebar na esquerda)
+ * @param {React.ReactNode} children - Conteúdo principal
+ * @param {React.ReactNode} sidebar - Barra lateral (ex.: anúncio)
+ * @param {boolean} reverse - Se true, sidebar à esquerda no desktop
  */
 const SidebarLayout = ({ children, sidebar, reverse = false }) => {
-    return (
-        <Container>
-            <Row className={reverse ? 'flex-row-reverse' : ''}>
-                {/* Conteúdo Principal */}
-                <Col xs={12} lg={8}>
-                    {children}
-                </Col>
-
-                {/* Barra Lateral / Sidebar */}
-                <Col xs={12} lg={4}>
-                    <div
-                        className="sticky-sidebar mt-4 mt-lg-0"
-                        style={{
-                            position: 'sticky',
-                            top: '20px',
-                            zIndex: 100,
-                        }}
-                    >
-                        {sidebar}
-                    </div>
-                </Col>
-            </Row>
-        </Container>
-    )
+	return (
+		<div className="mx-auto max-w-6xl px-4">
+			<div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+				<div className={cn('min-w-0 lg:col-span-8', reverse && 'lg:order-2')}>
+					{children}
+				</div>
+				<aside className={cn('lg:col-span-4', reverse && 'lg:order-1')}>
+					<div className="lg:sticky lg:top-20">{sidebar}</div>
+				</aside>
+			</div>
+		</div>
+	)
 }
 
 export default SidebarLayout

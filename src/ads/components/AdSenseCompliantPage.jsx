@@ -47,19 +47,23 @@ const AdSenseCompliantPage = ({
 					const skeletonElements = document.querySelectorAll(
 						'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
 					)
-					
+
 					if (skeletonElements.length > 0) {
 						// Verificar se skeletons estão realmente visíveis
-						const visibleSkeletons = Array.from(skeletonElements).filter(el => {
-							const style = window.getComputedStyle(el)
-							return style.display !== 'none' && style.visibility !== 'hidden'
-						})
-						
+						const visibleSkeletons = Array.from(skeletonElements).filter(
+							(el) => {
+								const style = window.getComputedStyle(el)
+								return style.display !== 'none' && style.visibility !== 'hidden'
+							},
+						)
+
 						if (visibleSkeletons.length > 0) {
 							// Verificar se já passou do timeout
 							const pageLoadTime = performance.now()
 							if (pageLoadTime > timeout) {
-								console.warn(`🚨 Skeletons detectados após timeout de ${timeout}ms - liberando anúncios forçadamente`)
+								console.warn(
+									`🚨 Skeletons detectados após timeout de ${timeout}ms - liberando anúncios forçadamente`,
+								)
 							} else {
 								result.isValid = false
 								result.issues.push(

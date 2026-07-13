@@ -25,6 +25,64 @@
   "home": {
     "title": "Nutritional Calculators",
     "subtitle": "Specialized tools for nutritional calculations in adult patients",
+    "hero": {
+      "badge": "Clinical decision support · ICU & ward",
+      "titleLead": "Nutritional calculations",
+      "titleHighlight": "precise, at the bedside",
+      "description": "NENPT, GIDS and formula management in one clean, fast platform aligned with ASPEN/ESPEN protocols.",
+      "ctaPrimary": "Open NENPT Calculator",
+      "ctaSecondary": "Assess GIDS"
+    },
+    "stats": {
+      "formulasValue": "45+",
+      "formulas": "Enteral and parenteral formulas",
+      "calculatorsValue": "2",
+      "calculators": "Clinical calculators",
+      "costValue": "100%",
+      "cost": "Free, no sign-up"
+    },
+    "toolsTitle": "Tools",
+    "toolsSubtitle": "Choose a calculator to get started.",
+    "how": {
+      "title": "How it works",
+      "subtitle": "From patient data to prescription in four steps.",
+      "step1": {
+        "title": "Patient data",
+        "desc": "Weight, height, age and sex — automatic BMI and basal targets."
+      },
+      "step2": {
+        "title": "Caloric target",
+        "desc": "Harris-Benedict or pocket formula adjustable by kcal/kg."
+      },
+      "step3": {
+        "title": "Formulas",
+        "desc": "Pick the main and supplemental diet from your product base."
+      },
+      "step4": {
+        "title": "Result",
+        "desc": "Macros, distribution and non-nutritional calories instantly."
+      }
+    },
+    "finalCta": {
+      "title": "Ready to calculate?",
+      "description": "Start now — no login, right at the point of care.",
+      "button": "Start calculation"
+    },
+    "whyChoose": {
+      "title": "Why choose NutriCalc?",
+      "precision": {
+        "title": "Clinical precision",
+        "desc": "Our algorithms are calibrated with the latest guidelines (ASPEN/ESPEN). Every milliliter of propofol or citrate is accounted for in the final energy balance."
+      },
+      "professional": {
+        "title": "Professional focus",
+        "desc": "A point-of-care tool ideal for bedside use. Clean, fast and responsive interface enabling agile decisions during multidisciplinary rounds."
+      },
+      "safety": {
+        "title": "Patient safety",
+        "desc": "Automatic alerts for inconsistencies and vital data validations prevent prescription errors and improve nutritional therapy safety."
+      }
+    },
     "nenpt": {
       "title": "NENPT Calculator",
       "description": "Calculator for Energy and Nutritional Needs in Patients with Nutritional Therapy. Includes calculations of caloric and protein needs and product management.",

@@ -1,17 +1,15 @@
 import { useAtom } from 'jotai'
 import React, { useState, useEffect } from 'react'
-import {
-	Alert,
-	Button,
-	Card,
-	Col,
-	Container,
-	Form,
-	Modal,
-	Row,
-	Table,
-} from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
+import {
+	EyeOff,
+	MoreHorizontal,
+	PackagePlus,
+	RotateCcw,
+	Search,
+	Trash2,
+} from 'lucide-react'
 import { ResponsiveBanner } from '../ads/components/AdVariants.jsx'
 import { useAnalytics } from '../hooks/useAnalytics'
 import {
@@ -20,7 +18,50 @@ import {
 	hiddenDefaultProductsAtom,
 	userProductsAtom,
 } from '../store/productsAtoms'
-import SEO from './SEO.jsx'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
+
+const emptyProduct = {
+	nome: '',
+	kcal_ml: '',
+	cho_g_l: '',
+	lip_g_l: '',
+	ptn_g_l: '',
+	ep_ratio: '',
+}
+
+const numericFields = [
+	{ name: 'kcal_ml', min: '0.1' },
+	{ name: 'cho_g_l', min: '0' },
+	{ name: 'lip_g_l', min: '0' },
+	{ name: 'ptn_g_l', min: '0' },
+	{ name: 'ep_ratio', min: '0' },
+]
 
 const ProductManager = () => {
 	const { t } = useTranslation()
@@ -32,22 +73,16 @@ const ProductManager = () => {
 	const [defaultProducts] = useAtom(defaultProductsAtom)
 	const { trackEvent } = useAnalytics()
 
-	const [newProduct, setNewProduct] = useState({
-		nome: '',
-		kcal_ml: '',
-		cho_g_l: '',
-		lip_g_l: '',
-		ptn_g_l: '',
-		ep_ratio: '',
-	})
+	const [newProduct, setNewProduct] = useState(emptyProduct)
 	const [searchTerm, setSearchTerm] = useState('')
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
 	const [productToDelete, setProductToDelete] = useState(null)
-	const [alert, setAlert] = useState({ show: false, variant: '', message: '' })
 
 	useEffect(() => {
 		trackEvent('productManager_view', { page: 'product_manager' })
 	}, [trackEvent])
+
+	const isProductUser = (name) => userProducts.some((p) => p.nome === name)
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target
@@ -59,13 +94,12 @@ const ProductManager = () => {
 
 	const handleAddProduct = (e) => {
 		e.preventDefault()
-		// Verificar se o produto já existe em qualquer um dos conjuntos
 		if (
 			allProducts.some(
 				(p) => p.nome.toLowerCase() === newProduct.nome.toLowerCase(),
 			)
 		) {
-			showAlertMessage('danger', t('productManager.validation.nameExists'))
+			toast.error(t('productManager.validation.nameExists'))
 			trackEvent('productManager_add_failed', {
 				reason: 'name_exists',
 				name: newProduct.nome,
@@ -73,7 +107,6 @@ const ProductManager = () => {
 			return
 		}
 
-		// Validar se todos os campos numéricos são positivos
 		if (
 			newProduct.kcal_ml <= 0 ||
 			newProduct.cho_g_l < 0 ||
@@ -81,26 +114,15 @@ const ProductManager = () => {
 			newProduct.ptn_g_l < 0 ||
 			newProduct.ep_ratio < 0
 		) {
-			showAlertMessage('danger', t('productManager.validation.invalidValues'))
+			toast.error(t('productManager.validation.invalidValues'))
 			trackEvent('productManager_add_failed', { reason: 'invalid_values' })
 			return
 		}
 
-		// Adicionar novo produto à lista de produtos do usuário
 		setUserProducts([...userProducts, newProduct])
 		trackEvent('productManager_add_product', { name: newProduct.nome })
-
-		// Limpar formulário
-		setNewProduct({
-			nome: '',
-			kcal_ml: '',
-			cho_g_l: '',
-			lip_g_l: '',
-			ptn_g_l: '',
-			ep_ratio: '',
-		})
-
-		showAlertMessage('success', t('productManager.validation.productAdded'))
+		setNewProduct(emptyProduct)
+		toast.success(t('productManager.validation.productAdded'))
 	}
 
 	const handleDeleteClick = (product) => {
@@ -110,378 +132,342 @@ const ProductManager = () => {
 	}
 
 	const confirmDelete = () => {
-		if (productToDelete) {
-			// Verificar se é um produto personalizado ou padrão
-			const isUserProduct = userProducts.some(
-				(p) => p.nome === productToDelete.nome,
-			)
-			const isDefaultProduct = defaultProducts.some(
-				(p) => p.nome === productToDelete.nome,
-			)
+		if (!productToDelete) return
+		const isUserProduct = isProductUser(productToDelete.nome)
+		const isDefaultProduct = defaultProducts.some(
+			(p) => p.nome === productToDelete.nome,
+		)
 
-			if (isUserProduct) {
-				// Remover produto personalizado
-				const updatedProducts = userProducts.filter(
-					(p) => p.nome !== productToDelete.nome,
-				)
-				setUserProducts(updatedProducts)
-				trackEvent('productManager_deleted', {
-					name: productToDelete.nome,
-					type: 'user',
-				})
-				showAlertMessage(
-					'success',
-					t('productManager.validation.productDeleted'),
-				)
-			} else if (isDefaultProduct) {
-				// Ocultar produto padrão
-				const updatedHiddenProducts = [
-					...hiddenDefaultProducts,
-					productToDelete.nome,
-				]
-				setHiddenDefaultProducts(updatedHiddenProducts)
-				trackEvent('productManager_hidden', {
-					name: productToDelete.nome,
-					type: 'default',
-				})
-				showAlertMessage(
-					'success',
-					t('productManager.validation.productDeleted'),
-				)
-			}
-
-			setShowDeleteModal(false)
-			setProductToDelete(null)
+		if (isUserProduct) {
+			setUserProducts(
+				userProducts.filter((p) => p.nome !== productToDelete.nome),
+			)
+			trackEvent('productManager_deleted', {
+				name: productToDelete.nome,
+				type: 'user',
+			})
+			toast.success(t('productManager.validation.productDeleted'))
+		} else if (isDefaultProduct) {
+			setHiddenDefaultProducts([...hiddenDefaultProducts, productToDelete.nome])
+			trackEvent('productManager_hidden', {
+				name: productToDelete.nome,
+				type: 'default',
+			})
+			toast.success(t('productManager.validation.productDeleted'))
 		}
+
+		setShowDeleteModal(false)
+		setProductToDelete(null)
 	}
 
 	const handleRestoreProduct = (productName) => {
-		const updatedHiddenProducts = hiddenDefaultProducts.filter(
-			(name) => name !== productName,
+		setHiddenDefaultProducts(
+			hiddenDefaultProducts.filter((name) => name !== productName),
 		)
-		setHiddenDefaultProducts(updatedHiddenProducts)
 		trackEvent('productManager_restored', { name: productName })
-		showAlertMessage('success', t('productManager.validation.productDeleted'))
+		toast.success(t('productManager.validation.productDeleted'))
 	}
 
-	const showAlertMessage = (variant, message) => {
-		setAlert({ show: true, variant, message })
-		setTimeout(() => {
-			setAlert({ show: false, variant: '', message: '' })
-		}, 5000)
-	}
-
-	// Filtrar produtos com base na busca
 	const filteredProducts = allProducts.filter((product) =>
 		product.nome.toLowerCase().includes(searchTerm.toLowerCase()),
 	)
 
-	// track search when user presses Enter
 	const handleSearchKeyDown = (e) => {
 		if (e.key === 'Enter') {
 			trackEvent('productManager_search', { query: searchTerm })
 		}
 	}
 
+	const deletingUser = productToDelete && isProductUser(productToDelete.nome)
+
 	return (
-		<Container>
+		<div className="mx-auto max-w-6xl px-4">
 			<ResponsiveBanner adSlot="9004267172" requireContent={false} />
 
-			<h1 className="mb-4 text-center">{t('productManager.title')}</h1>
+			<h1 className="mb-6 text-3xl font-bold tracking-tight text-foreground">
+				{t('productManager.title')}
+			</h1>
 
-			{alert.show && (
-				<Alert
-					variant={alert.variant}
-					onClose={() => setAlert({ show: false })}
-					dismissible
-				>
-					{alert.message}
-				</Alert>
-			)}
-
-			<Row className="mb-5">
-				<Col md={6}>
-					<div className="p-4 shadow-sm rounded bg-light">
-						<h2 className="fs-5 mb-3 border-bottom pb-2">
+			<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+				{/* Adicionar produto */}
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2 text-lg">
+							<PackagePlus className="size-5 text-primary" />
 							{t('productManager.addProduct')}
-						</h2>
-						<Form onSubmit={handleAddProduct}>
-							<Form.Group className="mb-3">
-								<Form.Label>{t('productManager.productName')}</Form.Label>
-								<Form.Control
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<form onSubmit={handleAddProduct} className="space-y-4">
+							<div className="grid gap-2">
+								<Label htmlFor="nome">{t('productManager.productName')}</Label>
+								<Input
+									id="nome"
 									type="text"
 									name="nome"
 									value={newProduct.nome}
 									onChange={handleInputChange}
 									required
 								/>
-							</Form.Group>
-
-							<Form.Group className="mb-3">
-								<Form.Label>{t('productManager.kcalMl')}</Form.Label>
-								<Form.Control
-									type="number"
-									name="kcal_ml"
-									value={newProduct.kcal_ml}
-									onChange={handleInputChange}
-									required
-									min="0.1"
-									step="0.1"
-								/>
-							</Form.Group>
-
-							<Form.Group className="mb-3">
-								<Form.Label>{t('productManager.cho')}</Form.Label>
-								<Form.Control
-									type="number"
-									name="cho_g_l"
-									value={newProduct.cho_g_l}
-									onChange={handleInputChange}
-									required
-									min="0"
-									step="0.1"
-								/>
-							</Form.Group>
-
-							<Form.Group className="mb-3">
-								<Form.Label>{t('productManager.lip')}</Form.Label>
-								<Form.Control
-									type="number"
-									name="lip_g_l"
-									value={newProduct.lip_g_l}
-									onChange={handleInputChange}
-									required
-									min="0"
-									step="0.1"
-								/>
-							</Form.Group>
-
-							<Form.Group className="mb-3">
-								<Form.Label>{t('productManager.ptn')}</Form.Label>
-								<Form.Control
-									type="number"
-									name="ptn_g_l"
-									value={newProduct.ptn_g_l}
-									onChange={handleInputChange}
-									required
-									min="0"
-									step="0.1"
-								/>
-							</Form.Group>
-
-							<Form.Group className="mb-3">
-								<Form.Label>{t('productManager.epRatio')}</Form.Label>
-								<Form.Control
-									type="number"
-									name="ep_ratio"
-									value={newProduct.ep_ratio}
-									onChange={handleInputChange}
-									required
-									min="0"
-									step="0.1"
-								/>
-							</Form.Group>
-
-							<div className="d-grid">
-								<Button variant="primary" type="submit">
-									{t('productManager.addProductButton')}
-								</Button>
 							</div>
-						</Form>
-					</div>
-				</Col>
 
-				<Col md={6}>
-					<div className="p-4 shadow-sm rounded bg-light">
-						<h2 className="fs-5 mb-3 border-bottom pb-2">
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+								{numericFields.map((f) => (
+									<div key={f.name} className="grid gap-2">
+										<Label htmlFor={f.name}>
+											{t(
+												`productManager.${
+													f.name === 'kcal_ml'
+														? 'kcalMl'
+														: f.name === 'cho_g_l'
+															? 'cho'
+															: f.name === 'lip_g_l'
+																? 'lip'
+																: f.name === 'ptn_g_l'
+																	? 'ptn'
+																	: 'epRatio'
+												}`,
+											)}
+										</Label>
+										<Input
+											id={f.name}
+											type="number"
+											name={f.name}
+											value={newProduct[f.name]}
+											onChange={handleInputChange}
+											required
+											min={f.min}
+											step="0.1"
+										/>
+									</div>
+								))}
+							</div>
+
+							<Button type="submit" className="w-full">
+								{t('productManager.addProductButton')}
+							</Button>
+						</form>
+					</CardContent>
+				</Card>
+
+				{/* Produtos cadastrados */}
+				<Card>
+					<CardHeader>
+						<CardTitle className="text-lg">
 							{t('productManager.registeredProducts')}
-						</h2>
-
-						<Form.Group className="mb-3">
-							<Form.Control
+						</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-4">
+						<div className="relative">
+							<Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+							<Input
 								type="text"
 								placeholder={t('productManager.searchProduct')}
 								value={searchTerm}
 								onChange={(e) => setSearchTerm(e.target.value)}
 								onKeyDown={handleSearchKeyDown}
+								className="pl-9"
 							/>
-						</Form.Group>
+						</div>
 
-						<div className="table-responsive">
-							<Table striped hover>
-								<thead>
-									<tr>
-										<th>{t('productManager.name')}</th>
-										<th>{t('productManager.kcalMl')}</th>
-										<th>{t('productManager.type')}</th>
-										<th>{t('productManager.actions')}</th>
-									</tr>
-								</thead>
-								<tbody>
+						<div className="rounded-md border border-border">
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>{t('productManager.name')}</TableHead>
+										<TableHead className="text-right">
+											{t('productManager.kcalMl')}
+										</TableHead>
+										<TableHead>{t('productManager.type')}</TableHead>
+										<TableHead className="text-right">
+											{t('productManager.actions')}
+										</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
 									{filteredProducts.length > 0 ? (
 										filteredProducts.map((product, index) => {
-											// Verificar se é um produto personalizado
-											const isUserProduct = userProducts.some(
-												(p) => p.nome === product.nome,
-											)
-
+											const isUserProduct = isProductUser(product.nome)
 											return (
-												<tr key={index}>
-													<td>{product.nome}</td>
-													<td>{product.kcal_ml.toFixed(1)}</td>
-													<td>
-														{isUserProduct
-															? t('common.custom')
-															: t('productManager.standard')}
-													</td>
-													<td>
-														<Button
-															variant={isUserProduct ? 'danger' : 'warning'}
-															size="sm"
-															onClick={() => handleDeleteClick(product)}
+												<TableRow key={index}>
+													<TableCell className="font-medium">
+														{product.nome}
+													</TableCell>
+													<TableCell className="text-right tabular-nums">
+														{product.kcal_ml.toFixed(1)}
+													</TableCell>
+													<TableCell>
+														<Badge
+															variant={isUserProduct ? 'default' : 'secondary'}
 														>
 															{isUserProduct
-																? t('productManager.delete')
-																: t('productManager.hide')}
-														</Button>
-													</td>
-												</tr>
+																? t('common.custom')
+																: t('productManager.standard')}
+														</Badge>
+													</TableCell>
+													<TableCell className="text-right">
+														<DropdownMenu>
+															<DropdownMenuTrigger asChild>
+																<Button
+																	variant="ghost"
+																	size="icon"
+																	className="size-8"
+																	aria-label={t('productManager.actions')}
+																>
+																	<MoreHorizontal className="size-4" />
+																</Button>
+															</DropdownMenuTrigger>
+															<DropdownMenuContent align="end">
+																<DropdownMenuItem
+																	variant="destructive"
+																	onClick={() => handleDeleteClick(product)}
+																>
+																	{isUserProduct ? (
+																		<>
+																			<Trash2 className="size-4" />
+																			{t('productManager.delete')}
+																		</>
+																	) : (
+																		<>
+																			<EyeOff className="size-4" />
+																			{t('productManager.hide')}
+																		</>
+																	)}
+																</DropdownMenuItem>
+															</DropdownMenuContent>
+														</DropdownMenu>
+													</TableCell>
+												</TableRow>
 											)
 										})
 									) : (
-										<tr>
-											<td colSpan="4" className="text-center">
+										<TableRow>
+											<TableCell
+												colSpan={4}
+												className="py-8 text-center text-muted-foreground"
+											>
 												{t('common.noResults')}
-											</td>
-										</tr>
+											</TableCell>
+										</TableRow>
 									)}
-								</tbody>
+								</TableBody>
 							</Table>
 						</div>
-					</div>
-				</Col>
-			</Row>
-
-			{/* Seção de produtos ocultos */}
-			{hiddenDefaultProducts.length > 0 && (
-				<Row className="mb-4">
-					<Col>
-						<div className="p-4 shadow-sm rounded bg-light">
-							<h2 className="fs-5 mb-3 border-bottom pb-2">
-								{t('productManager.hiddenProducts')}
-							</h2>
-							<p className="text-muted mb-3">
-								{t('productManager.hiddenProductsDescription')}
-							</p>
-
-							<div className="d-flex flex-wrap gap-2">
-								{hiddenDefaultProducts.map((productName, index) => {
-									return (
-										<div
-											key={index}
-											className="border rounded p-2 bg-white d-flex align-items-center gap-2"
-										>
-											<span>{productName}</span>
-											<Button
-												variant="success"
-												size="sm"
-												onClick={() => handleRestoreProduct(productName)}
-											>
-												{t('productManager.show')}
-											</Button>
-										</div>
-									)
-								})}
-							</div>
-						</div>
-					</Col>
-				</Row>
-			)}
-
-			{/* Modal de confirmação de exclusão */}
-			<Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-				<Modal.Header closeButton>
-					<Modal.Title>
-						{productToDelete &&
-						userProducts.some((p) => p.nome === productToDelete.nome)
-							? t('productManager.confirmDelete')
-							: t('productManager.confirmHide')}
-					</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					{productToDelete &&
-					userProducts.some((p) => p.nome === productToDelete.nome) ? (
-						<>
-							<p>
-								{t('productManager.deleteConfirmation').replace(
-									'{{productName}}',
-									productToDelete?.nome,
-								)}
-							</p>
-							<p className="text-danger">{t('productManager.deleteWarning')}</p>
-						</>
-					) : (
-						<>
-							<p>
-								{t('productManager.hideConfirmation').replace(
-									'{{productName}}',
-									productToDelete?.nome,
-								)}
-							</p>
-							<p className="text-warning">{t('productManager.hideWarning')}</p>
-						</>
-					)}
-				</Modal.Body>
-				<Modal.Footer>
-					<Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-						{t('common.cancel')}
-					</Button>
-					<Button
-						variant={
-							productToDelete &&
-							userProducts.some((p) => p.nome === productToDelete.nome)
-								? 'danger'
-								: 'warning'
-						}
-						onClick={confirmDelete}
-					>
-						{productToDelete &&
-						userProducts.some((p) => p.nome === productToDelete.nome)
-							? t('productManager.delete')
-							: t('productManager.hide')}
-					</Button>
-				</Modal.Footer>
-			</Modal>
-			<div className="mb-4 mt-5">
-				<h3 className="text-primary mb-4 text-center">
-					Informações Sobre Gerenciamento de Produtos
-				</h3>
-
-				{/* Importância do Gerenciamento */}
-				<Card className="mb-3">
-					<Card.Body>
-						<h5 className="text-primary mb-3">
-							{t('productManager.clinicalImportance.title')}
-						</h5>
-						<p className="text-justify">
-							{t('productManager.clinicalImportance.content')}
-						</p>
-					</Card.Body>
-				</Card>
-
-				{/* Personalização e Flexibilidade */}
-				<Card className="mb-3">
-					<Card.Body>
-						<h5 className="text-primary mb-3">
-							{t('productManager.productCustomization.title')}
-						</h5>
-						<p className="text-justify">
-							{t('productManager.productCustomization.content')}
-						</p>
-					</Card.Body>
+					</CardContent>
 				</Card>
 			</div>
-		</Container>
+
+			{/* Produtos ocultos */}
+			{hiddenDefaultProducts.length > 0 && (
+				<Card className="mt-6">
+					<CardHeader>
+						<CardTitle className="text-lg">
+							{t('productManager.hiddenProducts')}
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<p className="mb-3 text-sm text-muted-foreground">
+							{t('productManager.hiddenProductsDescription')}
+						</p>
+						<div className="flex flex-wrap gap-2">
+							{hiddenDefaultProducts.map((productName, index) => (
+								<div
+									key={index}
+									className="flex items-center gap-2 rounded-full border border-border bg-secondary/40 py-1 pl-3 pr-1 text-sm"
+								>
+									<span>{productName}</span>
+									<Button
+										variant="ghost"
+										size="sm"
+										className="h-7 gap-1 px-2 text-success hover:text-success"
+										onClick={() => handleRestoreProduct(productName)}
+									>
+										<RotateCcw className="size-3.5" />
+										{t('productManager.show')}
+									</Button>
+								</div>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			)}
+
+			{/* Modal de confirmação */}
+			<Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+				<DialogContent data-testid="delete-dialog" className="modal">
+					<DialogHeader>
+						<DialogTitle>
+							{deletingUser
+								? t('productManager.confirmDelete')
+								: t('productManager.confirmHide')}
+						</DialogTitle>
+						<DialogDescription>
+							{deletingUser
+								? t('productManager.deleteConfirmation').replace(
+										'{{productName}}',
+										productToDelete?.nome ?? '',
+									)
+								: t('productManager.hideConfirmation').replace(
+										'{{productName}}',
+										productToDelete?.nome ?? '',
+									)}
+						</DialogDescription>
+					</DialogHeader>
+					<p
+						className={
+							deletingUser ? 'text-sm text-destructive' : 'text-sm text-warning'
+						}
+					>
+						{deletingUser
+							? t('productManager.deleteWarning')
+							: t('productManager.hideWarning')}
+					</p>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+							{t('common.cancel')}
+						</Button>
+						<Button
+							variant={deletingUser ? 'destructive' : 'warning'}
+							onClick={confirmDelete}
+						>
+							{deletingUser
+								? t('productManager.delete')
+								: t('productManager.hide')}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Seções informativas */}
+			<div className="mt-12">
+				<h3 className="mb-6 text-center text-xl font-bold text-foreground">
+					Informações Sobre Gerenciamento de Produtos
+				</h3>
+				<div className="space-y-4">
+					{[
+						{
+							title: t('productManager.clinicalImportance.title'),
+							content: t('productManager.clinicalImportance.content'),
+						},
+						{
+							title: t('productManager.productCustomization.title'),
+							content: t('productManager.productCustomization.content'),
+						},
+					].map((sec) => (
+						<Card key={sec.title}>
+							<CardContent className="pt-6">
+								<h4 className="mb-3 text-base font-semibold text-primary">
+									{sec.title}
+								</h4>
+								<p className="text-sm leading-relaxed text-muted-foreground">
+									{sec.content}
+								</p>
+							</CardContent>
+						</Card>
+					))}
+				</div>
+			</div>
+		</div>
 	)
 }
 

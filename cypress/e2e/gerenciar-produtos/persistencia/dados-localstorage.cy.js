@@ -91,9 +91,7 @@ describe('Gerenciar Produtos - Persistência de Dados', () => {
       // Oculta um produto
       cy.get('input[placeholder*="Buscar produto"]').type('Fresubin Original');
 
-      cy.contains('tr', 'Fresubin Original').within(() => {
-        cy.get('button').contains('Ocultar').click();
-      });
+      cy.rowMenuAction('Fresubin Original', 'Ocultar');
 
       cy.get('.modal button').contains('Ocultar').click();
 
@@ -126,11 +124,7 @@ describe('Gerenciar Produtos - Persistência de Dados', () => {
       // Oculta múltiplos produtos
       produtosParaOcultar.forEach((produto) => {
         cy.get('input[placeholder*="Buscar produto"]').clear().type(produto);
-        cy.contains('tr', produto)
-          .first()
-          .within(() => {
-            cy.get('button').contains('Ocultar').click();
-          });
+        cy.rowMenuAction(produto, 'Ocultar');
         cy.get('.modal button').contains('Ocultar').click();
       });
 

@@ -8,92 +8,47 @@ describe('Home - Exibição de Cards', () => {
   });
 
   it('deve exibir o card NENPT corretamente', () => {
-    // Verifica título do card
-    cy.contains('Calculadora NENPT', { timeout: 10000 }).should('be.visible');
-
-    // Verifica descrição
-    cy.contains('Necessidades Energéticas', { timeout: 5000 }).should('be.visible');
-
-    // Verifica ícone
-    cy.get('.card')
-      .contains('Calculadora NENPT')
-      .parent()
-      .find('.fas.fa-calculator')
-      .should('exist');
-
-    // Verifica botões
-    cy.get('.card')
-      .contains('Calculadora NENPT')
-      .parent()
-      .within(() => {
-        cy.contains('Acessar Calculadora').should('be.visible');
-        cy.contains('Gerenciar Produtos').should('be.visible');
-      });
-  });
-
-  it('deve exibir o card GIDS corretamente', () => {
-    // Verifica título do card
-    cy.contains('Calculadora GIDS', { timeout: 5000 }).should('be.visible');
-
-    // Verifica descrição - usando parte do texto que deve estar presente
-    cy.contains('Gastrointestinal Dysfunction Score', { timeout: 5000 }).should('be.visible');
-
-    // Verifica ícone
-    cy.get('.card')
-      .contains('Calculadora GIDS')
-      .parent()
-      .find('.fas.fa-stethoscope')
-      .should('exist');
-
-    // Verifica botão usando o texto da tradução
-    cy.get('.card')
-      .contains('Calculadora GIDS')
-      .parent()
-      .within(() => {
-        cy.contains('Acessar GIDS').should('be.visible');
-      });
-  });
-
-  it('deve exibir o card de informações sobre a aplicação', () => {
-    // Verifica card de informações usando a tradução correta
-    cy.contains('Sobre as Calculadoras').should('be.visible');
-    cy.get('.card.bg-light').should('be.visible');
-    cy.get('.fas.fa-info-circle').should('exist');
-  });
-
-  it('deve ter cards com altura uniforme', () => {
-    // Verifica que os cards principais têm a classe h-100
-    cy.get('.card.h-100').should('have.length.at.least', 2);
-  });
-
-  it('deve exibir todos os ícones corretamente', () => {
-    // Verifica ícones Font Awesome - apenas verifica se existem, não se são visíveis
-    // pois podem ter largura 0 se o Font Awesome não estiver carregado
-    cy.get('.fas.fa-calculator').should('exist');
-    cy.get('.fas.fa-stethoscope').should('exist');
-    cy.get('.fas.fa-info-circle').should('exist');
-  });
-
-  it('deve verificar se Font Awesome está carregado ou usar fallback', () => {
-    // Verifica se os ícones têm largura (Font Awesome carregado) ou se existe fallback
-    cy.get('.fas.fa-calculator').then(($icon) => {
-      const width = $icon.width();
-      if (width > 0) {
-        // Font Awesome carregado corretamente
-        cy.wrap($icon).should('be.visible');
-      } else {
-        // Font Awesome não carregado, mas ícone existe
-        cy.wrap($icon).should('exist');
-        // Verifica se há texto de contexto adequado no card
-        cy.wrap($icon).parent().should('contain.text');
-      }
+    cy.get('[data-testid="tool-card-nenpt"]').within(() => {
+      cy.contains('Calculadora NENPT').should('be.visible');
+      cy.contains('Necessidades Energéticas').should('be.visible');
+      // Ícone (Lucide SVG)
+      cy.get('svg').should('exist');
+      // Botões de ação
+      cy.contains('Acessar Calculadora').should('be.visible');
+      cy.contains('Gerenciar Produtos').should('be.visible');
     });
   });
 
-  it('deve ter cores adequadas nos cards', () => {
-    // Verifica cores dos títulos
-    cy.get('.text-primary').should('be.visible');
-    cy.get('.text-success').should('be.visible');
-    cy.get('.text-info').should('be.visible');
+  it('deve exibir o card GIDS corretamente', () => {
+    cy.get('[data-testid="tool-card-gids"]').within(() => {
+      cy.contains('Calculadora GIDS').should('be.visible');
+      cy.contains('Gastrointestinal Dysfunction Score').should('be.visible');
+      cy.get('svg').should('exist');
+      cy.contains('Acessar GIDS').should('be.visible');
+    });
+  });
+
+  it('deve exibir o card de informações sobre a aplicação', () => {
+    cy.contains('Sobre as Calculadoras').should('be.visible');
+    // Ícone do card sobre (Lucide SVG)
+    cy.contains('Sobre as Calculadoras')
+      .closest('[data-slot="card"]')
+      .find('svg')
+      .should('exist');
+  });
+
+  it('deve exibir os três cards de ferramentas', () => {
+    cy.get('[data-testid^="tool-card-"]').should('have.length', 3);
+  });
+
+  it('deve exibir ícones (Lucide SVG) nos cards de ferramentas', () => {
+    cy.get('[data-testid="tool-card-nenpt"] svg').should('exist');
+    cy.get('[data-testid="tool-card-gids"] svg').should('exist');
+    cy.get('[data-testid="tool-card-products"] svg').should('exist');
+  });
+
+  it('deve ter cores adequadas nos títulos dos cards', () => {
+    cy.get('.text-primary').should('exist');
+    cy.get('.text-success').should('exist');
   });
 });

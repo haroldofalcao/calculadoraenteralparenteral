@@ -25,6 +25,49 @@
   "home": {
     "title": "Calculadoras Nutricionais",
     "subtitle": "Ferramentas especializadas para cálculos nutricionais em pacientes adultos",
+    "hero": {
+      "badge": "Suporte à decisão clínica · UTI & enfermaria",
+      "titleLead": "Cálculos nutricionais",
+      "titleHighlight": "precisos, à beira do leito",
+      "description": "NENPT, GIDS e gestão de fórmulas em uma plataforma limpa, rápida e alinhada a protocolos ASPEN/ESPEN.",
+      "ctaPrimary": "Abrir Calculadora NENPT",
+      "ctaSecondary": "Avaliar GIDS"
+    },
+    "stats": {
+      "formulasValue": "45+",
+      "formulas": "Fórmulas enterais e parenterais",
+      "calculatorsValue": "2",
+      "calculators": "Calculadoras clínicas",
+      "costValue": "100%",
+      "cost": "Gratuito, sem cadastro"
+    },
+    "toolsTitle": "Ferramentas",
+    "toolsSubtitle": "Escolha a calculadora para começar.",
+    "how": {
+      "title": "Como funciona",
+      "subtitle": "Do dado do paciente à prescrição em quatro passos.",
+      "step1": {
+        "title": "Dados do paciente",
+        "desc": "Peso, altura, idade e sexo — IMC e metas basais automáticos."
+      },
+      "step2": {
+        "title": "Meta calórica",
+        "desc": "Harris-Benedict ou fórmula de bolso ajustável por kcal/kg."
+      },
+      "step3": {
+        "title": "Fórmulas",
+        "desc": "Escolha a dieta principal e suplementar da sua base de produtos."
+      },
+      "step4": {
+        "title": "Resultado",
+        "desc": "Macros, distribuição e calorias não-nutricionais na hora."
+      }
+    },
+    "finalCta": {
+      "title": "Pronto para calcular?",
+      "description": "Comece agora — sem login, direto no ponto de cuidado.",
+      "button": "Começar cálculo"
+    },
     "nenpt": {
       "title": "Calculadora NENPT",
       "description": "Calculadora para Necessidades Energéticas e Nutricionais em Pacientes com Terapia Nutricional. Inclui cálculos de necessidades calóricas, proteicas e gerenciamento de produtos.",

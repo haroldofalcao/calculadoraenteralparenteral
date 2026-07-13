@@ -74,11 +74,7 @@ describe('Gerenciamento de Produtos', () => {
       cy.contains('Produto Para Excluir').should('be.visible');
 
       // Exclui o produto
-      cy.contains('tr', 'Produto Para Excluir').within(() => {
-        cy.get('button')
-          .contains(/excluir|delete/i)
-          .click();
-      });
+      cy.rowMenuAction('Produto Para Excluir', /excluir|delete/i);
 
       // Confirma exclusão no modal
       cy.get('.modal button')

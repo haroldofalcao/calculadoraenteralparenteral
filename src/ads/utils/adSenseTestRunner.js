@@ -8,49 +8,62 @@ const testAdSenseFixes = () => {
 	// Teste 1: Verificar se skeletons estão sendo detectados corretamente
 	console.log('\n1️⃣ TESTE: Detecção de Skeletons')
 	const skeletonElements = document.querySelectorAll(
-		'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton'
+		'.placeholder, .spinner-border, .content-skeleton, .loading, .skeleton',
 	)
-	const visibleSkeletons = Array.from(skeletonElements).filter(el => {
+	const visibleSkeletons = Array.from(skeletonElements).filter((el) => {
 		const style = window.getComputedStyle(el)
 		return style.display !== 'none' && style.visibility !== 'hidden'
 	})
-	
+
 	console.log(`   Total de skeletons: ${skeletonElements.length}`)
 	console.log(`   Skeletons visíveis: ${visibleSkeletons.length}`)
-	console.log(`   Status: ${visibleSkeletons.length === 0 ? '✅ OK' : '⚠️ PROBLEMA'}`)
+	console.log(
+		`   Status: ${visibleSkeletons.length === 0 ? '✅ OK' : '⚠️ PROBLEMA'}`,
+	)
 
 	// Teste 2: Verificar conteúdo da página
 	console.log('\n2️⃣ TESTE: Conteúdo da Página')
 	const mainContent = document.querySelector('main')
 	const textContent = mainContent?.innerText || ''
 	const contentLength = textContent.replace(/\s+/g, ' ').trim().length
-	
-	console.log(`   Elemento main: ${mainContent ? '✅ Encontrado' : '❌ Não encontrado'}`)
+
+	console.log(
+		`   Elemento main: ${mainContent ? '✅ Encontrado' : '❌ Não encontrado'}`,
+	)
 	console.log(`   Caracteres de conteúdo: ${contentLength}`)
 	console.log(`   Mínimo requerido: 300`)
-	console.log(`   Status: ${contentLength >= 300 ? '✅ OK' : '❌ INSUFICIENTE'}`)
+	console.log(
+		`   Status: ${contentLength >= 300 ? '✅ OK' : '❌ INSUFICIENTE'}`,
+	)
 
 	// Teste 3: Verificar elementos interativos
 	console.log('\n3️⃣ TESTE: Elementos Interativos')
-	const interactiveElements = mainContent?.querySelectorAll(
-		'form, input, button, select, textarea, .calculator, .interactive'
-	) || []
-	
+	const interactiveElements =
+		mainContent?.querySelectorAll(
+			'form, input, button, select, textarea, .calculator, .interactive',
+		) || []
+
 	console.log(`   Elementos interativos: ${interactiveElements.length}`)
-	console.log(`   Status: ${interactiveElements.length > 0 ? '✅ OK' : '⚠️ POUCOS'}`)
+	console.log(
+		`   Status: ${interactiveElements.length > 0 ? '✅ OK' : '⚠️ POUCOS'}`,
+	)
 
 	// Teste 4: Verificar se hasValidContent funciona
 	console.log('\n4️⃣ TESTE: Função hasValidContent')
 	try {
 		// Tentar importar a função (pode não funcionar dependendo do bundler)
-		const hasValidContent = window.hasValidContent || (() => {
-			console.log('   ⚠️ Função não disponível no escopo global')
-			return 'Não testável'
-		})
-		
+		const hasValidContent =
+			window.hasValidContent ||
+			(() => {
+				console.log('   ⚠️ Função não disponível no escopo global')
+				return 'Não testável'
+			})
+
 		const contentValid = hasValidContent()
 		console.log(`   Resultado: ${contentValid}`)
-		console.log(`   Status: ${contentValid === true ? '✅ VÁLIDO' : '❌ INVÁLIDO'}`)
+		console.log(
+			`   Status: ${contentValid === true ? '✅ VÁLIDO' : '❌ INVÁLIDO'}`,
+		)
 	} catch (error) {
 		console.log(`   ❌ Erro ao testar: ${error.message}`)
 	}
@@ -70,7 +83,9 @@ const testAdSenseFixes = () => {
 		console.log('   ✅ policyGuard disponível')
 		const status = window.policyGuard.getStatus()
 		console.log(`   Monitorando: ${status.isMonitoring ? '✅ SIM' : '❌ NÃO'}`)
-		console.log(`   Anúncios bloqueados: ${status.adsBlocked ? '❌ SIM' : '✅ NÃO'}`)
+		console.log(
+			`   Anúncios bloqueados: ${status.adsBlocked ? '❌ SIM' : '✅ NÃO'}`,
+		)
 	} else {
 		console.log('   ⚠️ policyGuard não disponível')
 	}
@@ -79,7 +94,9 @@ const testAdSenseFixes = () => {
 	console.log('\n7️⃣ TESTE: Marcação data-no-ads')
 	const noAdsElements = document.querySelectorAll('[data-no-ads="true"]')
 	console.log(`   Elementos com data-no-ads: ${noAdsElements.length}`)
-	console.log(`   Status: ${noAdsElements.length === 0 ? '✅ OK' : '⚠️ BLOQUEADO'}`)
+	console.log(
+		`   Status: ${noAdsElements.length === 0 ? '✅ OK' : '⚠️ BLOQUEADO'}`,
+	)
 
 	// Teste 8: Verificar tempo de carregamento da página
 	console.log('\n8️⃣ TESTE: Performance')
@@ -99,7 +116,10 @@ const testAdSenseFixes = () => {
 window.testAdSenseFixes = testAdSenseFixes
 
 // Executar automaticamente se em desenvolvimento
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+if (
+	window.location.hostname === 'localhost' ||
+	window.location.hostname === '127.0.0.1'
+) {
 	console.log('🔧 Script de teste AdSense carregado!')
 	console.log('Execute testAdSenseFixes() no console para testar')
 }

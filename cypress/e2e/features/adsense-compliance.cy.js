@@ -175,8 +175,8 @@ describe('AdSense Policy Compliance', () => {
 
   describe('Error Pages', () => {
     it('should not show ads on error pages', () => {
-      // Testar página 404
-      cy.visit('/página-inexistente', { failOnStatusCode: false });
+      // Testar página 404 (sem acento na URL para o fallback SPA do preview)
+      cy.visit('/pagina-inexistente', { failOnStatusCode: false });
       cy.wait(2000);
 
       // Verificar se anúncios estão bloqueados
@@ -188,11 +188,12 @@ describe('AdSense Policy Compliance', () => {
           const isNotFound =
             win.document.title.toLowerCase().includes('404') ||
             win.document.title.toLowerCase().includes('not found') ||
-            win.location.pathname.includes('página-inexistente');
+            win.location.pathname.includes('pagina-inexistente');
 
           if (isNotFound) {
-            // É uma página de erro, anúncios devem estar bloqueados
-            cy.get('.adsbygoogle').should('not.be.visible');
+            // É uma página de erro: não deve haver anúncios visíveis
+            // (na 404 não há elementos .adsbygoogle — 'not.exist' cobre esse caso)
+            cy.get('.adsbygoogle:visible').should('not.exist');
           } else if (win.policyGuard && typeof win.policyGuard.forceValidation === 'function') {
             // Verificar via policy guard se disponível
             const validation = win.policyGuard.forceValidation();

@@ -54,12 +54,13 @@ describe('Gerenciar Produtos - Carregamento Inicial', () => {
     });
 
     it('deve mostrar botões de ação apropriados', () => {
-      // Produtos padrão devem ter botão "Ocultar"
+      // Ações agora ficam num menu (⋯). Verifica o gatilho na linha e a opção "Ocultar".
       cy.get('table tbody tr')
         .first()
-        .within(() => {
-          cy.get('button').should('contain.text', 'Ocultar');
-        });
+        .find('button[aria-haspopup="menu"]')
+        .should('exist')
+        .click();
+      cy.get('[role="menuitem"]').should('contain.text', 'Ocultar');
     });
   });
 });

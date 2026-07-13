@@ -30,9 +30,7 @@ describe('Gerenciar Produtos - Integração Completa', () => {
       cy.get('table tbody tr').should('have.length.greaterThan', 1);
 
       // 4. Excluir o produto
-      cy.contains('tr', nomeProduto).within(() => {
-        cy.get('button').contains('Excluir').click();
-      });
+      cy.rowMenuAction(nomeProduto, 'Excluir');
       cy.get('.modal button').contains('Excluir').click();
 
       // 5. Verificar remoção

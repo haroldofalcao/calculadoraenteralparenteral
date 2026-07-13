@@ -83,8 +83,9 @@ describe('Home - Internacionalização', () => {
       cy.wrap($title).should('be.visible');
     });
 
-    cy.get('.btn').each(($btn) => {
-      // Verifica que botões não quebram com textos longos
+    cy.get('.btn:visible').each(($btn) => {
+      // Verifica que botões visíveis não quebram com textos longos
+      // (o gatilho do menu mobile fica oculto no desktop via md:hidden)
       cy.wrap($btn).should('be.visible');
     });
   });

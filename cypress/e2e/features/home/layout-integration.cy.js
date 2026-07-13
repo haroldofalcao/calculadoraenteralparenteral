@@ -33,7 +33,7 @@ describe('Home - Integração com Layout', () => {
           cy.get('nav, header').should('be.visible');
 
           // Verifica que não há overlap com o conteúdo principal
-          cy.get('.container').should('be.visible');
+          cy.get('main').should('be.visible');
         }
       });
     });
@@ -137,7 +137,7 @@ describe('Home - Integração com Layout', () => {
         cy.waitForPageLoad();
 
         // Verifica que o layout principal está intacto
-        cy.get('.container').should('be.visible');
+        cy.get('main').should('be.visible');
         cy.get('h1').should('be.visible');
         cy.get('.card').should('be.visible');
 

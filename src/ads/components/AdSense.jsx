@@ -67,6 +67,7 @@ const AdSense = ({
 	adStyle = { display: 'block' },
 	adFormat = 'auto',
 	fullWidthResponsive = true,
+	adLayoutKey,
 	className = 'adsbygoogle',
 	requireContent = true, // Nova prop para controlar se deve verificar conteúdo
 }) => {
@@ -113,7 +114,9 @@ const AdSense = ({
 					setPolicyCompliant(true)
 					console.log('✅ Conteúdo e política validados - liberando anúncios')
 				} else {
-					console.log(`⏳ Aguardando conteúdo: ${hasContent ? 'OK' : 'FALHA'} | Política: ${policyCheck.isValid ? 'OK' : 'FALHA'}`)
+					console.log(
+						`⏳ Aguardando conteúdo: ${hasContent ? 'OK' : 'FALHA'} | Política: ${policyCheck.isValid ? 'OK' : 'FALHA'}`,
+					)
 					// Verificar novamente após um tempo menor
 					setTimeout(checkContent, 1000)
 				}
@@ -174,7 +177,10 @@ const AdSense = ({
 			data-ad-client={adClient}
 			data-ad-slot={adSlot}
 			data-ad-format={adFormat}
-			data-full-width-responsive={fullWidthResponsive}
+			data-ad-layout-key={adLayoutKey}
+			{...(adFormat !== 'fluid'
+				? { 'data-full-width-responsive': fullWidthResponsive }
+				: {})}
 		/>
 	)
 

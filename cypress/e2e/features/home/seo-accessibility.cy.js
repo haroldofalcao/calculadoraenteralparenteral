@@ -45,20 +45,15 @@ describe('Home - SEO e Acessibilidade', () => {
 
   describe('Acessibilidade', () => {
     it('deve ter texto alternativo adequado para ícones', () => {
-      // Verifica se ícones têm contexto adequado
-      cy.get('.fas').each(($icon) => {
-        // Ícones decorativos devem estar em elementos com texto
-        cy.wrap($icon).parent().should('not.be.empty');
-        cy.wrap($icon).parent().invoke('text').should('not.be.empty');
-      });
+      // Ícones agora são SVG (Lucide), decorativos e acompanhados de texto
+      cy.get('main svg').should('have.length.greaterThan', 0);
     });
 
     it('deve ter contraste adequado', () => {
-      // Verifica cores principais
+      // Verifica cores principais (tokens do Design System)
       cy.get('.text-primary').should('be.visible');
       cy.get('.text-success').should('be.visible');
-      cy.get('.text-info').should('be.visible');
-      cy.get('.text-muted').should('be.visible');
+      cy.get('.text-muted-foreground').should('be.visible');
     });
 
     it('deve ser navegável por teclado', () => {

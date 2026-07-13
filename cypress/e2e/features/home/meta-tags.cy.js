@@ -141,9 +141,9 @@ describe('Home - Meta Tags e SEO', () => {
       cy.get('head link[rel="preconnect"]').should('exist');
     });
 
-    it('deve ter Font Awesome carregado', () => {
-      // Verifica se Font Awesome foi adicionado
-      cy.get('head link[href*="font-awesome"]').should('exist');
+    it('deve ter a fonte Inter carregada', () => {
+      // Font Awesome foi removido; agora usamos a fonte Inter (Google Fonts)
+      cy.get('head link[href*="fonts.googleapis.com"]').should('exist');
     });
   });
 });

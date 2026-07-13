@@ -1,4 +1,4 @@
-import { Eye, TrendingUp } from 'lucide-react'
+import { Eye } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import useViewCounter from '../hooks/useViewCounter' // Verifique se o caminho para o hook está correto
 import './VisitCounter.css' // CSS para animações e o skeleton
@@ -49,53 +49,23 @@ const VisitCounter = ({
 
 	// 5. Renderização do componente
 	return (
-		<div className="min-vh-100 d-flex align-items-center justify-content-center p-4">
-			<div className="text-center">
-				{/* Cabeçalho */}
-				<div className="mb-5">
-					<div className="d-flex align-items-center justify-content-center gap-2 mb-3">
-						<TrendingUp size={32} className="text-primary" />
-						<h1 className="fw-bold display-5">Contador de Visitas</h1>
-					</div>
-					<p className="text-muted fs-5">
-						Acompanhe o número de visitantes em tempo real
-					</p>
-				</div>
-
-				{/* Card do Contador */}
-				<div
-					className="card shadow-sm border-0"
-					style={{ maxWidth: '400px', margin: '0 auto' }}
+		<div className="flex items-center justify-center py-2">
+			<div className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-5 py-2.5 shadow-sm">
+				<Eye className="size-4 text-primary" />
+				<span className="text-sm text-muted-foreground">Total de visitas</span>
+				<span
+					className={`counter-value min-w-8 text-center text-lg font-bold tabular-nums text-foreground ${isAnimating ? 'number-increment' : ''}`}
+					aria-live="polite"
 				>
-					<div className="card-body p-4 p-md-5">
-						<div className="d-flex align-items-center justify-content-center gap-3 mb-4">
-							<Eye size={24} className="text-primary" />
-							<span className="fs-5 text-muted">Total de Visitas</span>
-						</div>
-
-						{/* Contador Principal com Animação */}
-						<div
-							className={`display-2 fw-bolder my-3 counter-value ${isAnimating ? 'number-increment' : ''}`}
-							aria-live="polite"
-							style={{ minHeight: '3.5rem' }}
-						>
-							{/* Mostra um esqueleto de carregamento enquanto busca o dado inicial */}
-							{loading && count === null ? (
-								<span className="skeleton-number" aria-hidden="true"></span>
-							) : (
-								formatNumber(displayCount)
-							)}
-						</div>
-
-						{/* Status de Carregamento ou Erro */}
-						<div className="mt-3 text-center" style={{ minHeight: '1.25rem' }}>
-							{loading && <div className="text-muted small">Carregando...</div>}
-							{error && (
-								<div className="text-danger small">Erro ao carregar dados.</div>
-							)}
-						</div>
-					</div>
-				</div>
+					{loading && count === null ? (
+						<span className="skeleton-number" aria-hidden="true"></span>
+					) : (
+						formatNumber(displayCount)
+					)}
+				</span>
+				{error && (
+					<span className="text-xs text-destructive">erro ao carregar</span>
+				)}
 			</div>
 		</div>
 	)
