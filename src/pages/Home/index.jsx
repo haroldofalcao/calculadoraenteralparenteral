@@ -217,10 +217,10 @@ function Home() {
 					</FadeIn>
 
 					{/* Stats */}
-					<Stagger className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+					<Stagger className="mx-auto mt-12 grid max-w-3xl grid-cols-1 items-stretch gap-4 sm:grid-cols-3">
 						{stats.map((s) => (
-							<StaggerItem key={s.label}>
-								<div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+							<StaggerItem key={s.label} className="h-full">
+								<div className="flex h-full flex-col items-center justify-center rounded-xl border border-border bg-card p-5 text-center shadow-sm">
 									<div className="text-3xl font-bold tabular-nums text-primary">
 										{s.value}
 									</div>
