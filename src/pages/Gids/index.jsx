@@ -1,26 +1,35 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useState, useEffect } from 'react'
-import {
-	Button,
-	Card,
-	Col,
-	Container,
-	Form,
-	Row,
-	Tab,
-	Table,
-	Tabs,
-} from 'react-bootstrap'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
+import { Download, Eraser, Save } from 'lucide-react'
 import {
 	AdSenseCompliantPage,
-	InFeedAd,
 	ResponsiveBanner,
 	ResultsAd,
 } from '../../ads'
 import SEO from '../../components/SEO.jsx'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 // Schema de validação
 const gidsSchema = z.object({
@@ -28,8 +37,6 @@ const gidsSchema = z.object({
 	patientId: z.string().optional(),
 	patientAge: z.number().optional(),
 	admissionDate: z.string().optional(),
-
-	// Sintomas básicos
 	bowelSounds: z.boolean().default(false),
 	vomiting: z.boolean().default(false),
 	grv: z.boolean().default(false),
@@ -39,18 +46,22 @@ const gidsSchema = z.object({
 	bleedingNo: z.boolean().default(false),
 	iap_12_20: z.boolean().default(false),
 	noOral: z.boolean().default(false),
-
-	// Sintomas graves
 	severeDiarrhea: z.boolean().default(false),
 	bleedingYes: z.boolean().default(false),
 	prokinetics: z.boolean().default(false),
 	iap_gt_20: z.boolean().default(false),
-
-	// Condições ameaçadoras
 	shock: z.boolean().default(false),
 	ischemia: z.boolean().default(false),
 	compartment: z.boolean().default(false),
 })
+
+const scoreStyles = {
+	0: 'bg-success text-success-foreground',
+	1: 'bg-warning text-warning-foreground',
+	2: 'bg-orange text-orange-foreground',
+	3: 'bg-destructive text-destructive-foreground',
+	4: 'bg-foreground text-background',
+}
 
 function Gids() {
 	const { t } = useTranslation()
@@ -59,14 +70,7 @@ function Gids() {
 	const [currentScore, setCurrentScore] = useState(0)
 	const [currentClassification, setCurrentClassification] = useState('')
 
-	const {
-		register,
-		handleSubmit,
-		watch,
-		reset,
-		setValue,
-		// formState: { errors },
-	} = useForm({
+	const { register, control, handleSubmit, watch, reset, setValue } = useForm({
 		resolver: zodResolver(gidsSchema),
 		defaultValues: {
 			bowelSounds: false,
@@ -90,19 +94,10 @@ function Gids() {
 
 	const watchedValues = watch()
 
-	// Função para calcular o GIDS
 	const calculateGIDS = (data) => {
-		console.log('=== GIDS Calculation Debug ===')
-		console.log('Input data:', data)
+		// GIDS 4: ameaça à vida
+		if (data.shock || data.ischemia || data.compartment) return 4
 
-		// GIDS 4: Ameaça à vida (qualquer um dos sinais abaixo)
-		if (data.shock || data.ischemia || data.compartment) {
-			console.log('GIDS 4: Ameaça à vida detectada')
-			return 4
-		}
-
-		// Contar sintomas de cada categoria
-		// Sintomas que contribuem para GIDS 1 (coluna básica)
 		let basicSymptoms = 0
 		if (data.noOral) basicSymptoms++
 		if (data.bowelSounds) basicSymptoms++
@@ -114,67 +109,30 @@ function Gids() {
 		if (data.bleedingNo) basicSymptoms++
 		if (data.iap_12_20) basicSymptoms++
 
-		// Sintomas específicos de GIDS 2 (disfunção GI)
 		let dysfunctionSymptoms = 0
 		if (data.severeDiarrhea) dysfunctionSymptoms++
 		if (data.bleedingYes) dysfunctionSymptoms++
 		if (data.prokinetics) dysfunctionSymptoms++
 		if (data.iap_gt_20) dysfunctionSymptoms++
 
-		// Sintomas que também contam para GIDS 3 (além dos de disfunção)
 		let failureSymptoms = dysfunctionSymptoms
 		if (data.ileus) failureSymptoms++
 		if (data.distension) failureSymptoms++
 
-		console.log('Contadores:', {
-			basicSymptoms,
-			dysfunctionSymptoms,
-			failureSymptoms,
-		})
-
-		// GIDS 3: Falência GI (3 ou mais dos sintomas listados)
-		if (failureSymptoms >= 3) {
-			console.log('GIDS 3: Falência GI - failureSymptoms >= 3')
-			return 3
-		}
-
-		// GIDS 2: Disfunção GI
-		// - 1 ou mais sintomas específicos de disfunção OU
-		// - 3 ou mais sintomas básicos
-		if (dysfunctionSymptoms >= 1 || basicSymptoms >= 3) {
-			console.log('GIDS 2: Disfunção GI', {
-				dysfunctionCondition: dysfunctionSymptoms >= 1,
-				basicCondition: basicSymptoms >= 3,
-			})
-			return 2
-		}
-
-		// GIDS 1: Risco aumentado
-		// - 2 ou mais sintomas básicos marcados
-		if (basicSymptoms >= 2) {
-			console.log('GIDS 1: Risco aumentado', {
-				basicCondition: basicSymptoms >= 2,
-			})
-			return 1
-		}
-
-		// GIDS 0: Sem risco (0-1 sintomas básicos)
-		console.log('GIDS 0: Sem risco')
+		// GIDS 3: falência GI
+		if (failureSymptoms >= 3) return 3
+		// GIDS 2: disfunção GI
+		if (dysfunctionSymptoms >= 1 || basicSymptoms >= 3) return 2
+		// GIDS 1: risco aumentado
+		if (basicSymptoms >= 2) return 1
+		// GIDS 0: sem risco
 		return 0
 	}
 
-	// Atualizar score em tempo real
 	useEffect(() => {
 		const score = calculateGIDS(watchedValues)
 		setCurrentScore(score)
 		setCurrentClassification(t(`gids.classifications.${score}`))
-
-		// Debug para desenvolvimento
-		console.log('GIDS Score atualizado:', {
-			watchedValues,
-			calculatedScore: score,
-			classification: t(`gids.classifications.${score}`),
-		})
 	}, [watchedValues, t])
 
 	const onSubmit = (data) => {
@@ -185,7 +143,6 @@ function Gids() {
 			classification: t(`gids.classifications.${score}`),
 			timestamp: new Date().toISOString(),
 		}
-
 		setSavedData(measurementData)
 		localStorage.setItem('gidsData', JSON.stringify(measurementData))
 		setActiveTab('summary')
@@ -199,7 +156,6 @@ function Gids() {
 
 	const exportReport = () => {
 		if (!savedData) return
-
 		const patientName = savedData.patientName || t('gids.export.unknownPatient')
 		const now = new Date()
 		const dateString = now.toISOString().split('T')[0]
@@ -223,73 +179,62 @@ function Gids() {
 		URL.revokeObjectURL(a.href)
 	}
 
-	// Carregar dados salvos ao montar o componente
 	useEffect(() => {
 		const saved = localStorage.getItem('gidsData')
 		if (saved) {
 			const data = JSON.parse(saved)
 			setSavedData(data)
 			Object.keys(data).forEach((key) => {
-				if (
-					key !== 'score' &&
-					key !== 'classification' &&
-					key !== 'timestamp'
-				) {
+				if (key !== 'score' && key !== 'classification' && key !== 'timestamp') {
 					setValue(key, data[key])
 				}
 			})
 		}
 	}, [setValue])
 
-	const getScoreClass = (score) => {
-		const classes = {
-			0: 'bg-success text-white',
-			1: 'bg-warning text-dark',
-			2: 'bg-orange text-white',
-			3: 'bg-danger text-white',
-			4: 'bg-dark text-white',
-		}
-		return classes[score] || 'bg-secondary text-white'
-	}
+	const groups = [
+		{
+			key: 'basic',
+			title: t('gids.basicSymptoms'),
+			badge: 'secondary',
+			highlight:
+				'has-[[data-state=checked]]:border-primary/40 has-[[data-state=checked]]:bg-primary/5',
+			items: [
+				'bowelSounds',
+				'vomiting',
+				'grv',
+				'ileus',
+				'distension',
+				'mildDiarrhea',
+				'bleedingNo',
+				'iap_12_20',
+				'noOral',
+			],
+		},
+		{
+			key: 'severe',
+			title: t('gids.severeSymptoms'),
+			badge: 'warning',
+			highlight:
+				'has-[[data-state=checked]]:border-warning/50 has-[[data-state=checked]]:bg-warning/10',
+			items: ['severeDiarrhea', 'bleedingYes', 'prokinetics', 'iap_gt_20'],
+		},
+		{
+			key: 'life',
+			title: t('gids.lifeThreatening'),
+			badge: 'destructive',
+			highlight:
+				'has-[[data-state=checked]]:border-destructive/50 has-[[data-state=checked]]:bg-destructive/5',
+			items: ['shock', 'ischemia', 'compartment'],
+		},
+	]
 
-	// Função para obter detalhes do cálculo para exibição
-	const getCalculationDetails = (data) => {
-		if (!data) return null
-
-		const basicSymptoms = [
-			data.noOral && 'Não via oral',
-			data.bowelSounds && 'Ruídos hidroaéreos diminuídos/ausentes',
-			data.vomiting && 'Vômitos',
-			data.grv && 'GRV > 500ml/6h',
-			data.ileus && 'Íleo',
-			data.distension && 'Distensão abdominal',
-			data.mildDiarrhea && 'Diarreia leve',
-			data.bleedingNo && 'Sangramento GI (sem hemodynamic instability)',
-			data.iap_12_20 && 'PIA 12-20 mmHg',
-		].filter(Boolean)
-
-		const dysfunctionSymptoms = [
-			data.severeDiarrhea && 'Diarreia grave (>1500ml/dia)',
-			data.bleedingYes && 'Sangramento GI (com instabilidade hemodinâmica)',
-			data.prokinetics && 'Necessidade de procinéticos',
-			data.iap_gt_20 && 'PIA > 20 mmHg',
-		].filter(Boolean)
-
-		const lifeThreatening = [
-			data.shock && 'Choque',
-			data.ischemia && 'Isquemia GI',
-			data.compartment && 'Síndrome compartimental abdominal',
-		].filter(Boolean)
-
-		return {
-			basicSymptoms,
-			dysfunctionSymptoms,
-			lifeThreatening,
-			basicCount: basicSymptoms.length,
-			dysfunctionCount: dysfunctionSymptoms.length,
-			lifeThreateningCount: lifeThreatening.length,
-		}
-	}
+	const patientFields = [
+		{ name: 'patientName', label: t('gids.patientName'), type: 'text' },
+		{ name: 'patientId', label: t('gids.patientId'), type: 'text' },
+		{ name: 'patientAge', label: t('gids.patientAge'), type: 'number' },
+		{ name: 'admissionDate', label: t('gids.measurementDate'), type: 'date' },
+	]
 
 	return (
 		<>
@@ -299,459 +244,402 @@ function Gids() {
 				keywords="calculadora GIDS, disfunção gastrointestinal, pacientes críticos, nutrição enteral, escore GI"
 				canonical="/"
 			/>
-			<main>
-				<Container>
-					<Row className="justify-content-center">
-						<Col md={10} lg={8}>
-							{/* Header */}
-							<Card className="mb-4">
-								<Card.Header className="bg-primary text-white text-center">
-									<h1 className="mb-0">
-										{t('gids.title')} - {t('gids.subtitle')}
-									</h1>
-								</Card.Header>
-								<Card.Body>
-									<p className="mb-0 text-muted">{t('gids.description')}</p>
-								</Card.Body>
+
+			<div className="mx-auto max-w-4xl px-4">
+				{/* Cabeçalho limpo (system.md §4.1) */}
+				<div className="mb-6">
+					<h1 className="text-3xl font-bold tracking-tight text-foreground">
+						{t('gids.title')}
+					</h1>
+					<p className="mt-1 text-sm text-muted-foreground">
+						{t('gids.subtitle')}
+					</p>
+					<p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+						{t('gids.description')}
+					</p>
+				</div>
+
+				<AdSenseCompliantPage
+					minContentLength={300}
+					allowSkeletons={true}
+					timeout={10000}
+				>
+					<ResponsiveBanner
+						adSlot="gids-top-banner"
+						requireContent={false}
+						style={{ marginBottom: '24px' }}
+					/>
+				</AdSenseCompliantPage>
+
+				<Tabs value={activeTab} onValueChange={setActiveTab}>
+					<TabsList className="mb-4 w-full sm:w-auto">
+						<TabsTrigger value="measurement">
+							{t('gids.currentMeasurement')}
+						</TabsTrigger>
+						<TabsTrigger value="summary">{t('gids.summary')}</TabsTrigger>
+					</TabsList>
+
+					{/* MEDIDA ATUAL */}
+					<TabsContent value="measurement">
+						<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+							{/* Dados do paciente */}
+							<Card>
+								<CardHeader>
+									<CardTitle className="text-lg">
+										{t('gids.patientData')}
+									</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+										{patientFields.map((f) => (
+											<div key={f.name} className="grid gap-2">
+												<Label htmlFor={f.name}>{f.label}</Label>
+												<Input
+													id={f.name}
+													type={f.type}
+													placeholder={f.type !== 'date' ? f.label : undefined}
+													{...register(
+														f.name,
+														f.type === 'number'
+															? { valueAsNumber: true }
+															: undefined,
+													)}
+												/>
+											</div>
+										))}
+									</div>
+								</CardContent>
 							</Card>
 
-							{/* Anúncio superior - configuração mais permissiva */}
-							<AdSenseCompliantPage
-								minContentLength={300}
-								allowSkeletons={true}
-								timeout={10000}
-							>
-								<ResponsiveBanner
-									adSlot="gids-top-banner"
-									requireContent={false}
-									style={{ marginBottom: '30px' }}
-								/>
-							</AdSenseCompliantPage>
-
-							{/* Tabs */}
-							<Tabs
-								activeKey={activeTab}
-								onSelect={(k) => setActiveTab(k)}
-								className="mb-4"
-							>
-								<Tab
-									eventKey="measurement"
-									title={t('gids.currentMeasurement')}
-								>
-									<Form onSubmit={handleSubmit(onSubmit)} className="gids-form">
-										{/* Dados do Paciente */}
-										<Card className="mb-4">
-											<Card.Body>
-												<Card.Title className="text-primary mb-3">
-													{t('gids.patientData')}
-												</Card.Title>
-												<Row className="g-3">
-													<Col md={6}>
-														<Form.Group>
-															<Form.Label>{t('gids.patientName')}</Form.Label>
-															<Form.Control
-																type="text"
-																{...register('patientName')}
-																placeholder={t('gids.patientName')}
-															/>
-														</Form.Group>
-													</Col>
-													<Col md={6}>
-														<Form.Group>
-															<Form.Label>{t('gids.patientId')}</Form.Label>
-															<Form.Control
-																type="text"
-																{...register('patientId')}
-																placeholder={t('gids.patientId')}
-															/>
-														</Form.Group>
-													</Col>
-													<Col md={6}>
-														<Form.Group>
-															<Form.Label>{t('gids.patientAge')}</Form.Label>
-															<Form.Control
-																type="number"
-																{...register('patientAge', {
-																	valueAsNumber: true,
-																})}
-																placeholder={t('gids.patientAge')}
-															/>
-														</Form.Group>
-													</Col>
-													<Col md={6}>
-														<Form.Group>
-															<Form.Label>
-																{t('gids.measurementDate')}
-															</Form.Label>
-															<Form.Control
-																type="date"
-																{...register('admissionDate')}
-															/>
-														</Form.Group>
-													</Col>
-												</Row>
-											</Card.Body>
-										</Card>
-
-										{/* Sintomas Básicos */}
-										<Card className="mb-4">
-											<Card.Body>
-												<Card.Title className="text-info mb-3">
-													{t('gids.basicSymptoms')}
-												</Card.Title>
-												<div className="gids-symptoms-section gids-basic-symptoms">
-													{[
-														'bowelSounds',
-														'vomiting',
-														'grv',
-														'ileus',
-														'distension',
-														'mildDiarrhea',
-														'bleedingNo',
-														'iap_12_20',
-														'noOral',
-													].map((symptom) => (
-														<Form.Check
-															key={symptom}
-															type="checkbox"
-															id={symptom}
-															label={t(`gids.symptoms.${symptom}`)}
-															{...register(symptom)}
-														/>
-													))}
-												</div>
-											</Card.Body>
-										</Card>
-
-										{/* Sintomas Graves */}
-										<Card className="mb-4">
-											<Card.Body>
-												<Card.Title className="text-warning mb-3">
-													{t('gids.severeSymptoms')}
-												</Card.Title>
-												<div className="gids-symptoms-section gids-severe-symptoms">
-													{[
-														'severeDiarrhea',
-														'bleedingYes',
-														'prokinetics',
-														'iap_gt_20',
-													].map((symptom) => (
-														<Form.Check
-															key={symptom}
-															type="checkbox"
-															id={symptom}
-															label={t(`gids.symptoms.${symptom}`)}
-															{...register(symptom)}
-														/>
-													))}
-												</div>
-											</Card.Body>
-										</Card>
-
-										{/* Condições Ameaçadoras */}
-										<Card className="mb-4">
-											<Card.Body>
-												<Card.Title className="text-danger mb-3">
-													{t('gids.lifeThreatening')}
-												</Card.Title>
-												<div className="gids-symptoms-section gids-life-threatening">
-													{['shock', 'ischemia', 'compartment'].map(
-														(symptom) => (
-															<Form.Check
-																key={symptom}
-																type="checkbox"
+							{/* Grupos de sintomas */}
+							{groups.map((group) => (
+								<Card key={group.key}>
+									<CardHeader>
+										<CardTitle className="flex items-center gap-2 text-lg">
+											{group.title}
+											<Badge variant={group.badge}>{group.items.length}</Badge>
+										</CardTitle>
+									</CardHeader>
+									<CardContent>
+										<div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+											{group.items.map((symptom) => (
+												<Controller
+													key={symptom}
+													control={control}
+													name={symptom}
+													render={({ field }) => (
+														<label
+															htmlFor={symptom}
+															className={`flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-card p-3 text-sm transition-colors hover:bg-accent ${group.highlight}`}
+														>
+															<Checkbox
 																id={symptom}
-																label={t(`gids.symptoms.${symptom}`)}
-																{...register(symptom)}
+																checked={!!field.value}
+																onCheckedChange={field.onChange}
 															/>
-														),
+															<span>{t(`gids.symptoms.${symptom}`)}</span>
+														</label>
 													)}
-												</div>
-											</Card.Body>
-										</Card>
-
-										{/* Resultado */}
-										<Card className="mb-4">
-											<Card.Body className="text-center">
-												<div
-													className={`gids-score-display ${getScoreClass(currentScore)}`}
-												>
-													<h4 className="mb-0">
-														{t('gids.score')}: {currentScore} -{' '}
-														{currentClassification}
-													</h4>
-												</div>
-
-												{/* Detalhes do cálculo em tempo real */}
-												{(() => {
-													const details = getCalculationDetails(watchedValues)
-													if (!details) return null
-
-													// Calcular scores para debug
-													const basicCount = details.basicCount
-													const dysfunctionCount = details.dysfunctionCount
-													const lifeThreateningCount =
-														details.lifeThreateningCount
-
-													// Contar sintomas sobrepostos para GIDS 3
-													let failureCount = dysfunctionCount
-													if (watchedValues.ileus) failureCount++
-													if (watchedValues.distension) failureCount++
-
-													let calculationReason = ''
-													if (lifeThreateningCount > 0) {
-														calculationReason = t('gids.debug.gids4', {
-															count: lifeThreateningCount,
-														})
-													} else if (failureCount >= 3) {
-														calculationReason = t('gids.debug.gids3', {
-															count: failureCount,
-														})
-													} else if (dysfunctionCount >= 1) {
-														calculationReason = t(
-															'gids.debug.gids2Dysfunction',
-															{
-																count: dysfunctionCount,
-															},
-														)
-													} else if (basicCount >= 3) {
-														calculationReason = t('gids.debug.gids2Basic', {
-															count: basicCount,
-														})
-													} else if (basicCount >= 2) {
-														calculationReason = t('gids.debug.gids1Basic', {
-															count: basicCount,
-														})
-													} else {
-														calculationReason = t('gids.debug.gids0', {
-															count: basicCount,
-														})
-													}
-
-													return (
-														<div className="mt-3 text-start">
-															<small className="text-muted">
-																<div>
-																	<strong>
-																		{t('gids.debug.selectedSymptoms')}
-																	</strong>
-																</div>
-																{basicCount > 0 && (
-																	<div>
-																		• {t('gids.debug.basicSymptoms')}{' '}
-																		{basicCount}
-																	</div>
-																)}
-																{dysfunctionCount > 0 && (
-																	<div>
-																		• {t('gids.debug.dysfunctionSymptoms')}{' '}
-																		{dysfunctionCount}
-																	</div>
-																)}
-																{failureCount > dysfunctionCount && (
-																	<div>
-																		• {t('gids.debug.failureTotal')}{' '}
-																		{failureCount}
-																	</div>
-																)}
-																{lifeThreateningCount > 0 && (
-																	<div>
-																		• {t('gids.debug.lifeThreatening')}{' '}
-																		{lifeThreateningCount}
-																	</div>
-																)}
-																<div className="mt-2 p-2 bg-light rounded">
-																	<strong>{t('gids.debug.calculation')}</strong>{' '}
-																	{calculationReason}
-																</div>
-															</small>
-														</div>
-													)
-												})()}
-											</Card.Body>
-										</Card>
-
-										{/* Anúncio após resultado - só aparece quando há cálculo válido */}
-										{currentScore > 0 && (
-											<AdSenseCompliantPage minContentLength={1000}>
-												<ResultsAd
-													adSlot="gids-results-ad"
-													style={{ margin: '30px 0' }}
 												/>
-											</AdSenseCompliantPage>
-										)}
-
-										{/* Botões */}
-										<div className="d-flex justify-content-between">
-											<Button variant="secondary" onClick={clearMeasurement}>
-												{t('gids.clearMeasurement')}
-											</Button>
-											<Button variant="primary" type="submit">
-												{savedData
-													? t('gids.measurementSaved')
-													: t('gids.saveMeasurement')}
-											</Button>
+											))}
 										</div>
-									</Form>
-								</Tab>
+									</CardContent>
+								</Card>
+							))}
 
-								<Tab eventKey="summary" title={t('gids.summary')}>
-									<Card className="mb-4">
-										<Card.Body>
-											<Card.Title className="text-primary mb-3">
-												{t('gids.patientData')}
-											</Card.Title>
-											<div>
-												<strong>{t('gids.patientName')}:</strong>{' '}
-												{savedData?.patientName || '--'}
-												<br />
-												<strong>{t('gids.patientId')}:</strong>{' '}
-												{savedData?.patientId || '--'}
-												<br />
-												<strong>{t('gids.patientAge')}:</strong>{' '}
-												{savedData?.patientAge || '--'}
-												<br />
-												<strong>{t('gids.measurementDate')}:</strong>{' '}
-												{savedData?.admissionDate || '--'}
-											</div>
-										</Card.Body>
-									</Card>
-
-									<Card className="mb-4">
-										<Card.Body>
-											<Card.Title className="text-primary mb-3">
-												{t('gids.score')}
-											</Card.Title>
-											<Table striped bordered hover>
-												<thead>
-													<tr>
-														<th>{t('gids.summaryTable.measure')}</th>
-														<th>{t('gids.summaryTable.score')}</th>
-														<th>{t('gids.summaryTable.classification')}</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>{t('gids.summaryTable.singleMeasurement')}</td>
-														<td>{savedData?.score || '--'}</td>
-														<td>{savedData?.classification || '--'}</td>
-													</tr>
-												</tbody>
-											</Table>
-										</Card.Body>
-									</Card>
-
-									<Card className="mb-4">
-										<Card.Body>
-											<Card.Title className="text-primary mb-3">
-												{t('gids.clinicalAnalysis')}
-											</Card.Title>
-											<div>
-												{savedData ? (
-													<>
-														<p>
-															<strong>{t('gids.analysis.title')}</strong>
-														</p>
-														<p>
-															{t('gids.analysis.scoreDisplay', {
-																score: savedData.score,
-																classification: savedData.classification,
-															})}
-														</p>
-														{savedData.score >= 2 ? (
-															<p>
-																{t('gids.analysis.highRiskRecommendation', {
-																	score: savedData.score,
-																	classification: savedData.classification,
-																})}
-															</p>
-														) : (
-															<p>
-																{t('gids.analysis.lowRiskRecommendation', {
-																	score: savedData.score,
-																	classification: savedData.classification,
-																})}
-															</p>
-														)}
-													</>
-												) : (
-													<p>{t('gids.analysis.noDataMessage')}</p>
-												)}
-											</div>
-										</Card.Body>
-									</Card>
-
-									<div className="text-center">
-										<Button
-											variant="primary"
-											onClick={exportReport}
-											disabled={!savedData}
-										>
-											{t('gids.exportReport')}
-										</Button>
+							{/* Resultado ao vivo */}
+							<Card>
+								<CardContent className="pt-6">
+									<div
+										className={`rounded-xl p-6 text-center shadow-sm ${scoreStyles[currentScore]}`}
+										data-testid="gids-score"
+									>
+										<div className="text-sm font-medium opacity-90">
+											{t('gids.score')}
+										</div>
+										<div className="mt-1 text-3xl font-bold tabular-nums">
+											{currentScore}
+										</div>
+										<div className="mt-1 text-lg font-semibold">
+											{currentClassification}
+										</div>
 									</div>
-								</Tab>
-							</Tabs>
 
-							{/* Seções Informativas - Após o conteúdo principal */}
-							<div className="mb-4 mt-5">
-								<h3 className="text-primary mb-4 text-center">
-									Informações Sobre Disfunção Gastrointestinal
-								</h3>
+									<GidsBreakdown data={watchedValues} t={t} />
+								</CardContent>
+							</Card>
 
-								{/* Importância Clínica */}
-								<Card className="mb-3">
-									<Card.Body>
-										<h5 className="text-primary mb-3">
-											{t('gids.clinicalImportance.title')}
-										</h5>
-										<p className="text-justify">
-											{t('gids.clinicalImportance.content')}
-										</p>
-									</Card.Body>
-								</Card>
+							{currentScore > 0 && (
+								<AdSenseCompliantPage minContentLength={1000}>
+									<ResultsAd
+										adSlot="gids-results-ad"
+										style={{ margin: '8px 0' }}
+									/>
+								</AdSenseCompliantPage>
+							)}
 
-								{/* Prevalência e Desfechos */}
-								<Card className="mb-3">
-									<Card.Body>
-										<h5 className="text-primary mb-3">
-											{t('gids.prevalenceOutcomes.title')}
-										</h5>
-										<p className="text-justify">
-											{t('gids.prevalenceOutcomes.content')}
-										</p>
-									</Card.Body>
-								</Card>
-
-								{/* Classificação GIDS */}
-								<Card className="mb-3">
-									<Card.Body>
-										<h5 className="text-primary mb-3">
-											{t('gids.gidsClassification.title')}
-										</h5>
-										<p className="text-justify">
-											{t('gids.gidsClassification.content')}
-										</p>
-									</Card.Body>
-								</Card>
-
-								{/* Avaliação Objetiva */}
-								<Card className="mb-3">
-									<Card.Body>
-										<h5 className="text-primary mb-3">
-											{t('gids.objectiveAssessment.title')}
-										</h5>
-										<p className="text-justify">
-											{t('gids.objectiveAssessment.content')}
-										</p>
-									</Card.Body>
-								</Card>
+							<div className="flex flex-col-reverse justify-between gap-3 sm:flex-row">
+								<Button
+									type="button"
+									variant="outline"
+									onClick={clearMeasurement}
+								>
+									<Eraser className="size-4" />
+									{t('gids.clearMeasurement')}
+								</Button>
+								<Button type="submit">
+									<Save className="size-4" />
+									{savedData
+										? t('gids.measurementSaved')
+										: t('gids.saveMeasurement')}
+								</Button>
 							</div>
-						</Col>
-					</Row>
-				</Container>
-			</main>
+						</form>
+					</TabsContent>
+
+					{/* RESUMO */}
+					<TabsContent value="summary" className="space-y-6">
+						<Card>
+							<CardHeader>
+								<CardTitle className="text-lg">
+									{t('gids.patientData')}
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="grid gap-1.5 text-sm">
+								<div>
+									<span className="text-muted-foreground">
+										{t('gids.patientName')}:
+									</span>{' '}
+									<span className="font-medium">
+										{savedData?.patientName || '--'}
+									</span>
+								</div>
+								<div>
+									<span className="text-muted-foreground">
+										{t('gids.patientId')}:
+									</span>{' '}
+									<span className="font-medium">
+										{savedData?.patientId || '--'}
+									</span>
+								</div>
+								<div>
+									<span className="text-muted-foreground">
+										{t('gids.patientAge')}:
+									</span>{' '}
+									<span className="font-medium">
+										{savedData?.patientAge || '--'}
+									</span>
+								</div>
+								<div>
+									<span className="text-muted-foreground">
+										{t('gids.measurementDate')}:
+									</span>{' '}
+									<span className="font-medium">
+										{savedData?.admissionDate || '--'}
+									</span>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<CardTitle className="text-lg">{t('gids.score')}</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<Table>
+									<TableHeader>
+										<TableRow>
+											<TableHead>{t('gids.summaryTable.measure')}</TableHead>
+											<TableHead>{t('gids.summaryTable.score')}</TableHead>
+											<TableHead>
+												{t('gids.summaryTable.classification')}
+											</TableHead>
+										</TableRow>
+									</TableHeader>
+									<TableBody>
+										<TableRow>
+											<TableCell>
+												{t('gids.summaryTable.singleMeasurement')}
+											</TableCell>
+											<TableCell className="tabular-nums">
+												{savedData?.score ?? '--'}
+											</TableCell>
+											<TableCell>
+												{savedData ? (
+													<Badge variant={badgeForScore(savedData.score)}>
+														{savedData.classification}
+													</Badge>
+												) : (
+													'--'
+												)}
+											</TableCell>
+										</TableRow>
+									</TableBody>
+								</Table>
+							</CardContent>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<CardTitle className="text-lg">
+									{t('gids.clinicalAnalysis')}
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-2 text-sm leading-relaxed">
+								{savedData ? (
+									<>
+										<p className="font-medium text-foreground">
+											{t('gids.analysis.title')}
+										</p>
+										<p className="text-muted-foreground">
+											{t('gids.analysis.scoreDisplay', {
+												score: savedData.score,
+												classification: savedData.classification,
+											})}
+										</p>
+										<p className="text-muted-foreground">
+											{savedData.score >= 2
+												? t('gids.analysis.highRiskRecommendation', {
+														score: savedData.score,
+														classification: savedData.classification,
+													})
+												: t('gids.analysis.lowRiskRecommendation', {
+														score: savedData.score,
+														classification: savedData.classification,
+													})}
+										</p>
+									</>
+								) : (
+									<p className="text-muted-foreground">
+										{t('gids.analysis.noDataMessage')}
+									</p>
+								)}
+							</CardContent>
+						</Card>
+
+						<div className="text-center">
+							<Button onClick={exportReport} disabled={!savedData}>
+								<Download className="size-4" />
+								{t('gids.exportReport')}
+							</Button>
+						</div>
+					</TabsContent>
+				</Tabs>
+
+				{/* Seções informativas */}
+				<div className="mt-12">
+					<h3 className="mb-6 text-center text-xl font-bold text-foreground">
+						Informações Sobre Disfunção Gastrointestinal
+					</h3>
+					<div className="space-y-4">
+						{[
+							'clinicalImportance',
+							'prevalenceOutcomes',
+							'gidsClassification',
+							'objectiveAssessment',
+						].map((key) => (
+							<Card key={key}>
+								<CardContent className="pt-6">
+									<h4 className="mb-3 text-base font-semibold text-primary">
+										{t(`gids.${key}.title`)}
+									</h4>
+									<p className="text-sm leading-relaxed text-muted-foreground">
+										{t(`gids.${key}.content`)}
+									</p>
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				</div>
+			</div>
 		</>
+	)
+}
+
+function badgeForScore(score) {
+	return (
+		{ 0: 'success', 1: 'warning', 2: 'orange', 3: 'destructive', 4: 'default' }[
+			score
+		] || 'secondary'
+	)
+}
+
+// Detalhamento do cálculo em tempo real
+function GidsBreakdown({ data, t }) {
+	if (!data) return null
+
+	const basicCount = [
+		data.noOral,
+		data.bowelSounds,
+		data.vomiting,
+		data.grv,
+		data.ileus,
+		data.distension,
+		data.mildDiarrhea,
+		data.bleedingNo,
+		data.iap_12_20,
+	].filter(Boolean).length
+
+	const dysfunctionCount = [
+		data.severeDiarrhea,
+		data.bleedingYes,
+		data.prokinetics,
+		data.iap_gt_20,
+	].filter(Boolean).length
+
+	const lifeThreateningCount = [data.shock, data.ischemia, data.compartment].filter(
+		Boolean,
+	).length
+
+	let failureCount = dysfunctionCount
+	if (data.ileus) failureCount++
+	if (data.distension) failureCount++
+
+	let reason = ''
+	if (lifeThreateningCount > 0)
+		reason = t('gids.debug.gids4', { count: lifeThreateningCount })
+	else if (failureCount >= 3)
+		reason = t('gids.debug.gids3', { count: failureCount })
+	else if (dysfunctionCount >= 1)
+		reason = t('gids.debug.gids2Dysfunction', { count: dysfunctionCount })
+	else if (basicCount >= 3)
+		reason = t('gids.debug.gids2Basic', { count: basicCount })
+	else if (basicCount >= 2)
+		reason = t('gids.debug.gids1Basic', { count: basicCount })
+	else reason = t('gids.debug.gids0', { count: basicCount })
+
+	return (
+		<div className="mt-4 rounded-lg border border-border bg-secondary/40 p-4 text-sm">
+			<div className="mb-2 font-medium text-foreground">
+				{t('gids.debug.selectedSymptoms')}
+			</div>
+			<ul className="space-y-1 text-muted-foreground">
+				{basicCount > 0 && (
+					<li>
+						• {t('gids.debug.basicSymptoms')} {basicCount}
+					</li>
+				)}
+				{dysfunctionCount > 0 && (
+					<li>
+						• {t('gids.debug.dysfunctionSymptoms')} {dysfunctionCount}
+					</li>
+				)}
+				{failureCount > dysfunctionCount && (
+					<li>
+						• {t('gids.debug.failureTotal')} {failureCount}
+					</li>
+				)}
+				{lifeThreateningCount > 0 && (
+					<li>
+						• {t('gids.debug.lifeThreatening')} {lifeThreateningCount}
+					</li>
+				)}
+			</ul>
+			<div className="mt-3 rounded-md bg-background p-2 font-medium text-foreground">
+				<span className="text-muted-foreground">{t('gids.debug.calculation')}</span>{' '}
+				{reason}
+			</div>
+		</div>
 	)
 }
 
