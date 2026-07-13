@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAtom } from 'jotai'
 import React, { useEffect } from 'react'
-import { Alert, Button, Card, Col, Container, Form, Row, Table } from 'react-bootstrap'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { Info, Loader2, TriangleAlert } from 'lucide-react'
 import AdSenseCompliantPage from '../ads/components/AdSenseCompliantPage.jsx'
 import {
 	InFeedAd,
@@ -16,7 +16,48 @@ import { useAnalytics } from '../hooks/useAnalytics'
 import { calculatorSchema } from '../schemas/calculatorSchema'
 import { allProductsAtom } from '../store/productsAtoms'
 import { calculateResults } from '../utils/calculationUtils'
-import SEO from './SEO.jsx'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { NativeSelect } from '@/components/ui/native-select'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
+import { Reveal } from '@/components/motion'
+
+// Card de métrica de resultado
+const Metric = ({ label, value, testid }) => (
+	<div
+		data-testid={testid}
+		className="rounded-xl border border-border bg-card p-4 shadow-sm"
+	>
+		<div className="text-xs font-medium text-muted-foreground">{label}</div>
+		<div className="mt-1 text-2xl font-bold tabular-nums text-primary">
+			{value}
+		</div>
+	</div>
+)
 
 const Calculator = () => {
 	const { t } = useTranslation()
@@ -25,12 +66,7 @@ const Calculator = () => {
 	const [loading, setLoading] = React.useState(false)
 	const { trackEvent } = useAnalytics()
 
-	const {
-		control,
-		handleSubmit,
-		watch,
-		formState: { errors },
-	} = useForm({
+	const form = useForm({
 		resolver: zodResolver(calculatorSchema),
 		defaultValues: {
 			weight: '',
@@ -51,8 +87,8 @@ const Calculator = () => {
 			sg5_ml: '',
 		},
 	})
+	const { control, handleSubmit, watch } = form
 
-	// Observar o método de cálculo para renderização condicional
 	const calculationMethod = watch('calculationMethod')
 
 	useEffect(() => {
@@ -62,15 +98,11 @@ const Calculator = () => {
 	const onSubmit = (data) => {
 		setLoading(true)
 
-		// Encontrar o produto selecionado (Fórmula 1)
 		const selectedProduct1 = allProducts.find((p) => p.nome === data.product)
-
-		// Encontrar o segundo produto se preenchido (Fórmula 2)
 		const selectedProduct2 = data.product2
 			? allProducts.find((p) => p.nome === data.product2)
 			: null
 
-		// Preparar dados de calorias não-nutricionais
 		const nonNutritionalCals = {
 			citrato: data.citrato || false,
 			propofol_ml: data.propofol_ml || 0,
@@ -96,7 +128,6 @@ const Calculator = () => {
 			return
 		}
 
-		// Calcular resultados com múltiplas fórmulas e calorias não-nutricionais
 		const calculatedResults = calculateResults(
 			data,
 			selectedProduct1,
@@ -105,912 +136,596 @@ const Calculator = () => {
 		)
 		setResults(calculatedResults)
 
-		// Enviar evento de resultados mostrados
 		trackEvent('calculator_results_shown', {
 			totalCalories: calculatedResults.totals.totalCalories,
 			totalProtein: calculatedResults.totals.totalProtein,
 			hasSecondFormula: !!selectedProduct2,
-			hasNonNutritional:
-				calculatedResults.nonNutritional.totalCalories > 0,
+			hasNonNutritional: calculatedResults.nonNutritional.totalCalories > 0,
 		})
 
 		setLoading(false)
 	}
 
+	// Campo numérico (react-hook-form + shadcn Form)
+	const numField = (name, label, extra = {}) => (
+		<FormField
+			control={control}
+			name={name}
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>{label}</FormLabel>
+					<FormControl>
+						<Input type="number" min="0" {...extra} {...field} />
+					</FormControl>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+	)
+
+	const showSecondFormula = () =>
+		results?.formula2 && results.formula2.calories > 0
+
 	return (
 		<SidebarLayout sidebar={<SidebarAd />}>
-			{/* Banner de topo - configuração mais permissiva para calculadoras */}
-			<AdSenseCompliantPage
-				minContentLength={50}
-				allowSkeletons={true}
-				timeout={5000}
-			>
+			<AdSenseCompliantPage minContentLength={50} allowSkeletons={true} timeout={5000}>
 				<ResponsiveBanner
 					adSlot="5804222918"
 					requireContent={false}
-					style={{ marginBottom: '30px' }}
+					style={{ marginBottom: '24px' }}
 				/>
 			</AdSenseCompliantPage>
 
-			<h1 className="mb-4 text-center">{t('nenpt.title')}</h1>
+			<div className="mb-6">
+				<h1 className="text-3xl font-bold tracking-tight text-foreground">
+					{t('nenpt.title')}
+				</h1>
+			</div>
 
-			<Alert variant="info" className="mb-4">
-				<i className="bi bi-info-circle-fill me-2"></i>
-				<strong>{t('common.warning')}:</strong> {t('nenpt.warning')}
+			<Alert variant="warning" className="mb-6">
+				<TriangleAlert />
+				<AlertTitle>{t('common.warning')}</AlertTitle>
+				<AlertDescription>{t('nenpt.warning')}</AlertDescription>
 			</Alert>
-			<Form
-				onSubmit={handleSubmit(onSubmit)}
-				className="mb-5 p-4 shadow-sm rounded bg-light"
-			>
-				<h2 className="fs-5 mb-3 border-bottom pb-2">
-					{t('nenpt.patientData')}
-				</h2>
-				<Row className="mb-3">
-					<Col md={3}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.weight')}</Form.Label>
-							<Controller
-								name="weight"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										step="0.1"
-										isInvalid={!!errors.weight}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.weight && (
-								<Form.Control.Feedback type="invalid">
-									{errors.weight.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={3}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.height')}</Form.Label>
-							<Controller
-								name="height"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										isInvalid={!!errors.height}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.height && (
-								<Form.Control.Feedback type="invalid">
-									{errors.height.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={3}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.age')}</Form.Label>
-							<Controller
-								name="age"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										isInvalid={!!errors.age}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.age && (
-								<Form.Control.Feedback type="invalid">
-									{errors.age.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={3}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.sex')}</Form.Label>
-							<Controller
-								name="gender"
-								control={control}
-								render={({ field }) => (
-									<Form.Select isInvalid={!!errors.gender} {...field}>
-										<option value="masculino">{t('nenpt.male')}</option>
-										<option value="feminino">{t('nenpt.female')}</option>
-									</Form.Select>
-								)}
-							/>
-							{errors.gender && (
-								<Form.Control.Feedback type="invalid">
-									{errors.gender.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-				</Row>
 
-				<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
-					{t('nenpt.calculationMethod')}
-				</h2>
-				<Row className="mb-3">
-					<Col md={6}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.caloricMethod')}</Form.Label>
-							<Controller
-								name="calculationMethod"
-								control={control}
-								render={({ field }) => (
-									<Form.Select
-										isInvalid={!!errors.calculationMethod}
-										{...field}
-									>
-										<option value="harris-benedict">
-											{t('nenpt.harrisBenedict')}
-										</option>
-										<option value="pocket-formula">
-											{t('nenpt.pocketFormula')}
-										</option>
-									</Form.Select>
-								)}
-							/>
-							{errors.calculationMethod && (
-								<Form.Control.Feedback type="invalid">
-									{errors.calculationMethod.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={6}>
-						{calculationMethod === 'pocket-formula' && (
-							<Form.Group>
-								<Form.Label>{t('nenpt.kcalPerKgDay')}</Form.Label>
+			<Form {...form}>
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+					{/* Dados do Paciente */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-lg">{t('nenpt.patientData')}</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+								{numField('weight', t('nenpt.weight'), { step: '0.1' })}
+								{numField('height', t('nenpt.height'))}
+								{numField('age', t('nenpt.age'))}
 								<Controller
-									name="kcalPerKg"
 									control={control}
-									render={({ field }) => (
-										<Form.Control
-											type="number"
-											min="0"
-											step="0.1"
-											isInvalid={!!errors.kcalPerKg}
-											{...field}
-										/>
+									name="gender"
+									render={({ field, fieldState }) => (
+										<div className="grid gap-2">
+											<Label htmlFor="gender">{t('nenpt.sex')}</Label>
+											<NativeSelect
+												id="gender"
+												{...field}
+												aria-invalid={!!fieldState.error}
+											>
+												<option value="masculino">{t('nenpt.male')}</option>
+												<option value="feminino">{t('nenpt.female')}</option>
+											</NativeSelect>
+										</div>
 									)}
 								/>
-								{errors.kcalPerKg && (
-									<Form.Control.Feedback type="invalid">
-										{errors.kcalPerKg.message}
-									</Form.Control.Feedback>
-								)}
-							</Form.Group>
-						)}
-					</Col>
-				</Row>
+							</div>
+						</CardContent>
+					</Card>
 
-				{/* Anúncio no meio do formulário - discreto */}
-				<AdSenseCompliantPage minContentLength={600}>
-					<InFeedAd
-						adSlot="1864977909"
-						requireContent={true}
-						showLabel={true}
-						variant="subtle"
-						style={{ margin: '30px 0' }}
-					/>
-				</AdSenseCompliantPage>
+					{/* Método de Cálculo */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-lg">
+								{t('nenpt.calculationMethod')}
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+								<Controller
+									control={control}
+									name="calculationMethod"
+									render={({ field, fieldState }) => (
+										<div className="grid gap-2">
+											<Label htmlFor="calculationMethod">
+												{t('nenpt.caloricMethod')}
+											</Label>
+											<NativeSelect
+												id="calculationMethod"
+												{...field}
+												aria-invalid={!!fieldState.error}
+											>
+												<option value="harris-benedict">
+													{t('nenpt.harrisBenedict')}
+												</option>
+												<option value="pocket-formula">
+													{t('nenpt.pocketFormula')}
+												</option>
+											</NativeSelect>
+										</div>
+									)}
+								/>
+								{calculationMethod === 'pocket-formula' &&
+									numField('kcalPerKg', t('nenpt.kcalPerKgDay'), {
+										step: '0.1',
+									})}
+							</div>
+						</CardContent>
+					</Card>
 
-				<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
-					{t('nenpt.formulaData')}
-				</h2>
-				<Row className="mb-3">
-					<Col md={6}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.formulaProduct')}</Form.Label>
-							<Controller
-								name="product"
-								control={control}
-								render={({ field }) => (
-									<Form.Select
-										isInvalid={!!errors.product}
-										{...field}
-										onChange={(e) => {
-											field.onChange(e)
-											const selected = allProducts.find(
-												(p) => p.nome === e.target.value,
-											)
-											trackEvent('calculator_product_selected', {
-												product: e.target.value,
-												productExists: !!selected,
-											})
-										}}
-									>
-										<option value="">{t('nenpt.selectProduct')}</option>
-										{allProducts.map((product, index) => (
-											<option key={index} value={product.nome}>
-												{product.nome}
-											</option>
-										))}
-									</Form.Select>
-								)}
-							/>
-							{errors.product && (
-								<Form.Control.Feedback type="invalid">
-									{errors.product.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={6}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.prescribedVolume')}</Form.Label>
-							<Controller
-								name="volume"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										isInvalid={!!errors.volume}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.volume && (
-								<Form.Control.Feedback type="invalid">
-									{errors.volume.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-				</Row>
+					<AdSenseCompliantPage minContentLength={600}>
+						<InFeedAd
+							adSlot="1864977909"
+							requireContent={true}
+							showLabel={true}
+							variant="subtle"
+							style={{ margin: '8px 0' }}
+						/>
+					</AdSenseCompliantPage>
 
-				{/* Segunda Fórmula (Suplementar) */}
-				<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
-					{t('nenpt.secondaryFormula')}{' '}
-					<span className="text-muted fs-6">({t('common.optional')})</span>
-				</h2>
-				<Row className="mb-3">
-					<Col md={6}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.formulaProduct')}</Form.Label>
-							<Controller
-								name="product2"
-								control={control}
-								render={({ field }) => (
-									<Form.Select
-										isInvalid={!!errors.product2}
-										{...field}
-										onChange={(e) => {
-											field.onChange(e)
-											const selected = allProducts.find(
-												(p) => p.nome === e.target.value,
-											)
-											trackEvent('calculator_product2_selected', {
-												product: e.target.value,
-												productExists: !!selected,
-											})
-										}}
-									>
-										<option value="">{t('nenpt.selectProduct')}</option>
-										{allProducts.map((product, index) => (
-											<option key={index} value={product.nome}>
-												{product.nome}
-											</option>
-										))}
-									</Form.Select>
-								)}
-							/>
-							{errors.product2 && (
-								<Form.Control.Feedback type="invalid">
-									{errors.product2.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={6}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.prescribedVolume')}</Form.Label>
-							<Controller
-								name="volume2"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										isInvalid={!!errors.volume2}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.volume2 && (
-								<Form.Control.Feedback type="invalid">
-									{errors.volume2.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-				</Row>
+					{/* Fórmula 1 */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-lg">{t('nenpt.formulaData')}</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+								<Controller
+									control={control}
+									name="product"
+									render={({ field, fieldState }) => (
+										<div className="grid gap-2">
+											<Label htmlFor="product">
+												{t('nenpt.formulaProduct')}
+											</Label>
+											<NativeSelect
+												id="product"
+												{...field}
+												aria-invalid={!!fieldState.error}
+												onChange={(e) => {
+													field.onChange(e)
+													const selected = allProducts.find(
+														(p) => p.nome === e.target.value,
+													)
+													trackEvent('calculator_product_selected', {
+														product: e.target.value,
+														productExists: !!selected,
+													})
+												}}
+											>
+												<option value="">{t('nenpt.selectProduct')}</option>
+												{allProducts.map((product, index) => (
+													<option key={index} value={product.nome}>
+														{product.nome}
+													</option>
+												))}
+											</NativeSelect>
+											{fieldState.error && (
+												<p className="text-xs font-medium text-destructive">
+													{fieldState.error.message}
+												</p>
+											)}
+										</div>
+									)}
+								/>
+								{numField('volume', t('nenpt.prescribedVolume'))}
+							</div>
+						</CardContent>
+					</Card>
 
-				<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
-					{t('nenpt.optionalData')}
-				</h2>
-				<Row className="mb-3">
-					<Col md={4}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.infusionTime')}</Form.Label>
-							<Controller
-								name="infusionTime"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										isInvalid={!!errors.infusionTime}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.infusionTime && (
-								<Form.Control.Feedback type="invalid">
-									{errors.infusionTime.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={4}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.proteinModule')}</Form.Label>
-							<Controller
-								name="proteinModule"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										isInvalid={!!errors.proteinModule}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.proteinModule && (
-								<Form.Control.Feedback type="invalid">
-									{errors.proteinModule.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={4}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.otherModule')}</Form.Label>
-							<Controller
-								name="otherModule"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										isInvalid={!!errors.otherModule}
-										{...field}
-									/>
-								)}
-							/>
-							{errors.otherModule && (
-								<Form.Control.Feedback type="invalid">
-									{errors.otherModule.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-				</Row>
+					{/* Fórmula 2 */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-lg">
+								{t('nenpt.secondaryFormula')}
+								<span className="text-sm font-normal text-muted-foreground">
+									({t('common.optional')})
+								</span>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+								<Controller
+									control={control}
+									name="product2"
+									render={({ field, fieldState }) => (
+										<div className="grid gap-2">
+											<Label htmlFor="product2">
+												{t('nenpt.formulaProduct')}
+											</Label>
+											<NativeSelect
+												id="product2"
+												{...field}
+												aria-invalid={!!fieldState.error}
+												onChange={(e) => {
+													field.onChange(e)
+													const selected = allProducts.find(
+														(p) => p.nome === e.target.value,
+													)
+													trackEvent('calculator_product2_selected', {
+														product: e.target.value,
+														productExists: !!selected,
+													})
+												}}
+											>
+												<option value="">{t('nenpt.selectProduct')}</option>
+												{allProducts.map((product, index) => (
+													<option key={index} value={product.nome}>
+														{product.nome}
+													</option>
+												))}
+											</NativeSelect>
+											{fieldState.error && (
+												<p className="text-xs font-medium text-destructive">
+													{fieldState.error.message}
+												</p>
+											)}
+										</div>
+									)}
+								/>
+								{numField('volume2', t('nenpt.prescribedVolume'))}
+							</div>
+						</CardContent>
+					</Card>
 
-				{/* Calorias Não-Nutricionais */}
-				<h2 className="fs-5 mb-3 border-bottom pb-2 mt-4">
-					{t('nenpt.nonNutritionalCalories')}{' '}
-					<span className="text-muted fs-6">({t('common.optional')})</span>
-				</h2>
-				<Row className="mb-3">
-					<Col md={4}>
-						<Form.Group>
-							<Controller
-								name="citrato"
-								control={control}
-								render={({ field }) => (
-									<Form.Check
-										type="checkbox"
-										label={t('nenpt.citratoLabel')}
-										checked={field.value}
-										onChange={(e) => field.onChange(e.target.checked)}
-									/>
-								)}
-							/>
-							<Form.Text className="text-muted">
-								{t('nenpt.citratoHelp')}
-							</Form.Text>
-						</Form.Group>
-					</Col>
-					<Col md={4}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.propofolVolume')}</Form.Label>
-							<Controller
-								name="propofol_ml"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										placeholder="0"
-										isInvalid={!!errors.propofol_ml}
-										{...field}
-									/>
-								)}
-							/>
-							<Form.Text className="text-muted">
-								{t('nenpt.propofolHelp')}
-							</Form.Text>
-							{errors.propofol_ml && (
-								<Form.Control.Feedback type="invalid">
-									{errors.propofol_ml.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-					<Col md={4}>
-						<Form.Group>
-							<Form.Label>{t('nenpt.sg5Volume')}</Form.Label>
-							<Controller
-								name="sg5_ml"
-								control={control}
-								render={({ field }) => (
-									<Form.Control
-										type="number"
-										min="0"
-										placeholder="0"
-										isInvalid={!!errors.sg5_ml}
-										{...field}
-									/>
-								)}
-							/>
-							<Form.Text className="text-muted">{t('nenpt.sg5Help')}</Form.Text>
-							{errors.sg5_ml && (
-								<Form.Control.Feedback type="invalid">
-									{errors.sg5_ml.message}
-								</Form.Control.Feedback>
-							)}
-						</Form.Group>
-					</Col>
-				</Row>
+					{/* Dados Opcionais */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-lg">{t('nenpt.optionalData')}</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+								{numField('infusionTime', t('nenpt.infusionTime'))}
+								{numField('proteinModule', t('nenpt.proteinModule'))}
+								{numField('otherModule', t('nenpt.otherModule'))}
+							</div>
+						</CardContent>
+					</Card>
 
-				<div className="d-grid gap-2 col-6 mx-auto mt-4">
-					<Button variant="primary" type="submit" disabled={loading}>
-						{loading ? t('common.loading') : t('nenpt.calculateButton')}
-					</Button>
-				</div>
+					{/* Calorias Não-Nutricionais */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-lg">
+								{t('nenpt.nonNutritionalCalories')}
+								<span className="text-sm font-normal text-muted-foreground">
+									({t('common.optional')})
+								</span>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+								<div className="grid gap-2">
+									<Controller
+										control={control}
+										name="citrato"
+										render={({ field }) => (
+											<label className="flex cursor-pointer items-center gap-2.5 pt-1">
+												<Checkbox
+													checked={field.value}
+													onCheckedChange={field.onChange}
+												/>
+												<span className="text-sm font-medium">
+													{t('nenpt.citratoLabel')}
+												</span>
+											</label>
+										)}
+									/>
+									<p className="text-xs text-muted-foreground">
+										{t('nenpt.citratoHelp')}
+									</p>
+								</div>
+								<FormField
+									control={control}
+									name="propofol_ml"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t('nenpt.propofolVolume')}</FormLabel>
+											<FormControl>
+												<Input type="number" min="0" placeholder="0" {...field} />
+											</FormControl>
+											<p className="text-xs text-muted-foreground">
+												{t('nenpt.propofolHelp')}
+											</p>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={control}
+									name="sg5_ml"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t('nenpt.sg5Volume')}</FormLabel>
+											<FormControl>
+												<Input type="number" min="0" placeholder="0" {...field} />
+											</FormControl>
+											<p className="text-xs text-muted-foreground">
+												{t('nenpt.sg5Help')}
+											</p>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+						</CardContent>
+					</Card>
+
+					<div className="flex justify-center pt-2">
+						<Button
+							type="submit"
+							size="lg"
+							disabled={loading}
+							className="min-w-64"
+						>
+							{loading ? (
+								<>
+									<Loader2 className="size-4 animate-spin" />
+									{t('common.loading')}
+								</>
+							) : (
+								t('nenpt.calculateButton')
+							)}
+						</Button>
+					</div>
+				</form>
 			</Form>
 
+			{/* Resultados */}
 			{results && (
-				<div className="results-section mb-5">
-					<h2 className="fs-4 mb-3">{t('nenpt.results.title')}</h2>
-					<Row>
-						{watch('weight') && watch('height') && (
-							<Col md={4} className="mb-3">
-								<Card>
-									<Card.Body>
-										{' '}
-										<Card.Title className="text-muted fs-6">
-											{t('nenpt.results.bmi')}
-										</Card.Title>
-										<Card.Text className="fs-4 text-primary">
-											{results.imc.toFixed(1)} kg/m²
-										</Card.Text>
-									</Card.Body>
-								</Card>
-							</Col>
-						)}
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.caloricGoal')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.geb.toFixed(1)} kcal
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.caloriesProvided')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.totals.totalCalories.toFixed(1)} kcal
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-					</Row>
+				<Reveal className="results-section mt-10" data-testid="results">
+					<h2 className="mb-4 text-2xl font-bold tracking-tight">
+						{t('nenpt.results.title')}
+					</h2>
 
-					{/* Tabela Comparativa de Fórmulas */}
+					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{watch('weight') && watch('height') && (
+							<Metric
+								testid="result-bmi"
+								label={t('nenpt.results.bmi')}
+								value={`${results.imc.toFixed(1)} kg/m²`}
+							/>
+						)}
+						<Metric
+							testid="result-caloric-goal"
+							label={t('nenpt.results.caloricGoal')}
+							value={`${results.geb.toFixed(1)} kcal`}
+						/>
+						<Metric
+							testid="result-calories"
+							label={t('nenpt.results.caloriesProvided')}
+							value={`${results.totals.totalCalories.toFixed(1)} kcal`}
+						/>
+					</div>
+
+					{/* Tabela comparativa */}
 					<Card className="mt-4">
-						<Card.Body>
-							<Card.Title className="fs-5 mb-3">
+						<CardHeader>
+							<CardTitle className="text-lg">
 								{t('nenpt.results.detailedBreakdown')}
-							</Card.Title>
-							<Table responsive hover bordered>
-								<thead className="table-light">
-									<tr>
-										<th>{t('nenpt.results.metric')}</th>
-										<th className="text-center">{t('nenpt.results.formula1')}</th>
-										{results.formula2 && results.formula2.calories > 0 && (
-											<th className="text-center text-success">
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>{t('nenpt.results.metric')}</TableHead>
+										<TableHead className="text-center">
+											{t('nenpt.results.formula1')}
+										</TableHead>
+										{showSecondFormula() && (
+											<TableHead className="text-center text-success">
 												{t('nenpt.results.formula2')}
-											</th>
+											</TableHead>
 										)}
-										<th className="text-center text-primary">
-											<strong>{t('nenpt.results.total')}</strong>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>
-											<strong>{t('nenpt.results.caloriesProvided')}</strong>
-										</td>
-										<td className="text-center">
-											{results.formula1.calories.toFixed(1)} kcal
-										</td>
-										{results.formula2 && results.formula2.calories > 0 && (
-											<td className="text-center text-success">
-												{results.formula2.calories.toFixed(1)} kcal
-											</td>
-										)}
-										<td className="text-center bg-light">
-											<strong className="text-primary">
-												{results.totals.totalCalories.toFixed(1)} kcal
-											</strong>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<strong>{t('nenpt.results.proteinProvided')}</strong>
-										</td>
-										<td className="text-center">
-											{results.formula1.protein.toFixed(1)} g
-										</td>
-										{results.formula2 && results.formula2.calories > 0 && (
-											<td className="text-center text-success">
-												{results.formula2.protein.toFixed(1)} g
-											</td>
-										)}
-										<td className="text-center bg-light">
-											<strong className="text-primary">
-												{results.totals.totalProtein.toFixed(1)} g
-											</strong>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<strong>{t('nenpt.results.carbsProvided')}</strong>
-										</td>
-										<td className="text-center">
-											{results.formula1.carbs.toFixed(1)} g
-										</td>
-										{results.formula2 && results.formula2.calories > 0 && (
-											<td className="text-center text-success">
-												{results.formula2.carbs.toFixed(1)} g
-											</td>
-										)}
-										<td className="text-center bg-light">
-											<strong className="text-primary">
-												{results.totals.totalCarbs.toFixed(1)} g
-											</strong>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<strong>{t('nenpt.results.lipidsProvided')}</strong>
-										</td>
-										<td className="text-center">
-											{results.formula1.lipids.toFixed(1)} g
-										</td>
-										{results.formula2 && results.formula2.calories > 0 && (
-											<td className="text-center text-success">
-												{results.formula2.lipids.toFixed(1)} g
-											</td>
-										)}
-										<td className="text-center bg-light">
-											<strong className="text-primary">
-												{results.totals.totalLipids.toFixed(1)} g
-											</strong>
-										</td>
-									</tr>
-								</tbody>
+										<TableHead className="text-center text-primary">
+											{t('nenpt.results.total')}
+										</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{[
+										{
+											label: t('nenpt.results.caloriesProvided'),
+											f1: `${results.formula1.calories.toFixed(1)} kcal`,
+											f2: `${results.formula2?.calories.toFixed(1)} kcal`,
+											total: `${results.totals.totalCalories.toFixed(1)} kcal`,
+										},
+										{
+											label: t('nenpt.results.proteinProvided'),
+											f1: `${results.formula1.protein.toFixed(1)} g`,
+											f2: `${results.formula2?.protein.toFixed(1)} g`,
+											total: `${results.totals.totalProtein.toFixed(1)} g`,
+										},
+										{
+											label: t('nenpt.results.carbsProvided'),
+											f1: `${results.formula1.carbs.toFixed(1)} g`,
+											f2: `${results.formula2?.carbs.toFixed(1)} g`,
+											total: `${results.totals.totalCarbs.toFixed(1)} g`,
+										},
+										{
+											label: t('nenpt.results.lipidsProvided'),
+											f1: `${results.formula1.lipids.toFixed(1)} g`,
+											f2: `${results.formula2?.lipids.toFixed(1)} g`,
+											total: `${results.totals.totalLipids.toFixed(1)} g`,
+										},
+									].map((row) => (
+										<TableRow key={row.label}>
+											<TableCell className="font-medium">{row.label}</TableCell>
+											<TableCell className="text-center tabular-nums">
+												{row.f1}
+											</TableCell>
+											{showSecondFormula() && (
+												<TableCell className="text-center tabular-nums text-success">
+													{row.f2}
+												</TableCell>
+											)}
+											<TableCell className="bg-secondary/40 text-center font-semibold tabular-nums text-primary">
+												{row.total}
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
 							</Table>
 
-							{/* Alert de Calorias Não-Nutricionais */}
-							{results.nonNutritional && results.nonNutritional.totalCalories > 0 && (
-								<Alert variant="info" className="mt-3 mb-0">
-									<div className="d-flex align-items-start">
-										<div className="me-2">ℹ️</div>
-										<div>
-											<strong>{t('nenpt.results.nonNutritionalIncluded')}:</strong>
-											<ul className="mb-0 mt-2">
+							{results.nonNutritional &&
+								results.nonNutritional.totalCalories > 0 && (
+									<Alert variant="info" className="mt-4">
+										<Info />
+										<AlertTitle>
+											{t('nenpt.results.nonNutritionalIncluded')}
+										</AlertTitle>
+										<AlertDescription>
+											<ul className="list-disc pl-4">
 												{results.nonNutritional.calories.citrato > 0 && (
 													<li>
-														Citrato: {results.nonNutritional.calories.citrato} kcal
+														Citrato: {results.nonNutritional.calories.citrato}{' '}
+														kcal
 													</li>
 												)}
 												{results.nonNutritional.calories.propofol > 0 && (
 													<li>
-														Propofol: {results.nonNutritional.calories.propofol.toFixed(1)}{' '}
-														kcal ({results.nonNutritional.macros.lipids.toFixed(1)}g
+														Propofol:{' '}
+														{results.nonNutritional.calories.propofol.toFixed(1)}{' '}
+														kcal (
+														{results.nonNutritional.macros.lipids.toFixed(1)}g
 														lipídios)
 													</li>
 												)}
 												{results.nonNutritional.calories.sg5 > 0 && (
 													<li>
-														SG5%: {results.nonNutritional.calories.sg5.toFixed(1)} kcal (
-														{results.nonNutritional.macros.carbs.toFixed(1)}g CHO)
+														SG5%:{' '}
+														{results.nonNutritional.calories.sg5.toFixed(1)} kcal
+														({results.nonNutritional.macros.carbs.toFixed(1)}g
+														CHO)
 													</li>
 												)}
 											</ul>
-										</div>
-									</div>
-								</Alert>
-							)}
-						</Card.Body>
+										</AlertDescription>
+									</Alert>
+								)}
+						</CardContent>
 					</Card>
 
-					<Row className="mt-4">
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.proteinProvided')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.totals.totalProtein.toFixed(1)} g
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.carbsProvided')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.totals.totalCarbs.toFixed(1)} g
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.lipidsProvided')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.totals.totalLipids.toFixed(1)} g
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-					</Row>
-					<Row>
+					{/* Macros totais */}
+					<div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						<Metric
+							label={t('nenpt.results.proteinProvided')}
+							value={`${results.totals.totalProtein.toFixed(1)} g`}
+						/>
+						<Metric
+							label={t('nenpt.results.carbsProvided')}
+							value={`${results.totals.totalCarbs.toFixed(1)} g`}
+						/>
+						<Metric
+							label={t('nenpt.results.lipidsProvided')}
+							value={`${results.totals.totalLipids.toFixed(1)} g`}
+						/>
 						{watch('weight') && (
 							<>
-								<Col md={4} className="mb-3">
-									<Card>
-										<Card.Body>
-											<Card.Title className="text-muted fs-6">
-												{t('nenpt.results.proteinPerKg')}
-											</Card.Title>
-											<Card.Text className="fs-4 text-primary">
-												{results.proteinPerKg.toFixed(2)} g/kg
-											</Card.Text>
-										</Card.Body>
-									</Card>
-								</Col>
-								<Col md={4} className="mb-3">
-									<Card>
-										<Card.Body>
-											<Card.Title className="text-muted fs-6">
-												{t('nenpt.results.caloriesPerKg')}
-											</Card.Title>
-											<Card.Text className="fs-4 text-primary">
-												{results.caloriesPerKg.toFixed(1)} kcal/kg
-											</Card.Text>
-										</Card.Body>
-									</Card>
-								</Col>
+								<Metric
+									label={t('nenpt.results.proteinPerKg')}
+									value={`${results.proteinPerKg.toFixed(2)} g/kg`}
+								/>
+								<Metric
+									label={t('nenpt.results.caloriesPerKg')}
+									value={`${results.caloriesPerKg.toFixed(1)} kcal/kg`}
+								/>
 							</>
 						)}
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.volumePerHour')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.volumePerHour
-											? `${results.volumePerHour.toFixed(1)} mL/h`
-											: 'N/A'}
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-					</Row>
-					<Row>
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.carbsDistribution')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.totals.carbsPercentage.toFixed(1)}%
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.lipidsDistribution')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.totals.lipidsPercentage.toFixed(1)}%
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-						<Col md={4} className="mb-3">
-							<Card>
-								<Card.Body>
-									<Card.Title className="text-muted fs-6">
-										{t('nenpt.results.proteinDistribution')}
-									</Card.Title>
-									<Card.Text className="fs-4 text-primary">
-										{results.totals.proteinPercentage.toFixed(1)}%
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
-					</Row>
-				</div>
+						<Metric
+							label={t('nenpt.results.volumePerHour')}
+							value={
+								results.volumePerHour
+									? `${results.volumePerHour.toFixed(1)} mL/h`
+									: 'N/A'
+							}
+						/>
+						<Metric
+							label={t('nenpt.results.carbsDistribution')}
+							value={`${results.totals.carbsPercentage.toFixed(1)}%`}
+						/>
+						<Metric
+							label={t('nenpt.results.lipidsDistribution')}
+							value={`${results.totals.lipidsPercentage.toFixed(1)}%`}
+						/>
+						<Metric
+							label={t('nenpt.results.proteinDistribution')}
+							value={`${results.totals.proteinPercentage.toFixed(1)}%`}
+						/>
+					</div>
+				</Reveal>
 			)}
-			{/* Anúncio após os resultados - só quando há resultados válidos */}
+
 			{results && (
 				<AdSenseCompliantPage minContentLength={1200}>
 					<ResultsAd adSlot="1864977909" />
 				</AdSenseCompliantPage>
 			)}
 
-			{/* Seções Informativas - Após o conteúdo principal */}
-			<div className="mb-4 mt-5">
-				<h3 className="text-primary mb-4 text-center">
+			{/* Seções Informativas */}
+			<div className="mt-12">
+				<h3 className="mb-6 text-center text-xl font-bold text-foreground">
 					Informações Sobre Terapia Nutricional
 				</h3>
+				<div className="space-y-4">
+					{[
+						{
+							title: t('nenpt.clinicalImportance.title'),
+							content: t('nenpt.clinicalImportance.content'),
+						},
+						{
+							title: t('nenpt.nutritionalAssessment.title'),
+							content: t('nenpt.nutritionalAssessment.content'),
+						},
+						{
+							title: 'Protocolo de Segurança e Boas Práticas',
+							content:
+								'A nutrição enteral e parenteral requer cuidados específicos e protocolos rigorosos de segurança. Esta calculadora foi desenvolvida seguindo diretrizes internacionais para auxiliar profissionais de saúde na prescrição nutricional adequada e segura para pacientes em diferentes estados clínicos. É fundamental sempre considerar o quadro clínico completo do paciente, incluindo função renal, hepática, cardiovascular e metabólica antes de implementar qualquer protocolo nutricional. A monitorização contínua e ajustes baseados na resposta clínica são essenciais para o sucesso terapêutico.',
+						},
+						{
+							title: 'Validação Científica e Referências',
+							content:
+								'Os cálculos implementados nesta ferramenta são baseados em evidências científicas atuais e protocolos validados por sociedades médicas reconhecidas. Recomendamos sempre consultar as diretrizes mais recentes da ASPEN, ESPEN e outras organizações especializadas em nutrição clínica.',
+						},
+					].map((sec) => (
+						<Card key={sec.title}>
+							<CardContent className="pt-6">
+								<h4 className="mb-3 text-base font-semibold text-primary">
+									{sec.title}
+								</h4>
+								<p className="text-sm leading-relaxed text-muted-foreground">
+									{sec.content}
+								</p>
+							</CardContent>
+						</Card>
+					))}
 
-				{/* Importância da Terapia Nutricional */}
-				<Card className="mb-3">
-					<Card.Body>
-						<h5 className="text-primary mb-3">
-							{t('nenpt.clinicalImportance.title')}
-						</h5>
-						<p className="text-justify">
-							{t('nenpt.clinicalImportance.content')}
-						</p>
-					</Card.Body>
-				</Card>
-
-				{/* Avaliação e Prescrição Nutricional */}
-				<Card className="mb-3">
-					<Card.Body>
-						<h5 className="text-primary mb-3">
-							{t('nenpt.nutritionalAssessment.title')}
-						</h5>
-						<p className="text-justify">
-							{t('nenpt.nutritionalAssessment.content')}
-						</p>
-					</Card.Body>
-				</Card>
-
-				{/* Seção adicional para garantir conteúdo suficiente */}
-				<Card className="mb-3">
-					<Card.Body>
-						<h5 className="text-primary mb-3">
-							Protocolo de Segurança e Boas Práticas
-						</h5>
-						<p className="text-justify">
-							A nutrição enteral e parenteral requer cuidados específicos e
-							protocolos rigorosos de segurança. Esta calculadora foi
-							desenvolvida seguindo diretrizes internacionais para auxiliar
-							profissionais de saúde na prescrição nutricional adequada e
-							segura para pacientes em diferentes estados clínicos.
-						</p>
-						<p className="text-justify">
-							É fundamental sempre considerar o quadro clínico completo do
-							paciente, incluindo função renal, hepática, cardiovascular e
-							metabólica antes de implementar qualquer protocolo nutricional.
-							A monitorização contínua e ajustes baseados na resposta clínica
-							são essenciais para o sucesso terapêutico.
-						</p>
-					</Card.Body>
-				</Card>
-
-				<Card className="mb-3">
-					<Card.Body>
-						<h5 className="text-primary mb-3">
-							Validação Científica e Referências
-						</h5>
-						<p className="text-justify">
-							Os cálculos implementados nesta ferramenta são baseados em
-							evidências científicas atuais e protocolos validados por
-							sociedades médicas reconhecidas. Recomendamos sempre consultar
-							as diretrizes mais recentes da ASPEN, ESPEN e outras
-							organizações especializadas em nutrição clínica.
-						</p>
-					</Card.Body>
-				</Card>
-
-				{/* Guia Passo a Passo - AdSense Content */}
-				<Card className="mb-3">
-					<Card.Body>
-						<h5 className="text-primary mb-3">
-							{t('nenpt.guide.title', 'Como Utilizar a Calculadora NENPT')}
-						</h5>
-						<div className="text-justify">
-							<p>
-								<strong>
-									1. {t('nenpt.guide.step1.title', 'Dados do Paciente')}:
-								</strong>{' '}
-								{t(
-									'nenpt.guide.step1.desc',
-									'Insira peso, altura, idade e sexo. O IMC e as necessidades basais serão calculados automaticamente.',
-								)}
-							</p>
-							<p>
-								<strong>
-									2. {t('nenpt.guide.step2.title', 'Definição de Metas')}:
-								</strong>{' '}
-								{t(
-									'nenpt.guide.step2.desc',
-									'Escolha entre Harris-Benedict ou Fórmula de Bolso. Ajuste o valor de kcal/kg conforme a condição clínica (ex: 25-30 kcal/kg para manutenção).',
-								)}
-							</p>
-							<p>
-								<strong>
-									3. {t('nenpt.guide.step3.title', 'Seleção de Fórmulas')}:
-								</strong>{' '}
-								{t(
-									'nenpt.guide.step3.desc',
-									'Selecione a dieta enteral principal. Se necessário, adicione uma segunda fórmula para complementar.',
-								)}
-							</p>
-							<p>
-								<strong>
-									4. {t('nenpt.guide.step4.title', 'Ajustes Finos')}:
-								</strong>{' '}
-								{t(
-									'nenpt.guide.step4.desc',
-									'Adicione módulos de proteína ou calorias não-nutricionais (propofol, citrato) para maior precisão.',
-								)}
-							</p>
-						</div>
-					</Card.Body>
-				</Card>
+					<Card>
+						<CardContent className="pt-6">
+							<h4 className="mb-3 text-base font-semibold text-primary">
+								{t('nenpt.guide.title', 'Como Utilizar a Calculadora NENPT')}
+							</h4>
+							<div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+								{[1, 2, 3, 4].map((n) => (
+									<p key={n}>
+										<strong className="text-foreground">
+											{n}. {t(`nenpt.guide.step${n}.title`)}:
+										</strong>{' '}
+										{t(`nenpt.guide.step${n}.desc`)}
+									</p>
+								))}
+							</div>
+						</CardContent>
+					</Card>
+				</div>
 			</div>
 		</SidebarLayout>
 	)
