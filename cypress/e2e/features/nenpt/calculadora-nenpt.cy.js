@@ -38,7 +38,7 @@ describe('Calculadora NENPT', () => {
       cy.get('.results-section', { timeout: 5000 }).should('be.visible');
 
       // Verifica se existem cards de resultados
-      cy.get('.results-section .card').should('have.length.greaterThan', 3);
+      cy.get('.results-section .result-card').should('have.length.greaterThan', 3);
 
       // Verifica conteúdos específicos dos resultados
       cy.contains(/kcal|caloria/i).should('be.visible');
@@ -47,7 +47,7 @@ describe('Calculadora NENPT', () => {
       cy.contains(/mL\/h|N\/A/i).should('be.visible'); // Volume por hora ou N/A
 
       // Verifica se há valores numéricos nos resultados
-      cy.get('.results-section .fs-4.text-primary').should('have.length.greaterThan', 5);
+      cy.get('.results-section .result-card').should('have.length.greaterThan', 5);
     });
 
     it('deve validar se produto foi selecionado', () => {
@@ -122,11 +122,12 @@ describe('Calculadora NENPT', () => {
 
       // Verifica se há campos com erro de validação ou mensagens de erro
       cy.get('body').should('satisfy', ($body) => {
-        // Verifica se existem campos inválidos OU mensagens de validação
+        // Campos inválidos nativos OU mensagens de validação (shadcn FormMessage / role=alert)
         const hasInvalidFields = $body.find('input:invalid, select:invalid').length > 0;
         const hasValidationMessages =
           $body.find('.invalid-feedback, .form-control.is-invalid').length > 0;
-        const hasFormErrors = $body.find('form .text-danger').length > 0;
+        const hasFormErrors =
+          $body.find('form .text-destructive, form [role="alert"]').length > 0;
 
         return hasInvalidFields || hasValidationMessages || hasFormErrors;
       });

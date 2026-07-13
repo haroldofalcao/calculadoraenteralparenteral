@@ -92,3 +92,18 @@ Cypress.Commands.add('debugTest', (message) => {
   cy.screenshot(`debug-${Date.now()}`);
   cy.url().then((url) => cy.log(`Current URL: ${url}`));
 });
+
+// Abre o menu de ações (⋯) da linha e clica no item correspondente.
+// Substitui o antigo padrão de botão de ação direto na linha (shadcn DropdownMenu).
+Cypress.Commands.add('rowMenuAction', (rowText, action) => {
+  const re = typeof action === 'string' ? new RegExp(action, 'i') : action;
+  cy.contains('tr', rowText)
+    .first()
+    .find('button[aria-haspopup="menu"]')
+    .first()
+    .click();
+  cy.get('[role="menuitem"]')
+    .filter((_i, el) => re.test(el.innerText))
+    .first()
+    .click();
+});

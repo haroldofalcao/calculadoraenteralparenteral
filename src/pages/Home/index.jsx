@@ -181,11 +181,11 @@ function Home() {
 							{t('home.hero.badge')}
 						</Badge>
 						<h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-							{t('home.hero.titleLead')}{' '}
-							<span className="text-primary">
-								{t('home.hero.titleHighlight')}
-							</span>
+							{t('home.title')}
 						</h1>
+						<p className="mt-3 text-balance text-xl font-semibold text-primary sm:text-2xl">
+							{t('home.hero.titleHighlight')}
+						</p>
 						<p className="mx-auto mt-4 max-w-2xl text-pretty text-lg text-muted-foreground">
 							{t('home.hero.description')}
 						</p>
@@ -254,9 +254,7 @@ function Home() {
 						<h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
 							{t('home.toolsTitle')}
 						</h2>
-						<p className="mt-2 text-muted-foreground">
-							{t('home.toolsSubtitle')}
-						</p>
+						<p className="mt-2 text-muted-foreground">{t('home.subtitle')}</p>
 					</FadeIn>
 
 					<Stagger className="grid grid-cols-1 gap-6 md:grid-cols-3">

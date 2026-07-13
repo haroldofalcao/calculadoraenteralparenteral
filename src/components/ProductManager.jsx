@@ -270,9 +270,9 @@ const ProductManager = () => {
 							/>
 						</div>
 
-						<div className="max-h-[28rem] overflow-y-auto rounded-md border border-border">
+						<div className="rounded-md border border-border">
 							<Table>
-								<TableHeader className="sticky top-0 bg-card">
+								<TableHeader>
 									<TableRow>
 										<TableHead>{t('productManager.name')}</TableHead>
 										<TableHead className="text-right">
@@ -394,7 +394,7 @@ const ProductManager = () => {
 
 			{/* Modal de confirmação */}
 			<Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-				<DialogContent data-testid="delete-dialog">
+				<DialogContent data-testid="delete-dialog" className="modal">
 					<DialogHeader>
 						<DialogTitle>
 							{deletingUser

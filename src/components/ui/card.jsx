@@ -6,7 +6,7 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
 		ref={ref}
 		data-slot="card"
 		className={cn(
-			'rounded-xl border bg-card text-card-foreground shadow-sm',
+			'card rounded-xl border bg-card text-card-foreground shadow-sm',
 			className,
 		)}
 		{...props}
@@ -26,7 +26,10 @@ CardHeader.displayName = 'CardHeader'
 const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
 	<h3
 		ref={ref}
-		className={cn('font-semibold leading-none tracking-tight', className)}
+		className={cn(
+			'card-title font-semibold leading-none tracking-tight',
+			className,
+		)}
 		{...props}
 	/>
 ))

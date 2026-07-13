@@ -1,6 +1,42 @@
 // cypress/support/e2e.js
 import './commands';
 
+// Executa os testes em modo "reduced motion": as animações Framer Motion
+// renderizam o conteúdo imediatamente visível (determinístico e acessível).
+Cypress.on('window:before:load', (win) => {
+  const original = win.matchMedia?.bind(win);
+  win.matchMedia = (query) => {
+    if (typeof query === 'string' && query.includes('prefers-reduced-motion')) {
+      return {
+        matches: true,
+        media: query,
+        onchange: null,
+        addListener() {},
+        removeListener() {},
+        addEventListener() {},
+        removeEventListener() {},
+        dispatchEvent() {
+          return false;
+        },
+      };
+    }
+    return original
+      ? original(query)
+      : {
+          matches: false,
+          media: query,
+          onchange: null,
+          addListener() {},
+          removeListener() {},
+          addEventListener() {},
+          removeEventListener() {},
+          dispatchEvent() {
+            return false;
+          },
+        };
+  };
+});
+
 // Configurações globais para testes E2E
 Cypress.on('uncaught:exception', (err, runnable) => {
   // Previne que erros não capturados falhem os testes

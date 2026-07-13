@@ -22,9 +22,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       cy.get('.alert-success').should('be.visible');
 
       // Exclui o produto
-      cy.contains('tr', nomeProduto).within(() => {
-        cy.get('button').contains('Excluir').click();
-      });
+      cy.rowMenuAction(nomeProduto, 'Excluir');
 
       // Confirma exclusão no modal
       cy.get('.modal').should('be.visible');
@@ -52,9 +50,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       cy.get('.alert-success').should('be.visible');
 
       // Clica em excluir
-      cy.contains('tr', nomeProduto).within(() => {
-        cy.get('button').contains('Excluir').click();
-      });
+      cy.rowMenuAction(nomeProduto, 'Excluir');
 
       // Cancela no modal
       cy.get('.modal').should('be.visible');
@@ -74,9 +70,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       cy.get('table tbody').should('contain.text', 'Fresubin Energy');
 
       // Oculta o produto
-      cy.contains('tr', 'Fresubin Energy').within(() => {
-        cy.get('button').contains('Ocultar').click();
-      });
+      cy.rowMenuAction('Fresubin Energy', 'Ocultar');
 
       // Confirma no modal
       cy.get('.modal').should('be.visible');
@@ -89,7 +83,9 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       cy.contains('Produtos Padrão Ocultos', { timeout: 10000 }).should('be.visible');
 
       // Verifica que produto aparece na seção de ocultos
-      cy.contains('Produtos Padrão Ocultos').parent().should('contain.text', 'Fresubin Energy');
+      cy.contains('Produtos Padrão Ocultos')
+        .closest('[data-slot="card"]')
+        .should('contain.text', 'Fresubin Energy');
 
       // Limpa busca para ver todos os produtos
       cy.get('input[placeholder*="Buscar produto"]').clear();
@@ -107,11 +103,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       cy.get('input[placeholder*="Buscar produto"]').clear().type('Nutrison Energy');
 
       // Clica em ocultar
-      cy.contains('tr', 'Nutrison Energy')
-        .first()
-        .within(() => {
-          cy.get('button').contains('Ocultar').click();
-        });
+      cy.rowMenuAction('Nutrison Energy', 'Ocultar');
 
       // Cancela no modal
       cy.get('.modal').should('be.visible');
@@ -127,9 +119,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       // Oculta um produto primeiro
       cy.get('input[placeholder*="Buscar produto"]').clear().type('Fresubin Energy');
 
-      cy.contains('tr', 'Fresubin Energy').within(() => {
-        cy.get('button').contains('Ocultar').click();
-      });
+      cy.rowMenuAction('Fresubin Energy', 'Ocultar');
 
       cy.get('.modal button').contains('Ocultar').click();
 
@@ -145,11 +135,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       // Oculta um produto primeiro
       cy.get('input[placeholder*="Buscar produto"]').clear().type('Nutrison Energy');
 
-      cy.contains('tr', 'Nutrison Energy')
-        .first()
-        .within(() => {
-          cy.get('button').contains('Ocultar').click();
-        });
+      cy.rowMenuAction('Nutrison Energy', 'Ocultar');
 
       cy.get('.modal button').contains('Ocultar').click();
 
@@ -174,11 +160,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
 
       produtos.forEach((produto) => {
         cy.get('input[placeholder*="Buscar produto"]').clear().type(produto);
-        cy.contains('tr', produto)
-          .first()
-          .within(() => {
-            cy.get('button').contains('Ocultar').click();
-          });
+        cy.rowMenuAction(produto, 'Ocultar');
         cy.get('.modal button').contains('Ocultar').click();
 
         // Aguarda alerta de sucesso para cada ocultação
@@ -220,9 +202,7 @@ describe('Gerenciar Produtos - Excluir e Ocultar', () => {
       cy.get('.alert-success').should('be.visible');
 
       // Abre modal
-      cy.contains('tr', nomeProduto).within(() => {
-        cy.get('button').contains('Excluir').click();
-      });
+      cy.rowMenuAction(nomeProduto, 'Excluir');
 
       // Fecha com ESC
       cy.get('.modal').should('be.visible');

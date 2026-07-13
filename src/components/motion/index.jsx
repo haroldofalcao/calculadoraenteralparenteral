@@ -4,12 +4,11 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 // Curva ease-out suave (entrada). Ver system.md + guideline `easing`.
 export const easeOut = [0.16, 1, 0.3, 1]
 
-const resolveTag = (as) =>
-	typeof as === 'string' ? (motion[as] ?? motion.div) : as
+const resolveTag = (as) => (typeof as === 'string' ? motion[as] ?? motion.div : as)
 
 /**
  * FadeIn — revela ao entrar no viewport (scroll reveal).
- * Respeita prefers-reduced-motion (só fade, sem deslocamento).
+ * Sob prefers-reduced-motion o conteúdo é renderizado visível, sem animação.
  */
 export function FadeIn({
 	children,
@@ -26,8 +25,8 @@ export function FadeIn({
 	return (
 		<MotionTag
 			className={className}
-			initial={reduce ? { opacity: 0 } : { opacity: 0, y }}
-			whileInView={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+			initial={reduce ? false : { opacity: 0, y }}
+			whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
 			viewport={{ once, amount }}
 			transition={{ duration: 0.5, delay, ease: easeOut }}
 			{...props}
@@ -38,7 +37,7 @@ export function FadeIn({
 }
 
 /**
- * Stagger — container que revela filhos em sequência (30-50ms guideline).
+ * Stagger — container que revela filhos em sequência.
  * Use com <StaggerItem> nos filhos.
  */
 export function Stagger({
@@ -51,17 +50,22 @@ export function Stagger({
 	as = 'div',
 	...props
 }) {
+	const reduce = useReducedMotion()
 	const MotionTag = resolveTag(as)
 	return (
 		<MotionTag
 			className={className}
-			initial="hidden"
-			whileInView="show"
+			initial={reduce ? false : 'hidden'}
+			whileInView={reduce ? undefined : 'show'}
 			viewport={{ once, amount }}
-			variants={{
-				hidden: {},
-				show: { transition: { staggerChildren: stagger, delayChildren } },
-			}}
+			variants={
+				reduce
+					? undefined
+					: {
+							hidden: {},
+							show: { transition: { staggerChildren: stagger, delayChildren } },
+						}
+			}
 			{...props}
 		>
 			{children}
@@ -69,26 +73,24 @@ export function Stagger({
 	)
 }
 
-export function StaggerItem({
-	children,
-	className,
-	y = 18,
-	as = 'div',
-	...props
-}) {
+export function StaggerItem({ children, className, y = 18, as = 'div', ...props }) {
 	const reduce = useReducedMotion()
 	const MotionTag = resolveTag(as)
 	return (
 		<MotionTag
 			className={className}
-			variants={{
-				hidden: reduce ? { opacity: 0 } : { opacity: 0, y },
-				show: {
-					opacity: 1,
-					y: 0,
-					transition: { duration: 0.45, ease: easeOut },
-				},
-			}}
+			variants={
+				reduce
+					? undefined
+					: {
+							hidden: { opacity: 0, y },
+							show: {
+								opacity: 1,
+								y: 0,
+								transition: { duration: 0.45, ease: easeOut },
+							},
+						}
+			}
 			{...props}
 		>
 			{children}
@@ -105,8 +107,8 @@ export function Reveal({ children, className, y = 12, as = 'div', ...props }) {
 	return (
 		<MotionTag
 			className={className}
-			initial={reduce ? { opacity: 0 } : { opacity: 0, y }}
-			animate={{ opacity: 1, y: 0 }}
+			initial={reduce ? false : { opacity: 0, y }}
+			animate={reduce ? undefined : { opacity: 1, y: 0 }}
 			transition={{ duration: 0.4, ease: easeOut }}
 			{...props}
 		>

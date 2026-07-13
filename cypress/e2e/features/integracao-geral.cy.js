@@ -42,7 +42,7 @@ describe('Integração Geral da Aplicação', () => {
 
       // 5. Verifica resultados
       cy.get('.results-section', { timeout: 5000 }).should('be.visible');
-      cy.get('.results-section .card').should('have.length.greaterThan', 3);
+      cy.get('.results-section .result-card').should('have.length.greaterThan', 3);
     });
   });
 

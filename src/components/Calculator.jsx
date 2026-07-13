@@ -45,7 +45,7 @@ import { Reveal } from '@/components/motion'
 const Metric = ({ label, value, testid }) => (
 	<div
 		data-testid={testid}
-		className="rounded-xl border border-border bg-card p-4 shadow-sm"
+		className="result-card rounded-xl border border-border bg-card p-4 shadow-sm"
 	>
 		<div className="text-xs font-medium text-muted-foreground">{label}</div>
 		<div className="mt-1 text-2xl font-bold tabular-nums text-primary">

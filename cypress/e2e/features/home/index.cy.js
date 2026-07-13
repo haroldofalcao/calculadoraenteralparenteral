@@ -57,7 +57,7 @@ describe('Home - Suíte Completa', () => {
       cy.contains('Calculadoras Nutricionais').should('be.visible');
 
       // Verifica CSS básico
-      cy.get('.container').should('have.css', 'width');
+      cy.get('main').should('have.css', 'width');
       cy.get('.card').should('have.css', 'display');
     });
   });

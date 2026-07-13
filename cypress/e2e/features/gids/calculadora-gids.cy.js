@@ -18,9 +18,9 @@ describe('Calculadora GIDS', () => {
         }
       });
 
-      // Seleciona alguns sintomas
-      cy.get('input[type="checkbox"]').first().check();
-      cy.get('input[type="checkbox"]').eq(1).check();
+      // Seleciona alguns sintomas (shadcn/Radix Checkbox = role="checkbox")
+      cy.get('[role="checkbox"]').eq(0).click();
+      cy.get('[role="checkbox"]').eq(1).click();
 
       // Verifica se score é calculado automaticamente
       cy.contains(/score|pontuação/i, { timeout: 5000 }).should('be.visible');
@@ -32,22 +32,25 @@ describe('Calculadora GIDS', () => {
       cy.waitForFormReady();
 
       // Seleciona um sintoma
-      cy.get('input[type="checkbox"]').first().check();
-      cy.get('input[type="checkbox"]').first().should('be.checked');
+      cy.get('[role="checkbox"]').first().click();
+      cy.get('[role="checkbox"]')
+        .first()
+        .should('have.attr', 'data-state', 'checked');
 
       // Deseleciona o sintoma
-      cy.get('input[type="checkbox"]').first().uncheck();
-      cy.get('input[type="checkbox"]').first().should('not.be.checked');
+      cy.get('[role="checkbox"]').first().click();
+      cy.get('[role="checkbox"]')
+        .first()
+        .should('have.attr', 'data-state', 'unchecked');
     });
 
     it('deve atualizar score dinamicamente conforme sintomas são selecionados', () => {
       cy.waitForFormReady();
 
-      // Seleciona sintomas gradualmente e verifica mudanças no score
-      cy.get('input[type="checkbox"]').first().check();
+      cy.get('[role="checkbox"]').eq(0).click();
       cy.contains(/score|pontuação/i).should('be.visible');
 
-      cy.get('input[type="checkbox"]').eq(1).check();
+      cy.get('[role="checkbox"]').eq(1).click();
       cy.contains(/score|pontuação/i).should('be.visible');
     });
   });
