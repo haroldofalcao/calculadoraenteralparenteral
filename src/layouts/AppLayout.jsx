@@ -44,6 +44,7 @@ function AppLayout() {
 		{ to: '/nenpt', label: t('navigation.nenpt') },
 		{ to: '/nenpt/gerenciar-produtos', label: t('navigation.manageProducts') },
 		{ to: '/gids', label: t('navigation.gids') },
+		{ to: '/perguntas-frequentes', label: t('navigation.faq') },
 	]
 
 	const currentLang = i18n.language === 'pt-BR' ? '🇧🇷 PT' : '🇺🇸 EN'

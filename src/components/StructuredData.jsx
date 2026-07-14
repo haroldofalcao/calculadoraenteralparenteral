@@ -24,11 +24,6 @@ const StructuredData = ({ type = 'WebApplication', data = {} }) => {
 				'@type': 'Organization',
 				name: 'NutriCalc',
 			},
-			aggregateRating: {
-				'@type': 'AggregateRating',
-				ratingValue: '4.8',
-				reviewCount: '150',
-			},
 		},
 
 		MedicalWebPage: {

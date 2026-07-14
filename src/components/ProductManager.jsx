@@ -453,6 +453,10 @@ const ProductManager = () => {
 							title: t('productManager.productCustomization.title'),
 							content: t('productManager.productCustomization.content'),
 						},
+						{
+							title: t('productManager.bestPractices.title'),
+							content: t('productManager.bestPractices.content'),
+						},
 					].map((sec) => (
 						<Card key={sec.title}>
 							<CardContent className="pt-6">

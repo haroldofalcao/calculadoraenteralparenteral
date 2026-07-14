@@ -705,14 +705,12 @@ const Calculator = () => {
 							content: t('nenpt.nutritionalAssessment.content'),
 						},
 						{
-							title: 'Protocolo de Segurança e Boas Práticas',
-							content:
-								'A nutrição enteral e parenteral requer cuidados específicos e protocolos rigorosos de segurança. Esta calculadora foi desenvolvida seguindo diretrizes internacionais para auxiliar profissionais de saúde na prescrição nutricional adequada e segura para pacientes em diferentes estados clínicos. É fundamental sempre considerar o quadro clínico completo do paciente, incluindo função renal, hepática, cardiovascular e metabólica antes de implementar qualquer protocolo nutricional. A monitorização contínua e ajustes baseados na resposta clínica são essenciais para o sucesso terapêutico.',
+							title: t('nenpt.safetyProtocol.title'),
+							content: t('nenpt.safetyProtocol.content'),
 						},
 						{
-							title: 'Validação Científica e Referências',
-							content:
-								'Os cálculos implementados nesta ferramenta são baseados em evidências científicas atuais e protocolos validados por sociedades médicas reconhecidas. Recomendamos sempre consultar as diretrizes mais recentes da ASPEN, ESPEN e outras organizações especializadas em nutrição clínica.',
+							title: t('nenpt.scientificValidation.title'),
+							content: t('nenpt.scientificValidation.content'),
 						},
 					].map((sec) => (
 						<Card key={sec.title}>

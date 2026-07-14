@@ -20,6 +20,7 @@
     "nenpt": "NENPT Calculator",
     "manageProducts": "Manage Products",
     "gids": "GIDS Calculator",
+    "faq": "FAQ",
     "brand": "Nutritional Calculator for Adults v.5"
   },
   "home": {
@@ -171,6 +172,33 @@
       "product2RequiredIfVolume2": "Select a product for Formula 2",
       "volume2RequiredIfProduct2": "Enter volume for Formula 2",
       "nonNegativeValue": "Value cannot be negative"
+    },
+    "safetyProtocol": {
+      "title": "Safety Protocol and Best Practices",
+      "content": "Enteral and parenteral nutrition require specific care and rigorous safety protocols. This calculator was developed following international guidelines to help healthcare professionals with adequate and safe nutritional prescription for patients in different clinical states. It's essential to always consider the patient's full clinical picture, including renal, hepatic, cardiovascular, and metabolic function before implementing any nutritional protocol. Continuous monitoring and adjustments based on clinical response are essential for therapeutic success."
+    },
+    "scientificValidation": {
+      "title": "Scientific Validation and References",
+      "content": "The calculations implemented in this tool are based on current scientific evidence and protocols validated by recognized medical societies. We always recommend consulting the latest guidelines from ASPEN, ESPEN, and other organizations specialized in clinical nutrition."
+    },
+    "guide": {
+      "title": "How to Use the NENPT Calculator",
+      "step1": {
+        "title": "Patient Data",
+        "desc": "Enter weight, height, age, and sex. BMI and basal needs will be calculated automatically."
+      },
+      "step2": {
+        "title": "Setting Goals",
+        "desc": "Choose between Harris-Benedict or Pocket Formula. Adjust the kcal/kg value according to clinical condition (e.g., 25-30 kcal/kg for maintenance)."
+      },
+      "step3": {
+        "title": "Formula Selection",
+        "desc": "Select the main enteral diet. If needed, add a second formula to supplement it."
+      },
+      "step4": {
+        "title": "Fine Adjustments",
+        "desc": "Add protein modules or non-nutritional calories (propofol, citrate) for greater precision."
+      }
     }
   },
   "productManager": {
@@ -182,6 +210,10 @@
     "productCustomization": {
       "title": "Customization and Flexibility",
       "content": "This tool allows adding institution-specific products, editing compositions as needed, and organizing the database according to your clinical needs. The hide/show products functionality facilitates organization without losing important data, keeping only the most used options visible during routine calculator use."
+    },
+    "bestPractices": {
+      "title": "Best Practices for Registering Formulas",
+      "content": "When registering an enteral or parenteral formula, always check the macronutrient composition (CHO, LIP, PTN) provided by the manufacturer, since small discrepancies directly impact caloric and protein target calculations. Keep the database updated whenever a supplier changes a product's composition, and periodically review hidden products to avoid prescriptions based on discontinued formulas."
     },
     "addProduct": "Add New Product",
     "registeredProducts": "Registered Products",
@@ -322,5 +354,43 @@
     "title": "Page not found",
     "message": "The page you are looking for does not exist or has been moved.",
     "backHome": "Back to Home"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Common questions about GIDS, the NE/NPT calculator, and using NutriCalc",
+    "items": [
+      {
+        "question": "What is GIDS (Gastrointestinal Dysfunction Score)?",
+        "answer": "GIDS is a score that classifies the severity of gastrointestinal dysfunction in critically ill patients, summing points for symptoms such as vomiting, abdominal distension, diarrhea, and GI bleeding. The result ranges from 0 to 4 and helps guide decisions about enteral feeding progression."
+      },
+      {
+        "question": "How does the GIDS calculator compute the score?",
+        "answer": "You check the symptoms present in the patient for each assessment group. The calculator automatically sums the score for each group and displays the total score in real time, along with the corresponding risk classification (0 to 4)."
+      },
+      {
+        "question": "What does each GIDS classification level mean?",
+        "answer": "Higher scores indicate greater gastrointestinal dysfunction and higher risk of enteral feeding intolerance. Scores of 2 or more usually indicate the need to reassess the nutritional strategy, while low scores (0-1) generally allow feeding to be maintained or advanced."
+      },
+      {
+        "question": "What is NutriCalc's NE/NPT Calculator?",
+        "answer": "It's a tool for calculating caloric and protein requirements for enteral (EN) and parenteral (PN) nutrition, helping with nutritional prescriptions based on the patient's anthropometric and clinical data and a registry of products/formulas."
+      },
+      {
+        "question": "Do I need to register products before using the NENPT calculator?",
+        "answer": "You can use the Product Manager to register the enteral and parenteral formulas used at your institution, which speeds up prescription calculations and personalizes them. You can also use products already pre-registered in the tool."
+      },
+      {
+        "question": "Do the calculator's results replace a healthcare professional's assessment?",
+        "answer": "No. NutriCalc is a clinical decision-support tool, based on protocols such as ASPEN and ESPEN, but it does not replace the clinical judgment of nutritionists, physicians, and other healthcare professionals responsible for the patient."
+      },
+      {
+        "question": "Is my patient data stored on a server?",
+        "answer": "GIDS measurement data is saved only in your browser's local storage (localStorage) and is not sent to a server. You can export the report whenever you need to."
+      },
+      {
+        "question": "Is NutriCalc free?",
+        "answer": "Yes, all NutriCalc calculators (NENPT, GIDS, and Product Manager) are free for healthcare professionals to use."
+      }
+    ]
   }
 }

@@ -11,10 +11,43 @@ const SEO = ({
 	type = 'website',
 	structuredDataType = 'WebApplication',
 	structuredData = {},
+	noindex = false,
+	faq = null,
+	howTo = null,
 }) => {
 	const baseUrl = 'https://www.nutricalc.online'
 	const fullCanonical = canonical ? `${baseUrl}${canonical}` : baseUrl
 	const fullImage = image.startsWith('http') ? image : `${baseUrl}${image}`
+
+	const faqSchema =
+		faq && faq.length > 0
+			? {
+					'@context': 'https://schema.org',
+					'@type': 'FAQPage',
+					mainEntity: faq.map((item) => ({
+						'@type': 'Question',
+						name: item.question,
+						acceptedAnswer: {
+							'@type': 'Answer',
+							text: item.answer,
+						},
+					})),
+				}
+			: null
+
+	const howToSchema =
+		howTo && howTo.steps?.length > 0
+			? {
+					'@context': 'https://schema.org',
+					'@type': 'HowTo',
+					name: howTo.name,
+					step: howTo.steps.map((s) => ({
+						'@type': 'HowToStep',
+						name: s.name,
+						text: s.text,
+					})),
+				}
+			: null
 
 	return (
 		<>
@@ -45,15 +78,27 @@ const SEO = ({
 				{/* Meta tags adicionais para SEO */}
 				<meta
 					name="robots"
-					content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+					content={
+						noindex
+							? 'noindex, follow'
+							: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+					}
 				/>
 				<meta
 					name="googlebot"
-					content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+					content={
+						noindex
+							? 'noindex, follow'
+							: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
+					}
 				/>
 				<meta
 					name="bingbot"
-					content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+					content={
+						noindex
+							? 'noindex, follow'
+							: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
+					}
 				/>
 				<meta name="author" content="NutriCalc" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -79,6 +124,22 @@ const SEO = ({
 					...structuredData,
 				}}
 			/>
+
+			{faqSchema && (
+				<Helmet>
+					<script type="application/ld+json">
+						{JSON.stringify(faqSchema)}
+					</script>
+				</Helmet>
+			)}
+
+			{howToSchema && (
+				<Helmet>
+					<script type="application/ld+json">
+						{JSON.stringify(howToSchema)}
+					</script>
+				</Helmet>
+			)}
 		</>
 	)
 }

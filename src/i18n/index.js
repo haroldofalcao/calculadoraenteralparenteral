@@ -15,10 +15,12 @@ const resources = {
 	},
 }
 
-i18n
-	.use(LanguageDetector)
-	.use(initReactI18next)
-	.init({
+let i18nBuilder = i18n.use(initReactI18next)
+if (!import.meta.env.SSR) {
+	i18nBuilder = i18nBuilder.use(LanguageDetector)
+}
+
+i18nBuilder.init({
 		resources,
 		fallbackLng: 'pt', // Fallback para português
 		debug: false,

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import SEO from '../../components/SEO.jsx'
 import { useAnalytics } from '../../hooks/useAnalytics'
 
 function NotFound() {
@@ -18,6 +19,11 @@ function NotFound() {
 			data-no-ads="true"
 			className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center px-4 py-20 text-center"
 		>
+			<SEO
+				title="Página não encontrada - NutriCalc"
+				description="A página que você está procurando não existe ou foi movida."
+				noindex
+			/>
 			<p className="text-8xl font-bold tabular-nums text-muted-foreground/30">
 				404
 			</p>

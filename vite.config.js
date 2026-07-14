@@ -18,6 +18,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
+  ssgOptions: {
+    entry: 'src/main.jsx',
+    formatting: 'none',
+    dirStyle: 'nested',
+  },
   server: {
     port: 3000,
     open: true,

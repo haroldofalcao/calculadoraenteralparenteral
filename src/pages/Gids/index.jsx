@@ -237,7 +237,14 @@ function Gids() {
 				title="Calculadora GIDS - NutriCalc | Gastrointestinal Dysfunction Score"
 				description="Calcule o GIDS (Gastrointestinal Dysfunction Score) para avaliar disfunção gastrointestinal em pacientes críticos. Ferramenta essencial para profissionais de saúde."
 				keywords="calculadora GIDS, disfunção gastrointestinal, pacientes críticos, nutrição enteral, escore GI"
-				canonical="/"
+				canonical="/gids"
+				structuredDataType="MedicalWebPage"
+				structuredData={{
+					audience: {
+						'@type': 'MedicalAudience',
+						audienceType: 'healthcare professionals',
+					},
+				}}
 			/>
 
 			<div className="mx-auto max-w-4xl px-4">

@@ -20,6 +20,7 @@
     "nenpt": "Calculadora NENPT",
     "manageProducts": "Gerenciar Produtos",
     "gids": "Calculadora GIDS",
+    "faq": "Perguntas Frequentes",
     "brand": "Calculadora Nutricional para Adultos v.5"
   },
   "home": {
@@ -176,6 +177,14 @@
       "volume2RequiredIfProduct2": "Informe o volume para a Fórmula 2",
       "nonNegativeValue": "O valor não pode ser negativo"
     },
+    "safetyProtocol": {
+      "title": "Protocolo de Segurança e Boas Práticas",
+      "content": "A nutrição enteral e parenteral requer cuidados específicos e protocolos rigorosos de segurança. Esta calculadora foi desenvolvida seguindo diretrizes internacionais para auxiliar profissionais de saúde na prescrição nutricional adequada e segura para pacientes em diferentes estados clínicos. É fundamental sempre considerar o quadro clínico completo do paciente, incluindo função renal, hepática, cardiovascular e metabólica antes de implementar qualquer protocolo nutricional. A monitorização contínua e ajustes baseados na resposta clínica são essenciais para o sucesso terapêutico."
+    },
+    "scientificValidation": {
+      "title": "Validação Científica e Referências",
+      "content": "Os cálculos implementados nesta ferramenta são baseados em evidências científicas atuais e protocolos validados por sociedades médicas reconhecidas. Recomendamos sempre consultar as diretrizes mais recentes da ASPEN, ESPEN e outras organizações especializadas em nutrição clínica."
+    },
     "guide": {
       "title": "Como Utilizar a Calculadora NENPT",
       "step1": {
@@ -205,6 +214,10 @@
     "productCustomization": {
       "title": "Personalização e Flexibilidade",
       "content": "Esta ferramenta permite adicionar produtos específicos da sua instituição, editar composições conforme necessário e organizar a base de dados de acordo com suas necessidades clínicas. A funcionalidade de ocultar/mostrar produtos facilita a organização sem perder dados importantes, mantendo apenas as opções mais utilizadas visíveis durante o uso rotineiro da calculadora."
+    },
+    "bestPractices": {
+      "title": "Boas Práticas no Cadastro de Fórmulas",
+      "content": "Ao cadastrar uma fórmula enteral ou parenteral, confira sempre a composição de macronutrientes (CHO, LIP, PTN) informada pelo fabricante, já que pequenas divergências impactam diretamente o cálculo da meta calórica e proteica. Mantenha a base atualizada sempre que o fornecedor alterar a composição de um produto, e revise periodicamente os produtos ocultos para evitar prescrições baseadas em fórmulas descontinuadas."
     },
     "addProduct": "Adicionar Novo Produto",
     "registeredProducts": "Produtos Cadastrados",
@@ -345,5 +358,43 @@
     "title": "Página não encontrada",
     "message": "A página que você está procurando não existe ou foi movida.",
     "backHome": "Voltar ao Início"
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "subtitle": "Dúvidas comuns sobre o GIDS, a calculadora NE/NPT e o uso do NutriCalc",
+    "items": [
+      {
+        "question": "O que é o GIDS (Gastrointestinal Dysfunction Score)?",
+        "answer": "GIDS é um escore que classifica a gravidade da disfunção gastrointestinal em pacientes críticos, somando a pontuação de sintomas como vômito, distensão abdominal, diarreia e sangramento digestivo. O resultado varia de 0 a 4 e ajuda a orientar decisões sobre progressão da dieta enteral."
+      },
+      {
+        "question": "Como a calculadora GIDS calcula a pontuação?",
+        "answer": "Você marca os sintomas presentes no paciente em cada grupo de avaliação. A calculadora soma automaticamente a pontuação de cada grupo e exibe o escore total em tempo real, junto com a classificação de risco correspondente (0 a 4)."
+      },
+      {
+        "question": "O que significa cada nível de classificação do GIDS?",
+        "answer": "Escores mais altos indicam maior disfunção gastrointestinal e maior risco de intolerância à dieta enteral. Escores 2 ou mais costumam indicar necessidade de reavaliação da estratégia nutricional, enquanto escores baixos (0-1) geralmente permitem manutenção ou progressão da dieta."
+      },
+      {
+        "question": "O que é a Calculadora NE/NPT do NutriCalc?",
+        "answer": "É uma ferramenta para calcular necessidades calóricas e proteicas de nutrição enteral (NE) e parenteral (NPT), auxiliando na prescrição nutricional a partir dos dados antropométricos e clínicos do paciente e do banco de produtos/fórmulas cadastrados."
+      },
+      {
+        "question": "Preciso cadastrar produtos antes de usar a calculadora NENPT?",
+        "answer": "Você pode usar o Gerenciador de Produtos para cadastrar as fórmulas enterais e parenterais utilizadas na sua instituição, o que deixa os cálculos de prescrição mais rápidos e personalizados. Também é possível usar produtos já pré-cadastrados na ferramenta."
+      },
+      {
+        "question": "Os resultados da calculadora substituem a avaliação de um profissional de saúde?",
+        "answer": "Não. O NutriCalc é uma ferramenta de apoio à decisão clínica, baseada em protocolos como ASPEN e ESPEN, mas não substitui o julgamento clínico de nutricionistas, médicos e demais profissionais de saúde responsáveis pelo paciente."
+      },
+      {
+        "question": "Meus dados de pacientes ficam salvos em algum servidor?",
+        "answer": "Os dados de medição do GIDS ficam salvos apenas no armazenamento local do seu navegador (localStorage), não são enviados a um servidor. Você pode exportar o relatório quando precisar."
+      },
+      {
+        "question": "O NutriCalc é gratuito?",
+        "answer": "Sim, todas as calculadoras do NutriCalc (NENPT, GIDS e Gerenciador de Produtos) são gratuitas para uso por profissionais de saúde."
+      }
+    ]
   }
 }
