@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const distDir = path.resolve(__dirname, '../dist')
-const baseUrl = 'https://www.nutricalc.online'
+const baseUrl = 'https://nutricalc.online'
 
 const routes = [
 	{ path: '/', changefreq: 'weekly', priority: '1.0' },

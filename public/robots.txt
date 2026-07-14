@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://www.nutricalc.online/sitemap.xml
+Sitemap: https://nutricalc.online/sitemap.xml
 
 # Crawl delay
 Crawl-delay: 1

@@ -60,7 +60,7 @@
           "value": "nenpt.online"
         }
       ],
-      "destination": "https://www.nutricalc.online/:path*",
+      "destination": "https://nutricalc.online/:path*",
       "permanent": true
     },
     {
@@ -71,7 +71,18 @@
           "value": "www.nenpt.online"
         }
       ],
-      "destination": "https://www.nutricalc.online/:path*",
+      "destination": "https://nutricalc.online/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.nutricalc.online"
+        }
+      ],
+      "destination": "https://nutricalc.online/:path*",
       "permanent": true
     },
     {

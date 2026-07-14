@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet-async'
 
 const StructuredData = ({ type = 'WebApplication', data = {} }) => {
-	const baseUrl = 'https://www.nutricalc.online'
+	const baseUrl = 'https://nutricalc.online'
 
 	const schemas = {
 		WebApplication: {

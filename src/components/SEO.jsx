@@ -15,7 +15,7 @@ const SEO = ({
 	faq = null,
 	howTo = null,
 }) => {
-	const baseUrl = 'https://www.nutricalc.online'
+	const baseUrl = 'https://nutricalc.online'
 	const fullCanonical = canonical ? `${baseUrl}${canonical}` : baseUrl
 	const fullImage = image.startsWith('http') ? image : `${baseUrl}${image}`
 
