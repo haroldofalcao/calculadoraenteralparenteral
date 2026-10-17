@@ -22,7 +22,7 @@ Nada foi publicado. Siga esta lista na ordem.
 
 Os textos estão em `src/content/guias.js` e `src/content/artigos.js`. Cada parágrafo é um texto entre aspas simples e pode ser editado direto.
 
-## 3. Achado à parte, que NÃO corrigi
+## 3. Achado à parte ✅ corrigido em 17/10/2026 (commit be05d5a: lipídio 0,1 g/mL e texto "10g lip/100mL")
 
 Em `src/utils/calculationUtils.js`, o propofol é contado como **1,1 kcal/mL** (correto para a emulsão a 10%), mas como **0,2 g de lipídio/mL** (que corresponderia a uma emulsão a 20%, com cerca de 2 kcal/mL). O total de calorias está certo. Já os gramas e o percentual de lipídios ficam superestimados quando há propofol. O texto de ajuda da tela repete isso ("1.1 kcal/mL + 20g lip/100mL"). Decida se quer corrigir; fica como tarefa separada.
 
