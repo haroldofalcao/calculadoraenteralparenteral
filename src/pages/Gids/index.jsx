@@ -4,8 +4,10 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { Download, Eraser, Save } from 'lucide-react'
-import { AdSenseCompliantPage, ResponsiveBanner, ResultsAd } from '../../ads'
+import { AdSenseCompliantPage, ResultsAd } from '../../ads'
 import SEO from '../../components/SEO.jsx'
+import TextoClinico from '../../components/TextoClinico.jsx'
+import { guias } from '../../content/guias.js'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -260,18 +262,6 @@ function Gids() {
 						{t('gids.description')}
 					</p>
 				</div>
-
-				<AdSenseCompliantPage
-					minContentLength={300}
-					allowSkeletons={true}
-					timeout={10000}
-				>
-					<ResponsiveBanner
-						adSlot="5804222918"
-						requireContent={false}
-						style={{ marginBottom: '24px' }}
-					/>
-				</AdSenseCompliantPage>
 
 				<Tabs value={activeTab} onValueChange={setActiveTab}>
 					<TabsList className="mb-4 w-full sm:w-auto">
@@ -554,6 +544,8 @@ function Gids() {
 						))}
 					</div>
 				</div>
+
+				<TextoClinico conteudo={guias.gids} />
 			</div>
 		</>
 	)

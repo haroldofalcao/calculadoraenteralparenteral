@@ -54,16 +54,6 @@ function Home() {
 							<ArrowRight className="size-4" />
 						</Link>
 					</Button>
-					<Button asChild variant="outline">
-						<Link
-							to="/nenpt/gerenciar-produtos"
-							onClick={() =>
-								trackEvent('home_nenpt_gerenciar_produtos', { origem: 'home' })
-							}
-						>
-							{t('home.nenpt.manageProducts')}
-						</Link>
-					</Button>
 				</div>
 			),
 		},
@@ -235,19 +225,6 @@ function Home() {
 			</section>
 
 			<div className="mx-auto max-w-6xl px-4">
-				{/* Anúncio superior */}
-				<AdSenseCompliantPage
-					minContentLength={200}
-					allowSkeletons={true}
-					timeout={10000}
-				>
-					<ResponsiveBanner
-						adSlot="5804222918"
-						requireContent={false}
-						style={{ margin: '32px 0' }}
-					/>
-				</AdSenseCompliantPage>
-
 				{/* ============================ TOOLS ============================ */}
 				<section className="py-8 sm:py-12">
 					<FadeIn className="mb-8 text-center">

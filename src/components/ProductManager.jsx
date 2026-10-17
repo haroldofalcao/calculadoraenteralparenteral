@@ -10,7 +10,6 @@ import {
 	Search,
 	Trash2,
 } from 'lucide-react'
-import { ResponsiveBanner } from '../ads/components/AdVariants.jsx'
 import { useAnalytics } from '../hooks/useAnalytics'
 import {
 	allProductsAtom,
@@ -182,8 +181,6 @@ const ProductManager = () => {
 
 	return (
 		<div className="mx-auto max-w-6xl px-4">
-			<ResponsiveBanner adSlot="9004267172" requireContent={false} />
-
 			<h1 className="mb-6 text-3xl font-bold tracking-tight text-foreground">
 				{t('productManager.title')}
 			</h1>

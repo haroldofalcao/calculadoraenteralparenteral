@@ -5,13 +5,10 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Info, Loader2, TriangleAlert } from 'lucide-react'
 import AdSenseCompliantPage from '../ads/components/AdSenseCompliantPage.jsx'
-import {
-	InFeedAd,
-	ResponsiveBanner,
-	ResultsAd,
-	SidebarAd,
-} from '../ads/components/AdVariants.jsx'
+import { ResultsAd, SidebarAd } from '../ads/components/AdVariants.jsx'
+import { guias } from '../content/guias.js'
 import SidebarLayout from '../layouts/SidebarLayout.jsx'
+import TextoClinico from './TextoClinico.jsx'
 import { useAnalytics } from '../hooks/useAnalytics'
 import { calculatorSchema } from '../schemas/calculatorSchema'
 import { allProductsAtom } from '../store/productsAtoms'
@@ -163,18 +160,6 @@ const Calculator = () => {
 
 	return (
 		<SidebarLayout sidebar={<SidebarAd />}>
-			<AdSenseCompliantPage
-				minContentLength={50}
-				allowSkeletons={true}
-				timeout={5000}
-			>
-				<ResponsiveBanner
-					adSlot="5804222918"
-					requireContent={false}
-					style={{ marginBottom: '24px' }}
-				/>
-			</AdSenseCompliantPage>
-
 			<div className="mb-6">
 				<h1 className="text-3xl font-bold tracking-tight text-foreground">
 					{t('nenpt.title')}
@@ -261,17 +246,6 @@ const Calculator = () => {
 							</div>
 						</CardContent>
 					</Card>
-
-					<AdSenseCompliantPage minContentLength={600}>
-						<InFeedAd
-							adSlot="1864977909"
-							adLayoutKey="-fb+5w+4e-db+86"
-							requireContent={true}
-							showLabel={true}
-							variant="subtle"
-							style={{ margin: '8px 0' }}
-						/>
-					</AdSenseCompliantPage>
 
 					{/* Fórmula 1 */}
 					<Card>
@@ -744,6 +718,8 @@ const Calculator = () => {
 					</Card>
 				</div>
 			</div>
+
+			<TextoClinico conteudo={guias.nenpt} />
 		</SidebarLayout>
 	)
 }

@@ -1,6 +1,7 @@
 import { copyFileSync, existsSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { artigos } from '../src/content/artigos.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const distDir = path.resolve(__dirname, '../dist')
@@ -12,6 +13,14 @@ const routes = [
 	{ path: '/gids', changefreq: 'weekly', priority: '0.9' },
 	{ path: '/nenpt/gerenciar-produtos', changefreq: 'monthly', priority: '0.8' },
 	{ path: '/perguntas-frequentes', changefreq: 'monthly', priority: '0.7' },
+	{ path: '/artigos', changefreq: 'weekly', priority: '0.8' },
+	...artigos.map((a) => ({
+		path: `/artigos/${a.slug}`,
+		changefreq: 'monthly',
+		priority: '0.8',
+	})),
+	{ path: '/sobre', changefreq: 'yearly', priority: '0.5' },
+	{ path: '/privacidade', changefreq: 'yearly', priority: '0.3' },
 ]
 
 const lastmod = new Date().toISOString().split('T')[0]
