@@ -12,8 +12,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
 	Table,
 	TableBody,
@@ -26,10 +24,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 // Schema de validação
 const gidsSchema = z.object({
-	patientName: z.string().optional(),
-	patientId: z.string().optional(),
-	patientAge: z.number().optional(),
-	admissionDate: z.string().optional(),
 	bowelSounds: z.boolean().default(false),
 	vomiting: z.boolean().default(false),
 	grv: z.boolean().default(false),
@@ -63,7 +57,7 @@ function Gids() {
 	const [currentScore, setCurrentScore] = useState(0)
 	const [currentClassification, setCurrentClassification] = useState('')
 
-	const { register, control, handleSubmit, watch, reset, setValue } = useForm({
+	const { control, handleSubmit, watch, reset, setValue } = useForm({
 		resolver: zodResolver(gidsSchema),
 		defaultValues: {
 			bowelSounds: false,
@@ -149,17 +143,11 @@ function Gids() {
 
 	const exportReport = () => {
 		if (!savedData) return
-		const patientName = savedData.patientName || t('gids.export.unknownPatient')
 		const now = new Date()
 		const dateString = now.toISOString().split('T')[0]
-		const filename = `${t('gids.export.filename')}_${patientName.replace(/[^a-zA-Z0-9]/g, '_')}_${dateString}.txt`
+		const filename = `${t('gids.export.filename')}_${dateString}.txt`
 
-		let report = `${t('gids.title')} - ${patientName}\n\n`
-		report += `${t('gids.patientData')}:\n`
-		report += `${t('gids.patientName')}: ${savedData.patientName || '--'}\n`
-		report += `${t('gids.patientId')}: ${savedData.patientId || '--'}\n`
-		report += `${t('gids.patientAge')}: ${savedData.patientAge || '--'}\n`
-		report += `${t('gids.measurementDate')}: ${savedData.admissionDate || '--'}\n\n`
+		let report = `${t('gids.title')}\n\n`
 		report += `${t('gids.score')}: ${savedData.score} - ${savedData.classification}\n\n`
 
 		const blob = new Blob([report], { type: 'text/plain' })
@@ -176,6 +164,12 @@ function Gids() {
 		const saved = localStorage.getItem('gidsData')
 		if (saved) {
 			const data = JSON.parse(saved)
+			// LGPD: apaga a identificação do paciente salva por versões antigas
+			delete data.patientName
+			delete data.patientId
+			delete data.patientAge
+			delete data.admissionDate
+			localStorage.setItem('gidsData', JSON.stringify(data))
 			setSavedData(data)
 			Object.keys(data).forEach((key) => {
 				if (
@@ -226,13 +220,6 @@ function Gids() {
 		},
 	]
 
-	const patientFields = [
-		{ name: 'patientName', label: t('gids.patientName'), type: 'text' },
-		{ name: 'patientId', label: t('gids.patientId'), type: 'text' },
-		{ name: 'patientAge', label: t('gids.patientAge'), type: 'number' },
-		{ name: 'admissionDate', label: t('gids.measurementDate'), type: 'date' },
-	]
-
 	return (
 		<>
 			<SEO
@@ -274,35 +261,6 @@ function Gids() {
 					{/* MEDIDA ATUAL */}
 					<TabsContent value="measurement">
 						<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-							{/* Dados do paciente */}
-							<Card>
-								<CardHeader>
-									<CardTitle className="text-lg">
-										{t('gids.patientData')}
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-										{patientFields.map((f) => (
-											<div key={f.name} className="grid gap-2">
-												<Label htmlFor={f.name}>{f.label}</Label>
-												<Input
-													id={f.name}
-													type={f.type}
-													placeholder={f.type !== 'date' ? f.label : undefined}
-													{...register(
-														f.name,
-														f.type === 'number'
-															? { valueAsNumber: true }
-															: undefined,
-													)}
-												/>
-											</div>
-										))}
-									</div>
-								</CardContent>
-							</Card>
-
 							{/* Grupos de sintomas */}
 							{groups.map((group) => (
 								<Card key={group.key}>
@@ -392,48 +350,6 @@ function Gids() {
 
 					{/* RESUMO */}
 					<TabsContent value="summary" className="space-y-6">
-						<Card>
-							<CardHeader>
-								<CardTitle className="text-lg">
-									{t('gids.patientData')}
-								</CardTitle>
-							</CardHeader>
-							<CardContent className="grid gap-1.5 text-sm">
-								<div>
-									<span className="text-muted-foreground">
-										{t('gids.patientName')}:
-									</span>{' '}
-									<span className="font-medium">
-										{savedData?.patientName || '--'}
-									</span>
-								</div>
-								<div>
-									<span className="text-muted-foreground">
-										{t('gids.patientId')}:
-									</span>{' '}
-									<span className="font-medium">
-										{savedData?.patientId || '--'}
-									</span>
-								</div>
-								<div>
-									<span className="text-muted-foreground">
-										{t('gids.patientAge')}:
-									</span>{' '}
-									<span className="font-medium">
-										{savedData?.patientAge || '--'}
-									</span>
-								</div>
-								<div>
-									<span className="text-muted-foreground">
-										{t('gids.measurementDate')}:
-									</span>{' '}
-									<span className="font-medium">
-										{savedData?.admissionDate || '--'}
-									</span>
-								</div>
-							</CardContent>
-						</Card>
-
 						<Card>
 							<CardHeader>
 								<CardTitle className="text-lg">{t('gids.score')}</CardTitle>

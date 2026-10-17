@@ -270,11 +270,6 @@
       "title": "Objective Assessment and Nutritional Management",
       "content": "Utilizing objective criteria and tools like the GIDS calculator is crucial for guiding assessment and nutritional decisions in critical care. No single biomarker reliably measures GI function, so composite scores and clinical indices are needed to assess the GI tract. GIDS offers a structured, reproducible approach to track GI status at the bedside. In practice, a higher GIDS signals significant GI compromise and can prompt timely interventions. For example, gastrointestinal dysfunction frequently impairs enteral feeding tolerance, risking caloric/protein deficits; such patients are prime candidates for supplemental parenteral nutrition to avert malnutrition. An objective severity score also aids communication and decision-making – clinicians can adjust feeding strategies (enteral vs. parenteral), use pro-motility agents, or implement decompression based on GIDS level. Indeed, adoption of standardized GI severity criteria is advocated to improve diagnosis and management of GI dysfunction in ICU practice. By grounding nutritional therapy in objective GI function measures, critical care teams can better ensure adequate and safe nutrition delivery even in the face of GI tract dysfunction."
     },
-    "patientData": "Patient Data",
-    "patientName": "Name",
-    "patientId": "ID",
-    "patientAge": "Age",
-    "measurementDate": "Measurement Date",
     "basicSymptoms": "Basic Symptoms",
     "severeSymptoms": "Severe Symptoms",
     "lifeThreatening": "Life-Threatening Conditions",
@@ -325,7 +320,6 @@
       "noDataMessage": "Fill in the data to generate a clinical analysis."
     },
     "export": {
-      "unknownPatient": "Unknown Patient",
       "filename": "GIDS_Report"
     },
     "debug": {

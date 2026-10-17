@@ -274,11 +274,6 @@
       "title": "Avaliação Objetiva e Condutas Nutricionais",
       "content": "A aplicação de critérios objetivos e ferramentas como a calculadora de GIDS é fundamental para orientar a avaliação e as decisões nutricionais em pacientes críticos. Não existe um biomarcador único e confiável da função gastrointestinal, por isso são necessários escores compostos e indicadores clínicos para avaliar o TGI. O GIDS oferece uma abordagem estruturada e reproduzível para monitorar a condição gastrointestinal à beira do leito. Na prática, um GIDS elevado sinaliza comprometimento GI significativo e deve motivar intervenções oportunas. Por exemplo, a disfunção GI frequentemente prejudica a tolerância à nutrição enteral, aumentando o risco de déficits calórico-proteicos; esses pacientes tornam-se candidatos típicos à nutrição parenteral complementar para evitar desnutrição. Um escore objetivo de gravidade também facilita a comunicação e a tomada de decisões – a equipe pode ajustar a estratégia nutricional (enteral versus parenteral), utilizar pró-cinéticos ou descompressão gastrointestinal de acordo com o nível de GIDS. De fato, a adoção de critérios padronizados de gravidade GI tem sido defendida para aprimorar o diagnóstico e manejo da disfunção gastrointestinal na UTI. Ao basear a terapia nutricional em medidas objetivas da função GI, as equipes de terapia intensiva podem garantir de forma mais eficaz uma nutrição adequada e segura mesmo diante da disfunção do trato gastrointestinal."
     },
-    "patientData": "Dados do Paciente",
-    "patientName": "Nome",
-    "patientId": "Registro",
-    "patientAge": "Idade",
-    "measurementDate": "Data da Medida",
     "basicSymptoms": "Sintomas Básicos",
     "severeSymptoms": "Sintomas Graves",
     "lifeThreatening": "Condições Ameaçadoras",
@@ -329,7 +324,6 @@
       "noDataMessage": "Preencha os dados para gerar uma análise clínica."
     },
     "export": {
-      "unknownPatient": "Paciente Desconhecido",
       "filename": "Relatorio_GIDS"
     },
     "debug": {
