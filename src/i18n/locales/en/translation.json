@@ -134,7 +134,7 @@
     "citratoLabel": "Add Citrate (300 kcal)",
     "citratoHelp": "Check if patient receives citrate",
     "propofolVolume": "Propofol (mL)",
-    "propofolHelp": "1.1 kcal/mL + 20g lip/100mL",
+    "propofolHelp": "1.1 kcal/mL + 10g lip/100mL",
     "sg5Volume": "SG5% (mL)",
     "sg5Help": "0.2 kcal/mL + 50g CHO/L",
     "infusionTime": "Infusion Time (h)",

@@ -1,5 +1,11 @@
 # lessons.md — Aprendizados do projeto
 
+## 2026-10-16 — Propofol: lipídio corrigido para 0,1 g/mL
+**Decisão (aprovada pelo Haroldo):** o propofol 1% é uma emulsão lipídica a 10% (10 g de gordura/100 mL, cerca de 1,1 kcal/mL).
+O cálculo usava 0,2 g/mL (20 g/100 mL, que é uma emulsão a 20%), o que dobrava o lipídio. O valor passou a ser 0,1 g/mL em `calculateNonNutritionalCalories` (`calculationUtils.js`), e `nenpt.propofolHelp` (PT/EN) agora diz "10g lip/100mL". As kcal (1,1/mL) não mudaram.
+**Verificação:** 240 mL → 264 kcal e 24 g de lipídio; `biome lint` e `npm run build` sem erros.
+**Regra:** kcal/mL e g/mL de lipídio de uma mesma emulsão precisam ser coerentes (10% ≈ 1,1 kcal e 0,1 g/mL; 20% ≈ 2 kcal e 0,2 g/mL).
+
 ## 2026-10-16 — v6: resposta ao AdSense "Conteúdo de baixo valor"
 **Contexto:** o AdSense recusou a aprovação do site (etapa "Seu site não está pronto para exibir anúncios").
 Diagnóstico: páginas quase só de formulário, sem Privacidade e Sobre, anúncios em telas de ferramenta.

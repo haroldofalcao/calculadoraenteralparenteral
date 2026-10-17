@@ -96,8 +96,8 @@ const calculateNonNutritionalCalories = ({
 	const propofolKcal = (parseFloat(propofol_ml) || 0) * 1.1
 	const sg5Kcal = (parseFloat(sg5_ml) || 0) * 0.2
 
-	// Propofol: 20g gordura / 100mL = 0.2g/mL
-	const propofolLipids = (parseFloat(propofol_ml) || 0) * 0.2
+	// Propofol 1% (emulsão lipídica 10%): 10g gordura / 100mL = 0.1g/mL
+	const propofolLipids = (parseFloat(propofol_ml) || 0) * 0.1
 
 	// SG5%: 50g CHO / 1000mL = 0.05g/mL
 	const sg5Carbs = (parseFloat(sg5_ml) || 0) * 0.05
