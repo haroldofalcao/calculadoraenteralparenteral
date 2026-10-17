@@ -320,6 +320,7 @@
       "title": "Análise do Score GIDS:",
       "scoreDisplay": "Score GIDS: {{score}} - {{classification}}",
       "highRiskRecommendation": "Considerando o score GIDS atual ({{score}} - {{classification}}), recomenda-se reavaliação da terapia nutricional e investigação de causas subjacentes para a disfunção/falência gastrointestinal.",
+      "increasedRiskRecommendation": "O score GIDS atual ({{score}} - {{classification}}) indica risco aumentado de disfunção gastrointestinal. Reavalie os sintomas diariamente e acompanhe a tolerância à dieta enteral.",
       "lowRiskRecommendation": "O score GIDS atual ({{score}} - {{classification}}) indica baixo risco de disfunção gastrointestinal. Continue monitorando a evolução clínica.",
       "noDataMessage": "Preencha os dados para gerar uma análise clínica."
     },

@@ -316,6 +316,7 @@
       "title": "GIDS Score Analysis:",
       "scoreDisplay": "GIDS Score: {{score}} - {{classification}}",
       "highRiskRecommendation": "Considering the current GIDS score ({{score}} - {{classification}}), it is recommended to reassess nutritional therapy and investigate underlying causes for gastrointestinal dysfunction/failure.",
+      "increasedRiskRecommendation": "The current GIDS score ({{score}} - {{classification}}) indicates increased risk of gastrointestinal dysfunction. Reassess symptoms daily and monitor enteral feeding tolerance.",
       "lowRiskRecommendation": "The current GIDS score ({{score}} - {{classification}}) indicates low risk of gastrointestinal dysfunction. Continue monitoring clinical progress.",
       "noDataMessage": "Fill in the data to generate a clinical analysis."
     },

@@ -412,10 +412,15 @@ function Gids() {
 														score: savedData.score,
 														classification: savedData.classification,
 													})
-												: t('gids.analysis.lowRiskRecommendation', {
-														score: savedData.score,
-														classification: savedData.classification,
-													})}
+												: savedData.score === 1
+													? t('gids.analysis.increasedRiskRecommendation', {
+															score: savedData.score,
+															classification: savedData.classification,
+														})
+													: t('gids.analysis.lowRiskRecommendation', {
+															score: savedData.score,
+															classification: savedData.classification,
+														})}
 										</p>
 									</>
 								) : (

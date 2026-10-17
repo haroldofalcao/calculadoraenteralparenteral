@@ -1,5 +1,11 @@
 # lessons.md — Aprendizados do projeto
 
+## 2026-10-17 — GIDS: frase da análise clínica para o escore 1
+**Problema:** o código tinha só duas frases. Com o escore 1 ("Risco aumentado"), aparecia a frase do escore 0: "indica baixo risco", uma contradição.
+**Correção (frase aprovada pelo Haroldo):** nova chave `gids.analysis.increasedRiskRecommendation` (PT/EN), usada só quando o escore é 1: "indica risco aumentado… Reavalie os sintomas diariamente e acompanhe a tolerância à dieta enteral." As frases de 0 e de ≥2 não mudaram.
+**Verificação:** lint e build OK; no navegador, os escores 0, 1 e 2 mostraram cada um a sua frase.
+**Regra:** toda faixa de classificação de um escore precisa ter a sua frase; não agrupe faixas com significados clínicos diferentes.
+
 ## 2026-10-17 — GIDS: bloco "Dados do Paciente" removido (LGPD)
 **Decisão (Haroldo):** a calculadora GIDS não pede mais Nome, Registro, Idade nem Data. Fica só a calculadora. O relatório .txt sai sem identificação (`Relatorio_GIDS_AAAA-MM-DD.txt`).
 **Limpeza:** ao abrir a página, os campos antigos (`patientName`, `patientId`, `patientAge`, `admissionDate`) são apagados do `localStorage` (`gidsData`) de quem já tinha usado a versão anterior.
